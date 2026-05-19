@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { ChevronDown, Facebook, Instagram, Linkedin } from "lucide-react";
+import { useState } from "react";
 
 type FooterLink = { label: string; href: string };
 
@@ -66,10 +69,33 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 function FooterColumnBlock({ title, links }: FooterColumn) {
+  const [open, setOpen] = useState(false);
+  const panelId = `footer-panel-${title.replace(/\s+/g, "-")}`;
+
   return (
-    <div>
-      <h3 className="mb-4 text-base font-bold text-black">{title}</h3>
-      <ul className="flex flex-col gap-3">
+    <div className="border-b border-[#E5E5E5] lg:border-0">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="flex w-full items-center justify-between py-4 text-right lg:pointer-events-none lg:cursor-default lg:py-0"
+      >
+        <h3 className="text-base font-bold text-black">{title}</h3>
+        <ChevronDown
+          className={`size-5 shrink-0 text-[#454545] transition-transform duration-300 lg:hidden ${
+            open ? "rotate-180" : ""
+          }`}
+          aria-hidden
+        />
+      </button>
+
+      <ul
+        id={panelId}
+        className={`flex-col gap-3 lg:mt-4 lg:flex ${
+          open ? "mt-1 flex pb-4" : "hidden lg:flex"
+        }`}
+      >
         {links.map((link) => (
           <li key={link.href + link.label}>
             <Link
@@ -89,9 +115,9 @@ export default function Footer() {
   return (
     <footer className="bg-white pt-14 pb-8">
       <div className="container">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          <div className="flex flex-col gap-5">
-            <Link href="/" className="inline-flex w-fit">
+        <div className="grid grid-cols-1 gap-0 md:grid-cols-2 md:gap-10 lg:grid-cols-4 lg:gap-8">
+          <div className="mb-6 flex flex-col gap-5 md:mb-0">
+            <Link href="/" className="inline-flex w-fit mx-auto md:mx-0">
               <Image
                 src="/logo.png"
                 alt="منصة التعلم"
@@ -101,12 +127,12 @@ export default function Footer() {
               />
             </Link>
 
-            <p className="max-w-xs text-sm leading-relaxed text-[#454545]">
+            <p className="max-w-xs text-sm leading-relaxed text-[#454545] text-center md:text-left mx-auto md:mx-0">
               منصة التعلم العربية الأولى. نمكن المتعلمين في كل مكان من الوصول
               لأفضل التعليم.
             </p>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center md:justify-start justify-center gap-3">
               {socialLinks.map(({ label, href, icon: Icon }) => (
                 <a
                   key={label}
@@ -114,7 +140,11 @@ export default function Footer() {
                   aria-label={label}
                   className="flex size-10 items-center justify-center rounded-full bg-(--primary) text-white transition-opacity hover:opacity-90"
                 >
-                  <Icon className="size-5" strokeWidth={1.75} />
+                  {Icon === TikTokIcon ? (
+                    <Icon className="size-5" />
+                  ) : (
+                    <Icon className="size-5" strokeWidth={1.75} />
+                  )}
                 </a>
               ))}
             </div>

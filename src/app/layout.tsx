@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { Toaster } from "sonner";
 
-import Header from "@/src/components/Header";
+import Header from "@/src/components/header/Header";
 import "./globals.css";
 import Footer from "@/src/components/Footer";
 

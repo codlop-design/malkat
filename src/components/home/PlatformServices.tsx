@@ -9,12 +9,11 @@ import {
   Package,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
 
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
+import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+
+import "swiper/css";
 
 type Service = {
   title: string;
@@ -54,12 +53,9 @@ const services: Service[] = [
 
 function ServiceCard({ title, description, icon: Icon, featured }: Service) {
   return (
-    <motion.article
-      variants={fadeUp}
-      className={`flex flex-col items-center gap-4 rounded-3xl px-5 py-8 text-center transition-colors ${
-        featured
-          ? "bg-(--primary) text-white"
-          : "bg-[#E8F6F4] text-[#1F1F1F]"
+    <article
+      className={`flex h-full flex-col items-center gap-4 rounded-3xl px-5 py-8 text-center transition-colors ${
+        featured ? "bg-(--primary) text-white" : "bg-[#E8F6F4] text-[#1F1F1F]"
       }`}
     >
       <div className="flex size-14 items-center justify-center rounded-full bg-white">
@@ -86,14 +82,14 @@ function ServiceCard({ title, description, icon: Icon, featured }: Service) {
           {description}
         </p>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
 export default function PlatformServices() {
   return (
     <section className="py-16">
-      <div className="container">
+      <div className="container overflow-hidden">
         <motion.div
           className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-3 text-center"
           initial="hidden"
@@ -122,14 +118,44 @@ export default function PlatformServices() {
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5"
+          initial="hidden"
+          whileInView="visible"
+          viewport={motionViewport}
+          variants={fadeUp}
+          className="overflow-hidden lg:hidden"
+        >
+          <Swiper
+            dir="rtl"
+            spaceBetween={16}
+            slidesPerView={1.5}
+            breakpoints={{
+              640: { slidesPerView: 2, spaceBetween: 20 },
+            }}
+            className="services-swiper overflow-visible!"
+          >
+            {services.map((service) => (
+              <SwiperSlide key={service.title} className="h-auto!">
+                <ServiceCard {...service} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </motion.div>
+
+        <motion.div
+          className="hidden gap-5 lg:grid lg:grid-cols-5"
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}
           variants={staggerContainer(0.1, 0.15)}
         >
           {services.map((service) => (
-            <ServiceCard key={service.title} {...service} />
+            <motion.div
+              key={service.title}
+              variants={fadeUp}
+              className="h-full"
+            >
+              <ServiceCard {...service} />
+            </motion.div>
           ))}
         </motion.div>
       </div>

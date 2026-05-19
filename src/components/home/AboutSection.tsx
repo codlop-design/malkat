@@ -10,7 +10,7 @@ export default function AboutSection() {
   return (
     <section className="py-12">
       <div className="container">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-0">
           <motion.div
             className="max-w-[500px] flex flex-col gap-5"
             initial="hidden"

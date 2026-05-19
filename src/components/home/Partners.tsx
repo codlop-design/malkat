@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import {
   fadeUp,
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+
+import "swiper/css";
 
 const partners = Array.from({ length: 8 }, (_, i) => ({
   id: i + 1,
@@ -17,8 +21,8 @@ const partners = Array.from({ length: 8 }, (_, i) => ({
 
 export default function Partners() {
   return (
-    <section className="bg-[#FAFAFA] py-16">
-      <div className="container">
+    <section className="py-16">
+      <div className="container overflow-hidden">
         <motion.div
           className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-3 text-center"
           initial="hidden"
@@ -46,29 +50,47 @@ export default function Partners() {
           </motion.p>
         </motion.div>
 
-        <motion.ul
-          className="flex flex-wrap items-center justify-center gap-6 md:gap-8"
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}
-          variants={staggerContainer(0.08, 0.1)}
+          variants={fadeUp}
+          className="-mx-5 overflow-visible ps-5 md:mx-0 md:ps-0"
         >
-          {partners.map((partner) => (
-            <motion.li
-              key={partner.id}
-              variants={fadeUp}
-              className="flex size-[120px] shrink-0 items-center justify-center rounded-full bg-white p-4 md:size-[140px]"
-            >
-              <Image
-                src={partner.src}
-                alt={partner.alt}
-                width={80}
-                height={80}
-                className="h-auto w-full max-h-16 object-contain md:max-h-20"
-              />
-            </motion.li>
-          ))}
-        </motion.ul>
+          <Swiper
+            dir="rtl"
+            modules={[Autoplay]}
+            loop
+            speed={600}
+            spaceBetween={16}
+            slidesPerView={3.5}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            breakpoints={{
+              768: { slidesPerView: 4, spaceBetween: 28 },
+              1024: { slidesPerView: 5, spaceBetween: 32 },
+              1280: { slidesPerView: 8, spaceBetween: 32 },
+            }}
+            className="partners-swiper overflow-visible!"
+          >
+            {partners.map((partner) => (
+              <SwiperSlide key={partner.id} className="h-auto!">
+                <div className="mx-auto flex size-[100px] items-center justify-center rounded-full bg-white p-4 md:size-[140px]">
+                  <Image
+                    src={partner.src}
+                    alt={partner.alt}
+                    width={80}
+                    height={80}
+                    className="h-auto max-h-16 w-full object-contain md:max-h-20"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </motion.div>
       </div>
     </section>
   );
