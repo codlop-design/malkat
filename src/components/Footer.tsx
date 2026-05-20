@@ -127,7 +127,7 @@ export default function Footer() {
               />
             </Link>
 
-            <p className="max-w-xs text-sm leading-relaxed text-[#454545] text-center md:text-left mx-auto md:mx-0">
+            <p className="max-w-xs text-sm leading-relaxed text-[#454545] text-start md:text-start mx-auto md:mx-0">
               منصة التعلم العربية الأولى. نمكن المتعلمين في كل مكان من الوصول
               لأفضل التعليم.
             </p>

@@ -4,7 +4,7 @@ import PartnersSection from "@/src/components/about/PartnersSection";
 import ValuesSection from "@/src/components/about/ValuesSection";
 import VisionSection from "@/src/components/about/VisionSection";
 
-export default function page() {
+export default function AboutPage() {
   return (
     <>
       <PageHeader
