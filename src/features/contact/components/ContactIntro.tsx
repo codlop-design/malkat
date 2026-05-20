@@ -9,7 +9,7 @@ import {
 
 export default function ContactIntro() {
   return (
-    <section className="bg-white py-10 md:py-14">
+    <section className="py-10 md:py-14">
       <motion.div
         className="container max-w-3xl text-center"
         dir="rtl"

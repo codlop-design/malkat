@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white py-6">
+      <header className="sticky top-0 z-10000 bg-white py-6">
         <div className="container">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-between">
