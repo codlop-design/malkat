@@ -3,6 +3,9 @@
 
 :root {
   --primary: #008075;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #b0b0b0;
+  --scrollbar-thumb-hover: #909090;
 }
 
 body {
@@ -15,4 +18,10 @@ body {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

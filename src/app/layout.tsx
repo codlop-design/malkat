@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 
 import { Toaster } from "sonner";
 
-import Header from "@/src/components/header/Header";
 import "./globals.css";
-import Footer from "@/src/components/Footer";
 
 const SITE_URL = process.env.SITE_URL || "http://localhost:3000";
 const SITE_NAME = "منصة تعليم الأطفال";
@@ -102,9 +100,7 @@ export default function RootLayout({
           }}
         />
         <Toaster position="top-center" richColors />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
