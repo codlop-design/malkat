@@ -82,7 +82,7 @@ export default function RegisterForm() {
       />
 
       <div>
-        <div className="flex items-start gap-2.5" dir="rtl">
+        <div className="flex items-start gap-2.5" >
           <input
             id="register-terms"
             type="checkbox"

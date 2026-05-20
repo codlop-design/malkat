@@ -125,7 +125,7 @@ export default function PlatformServices() {
           className="overflow-hidden lg:hidden"
         >
           <Swiper
-            dir="rtl"
+            
             spaceBetween={16}
             slidesPerView={1.5}
             breakpoints={{

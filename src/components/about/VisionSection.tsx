@@ -18,7 +18,7 @@ const SHARED_FOCUS_POINTS = [
 
 export default function VisionSection() {
   return (
-    <section className="bg-[#006d6d] py-14 md:py-8 lg:py-14" dir="rtl">
+    <section className="bg-[#006d6d] py-14 md:py-8 lg:py-14" >
       <div className="container">
         <motion.header
           className="mb-12 text-center md:mb-16"

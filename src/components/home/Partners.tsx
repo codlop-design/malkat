@@ -58,7 +58,7 @@ export default function Partners() {
           className="-mx-5 overflow-visible ps-5 md:mx-0 md:ps-0"
         >
           <Swiper
-            dir="rtl"
+            
             modules={[Autoplay]}
             loop
             speed={600}

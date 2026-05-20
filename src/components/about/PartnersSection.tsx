@@ -12,7 +12,7 @@ import {
 
 export default function PartnersSection() {
   return (
-    <section className="bg-[#F5F0E8] py-14 md:py-8 lg:py-14" dir="rtl">
+    <section className="bg-[#F5F0E8] py-14 md:py-8 lg:py-14" >
       <div className="container">
         <motion.div
           className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center md:gap-3"

@@ -39,7 +39,7 @@ const VALUES = [
 
 export default function ValuesSection() {
   return (
-    <section className="bg-[#FAFAFA] py-14 md:py-8 lg:py-14" dir="rtl">
+    <section className="bg-[#FAFAFA] py-14 md:py-8 lg:py-14" >
       <div className="container">
         <motion.header
           className="mx-auto mb-12 max-w-3xl text-center md:mb-16"

@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 
-type ProductSliderProps<T extends { id?: string }> = {
+type ProductCarouselProps<T extends { id?: string }> = {
   title: string;
   viewAllHref?: string;
   items: T[];
@@ -14,15 +14,15 @@ type ProductSliderProps<T extends { id?: string }> = {
   getKey?: (item: T, index: number) => string;
 };
 
-export default function ProductSlider<T extends { id?: string }>({
+export default function ProductCarousel<T extends { id?: string }>({
   title,
   viewAllHref = "#",
   items,
   renderSlide,
   getKey = (item, index) => item.id ?? String(index),
-}: ProductSliderProps<T>) {
+}: ProductCarouselProps<T>) {
   return (
-    <section className="py-8 md:py-10" dir="rtl">
+    <section className="overflow-hidden">
       <div className="mb-6 flex items-center justify-between gap-4">
         <h2 className="text-xl font-bold text-black md:text-2xl">{title}</h2>
         <Link
@@ -35,7 +35,7 @@ export default function ProductSlider<T extends { id?: string }>({
 
       <div className="-mx-5 overflow-visible ps-5 md:mx-0 md:ps-0">
         <Swiper
-          dir="rtl"
+          
           speed={500}
           spaceBetween={16}
           slidesPerView={1.35}

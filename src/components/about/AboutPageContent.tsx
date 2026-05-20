@@ -34,7 +34,7 @@ export default function AboutPageContent() {
         <div className="mb-10 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
           <motion.div
             className="space-y-5 text-right"
-            dir="rtl"
+            
             initial="hidden"
             whileInView="visible"
             viewport={motionViewport}
@@ -131,7 +131,7 @@ export default function AboutPageContent() {
 
           <motion.div
             className="space-y-5 text-right"
-            dir="rtl"
+            
             initial="hidden"
             whileInView="visible"
             viewport={motionViewport}

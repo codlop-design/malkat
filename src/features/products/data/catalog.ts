@@ -1,0 +1,272 @@
+import type { ActivityCardProps } from "@/src/features/products/components/cards/ActivityCard";
+import type { BookCardProps } from "@/src/features/products/components/cards/BookCard";
+import type { CourseCardProps } from "@/src/features/products/components/cards/CourseCard";
+import type { GuideCardProps } from "@/src/features/products/components/cards/GuideCard";
+import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
+
+const IMG = {
+  book: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+  book2: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80",
+  course: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+  course2: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+  activity: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+  activity2: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+  service: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80",
+  guide: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+};
+
+const AVATAR =
+  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80";
+
+export const BOOKS_ITEMS: BookCardProps[] = [
+  {
+    id: "book-1",
+    title: "قصص الأنبياء للأطفال",
+    author: "د. محمد الشهري",
+    description:
+      "سلسلة قصص تربوية رائعة تحكي قصص الأنبياء الكرام بأسلوب مناسب للأطفال مع رسوم جميلة.",
+    imageSrc: IMG.book,
+    href: "/products/book-1",
+    free: true,
+    ageRange: "6-9 سنوات",
+    level: "متوسط",
+    rating: 4.8,
+    views: "18.3 k",
+  },
+  {
+    id: "book-2",
+    title: "مغامرات في عالم الحيوان",
+    author: "أ. نورة القحطاني",
+    description:
+      "كتاب تفاعلي يعرّف الطفل على عالم الحيوانات والبيئة بطريقة قصصية مشوقة.",
+    imageSrc: IMG.book2,
+    href: "/products/book-2",
+    ageRange: "4-7 سنوات",
+    level: "مبتدئ",
+    rating: 4.6,
+    views: "12.1 k",
+  },
+  {
+    id: "book-3",
+    title: "أنا أتعلم القراءة",
+    author: "مكتبة منارة",
+    description:
+      "برنامج تدريجي لبناء مهارات القراءة العربية للأطفال في مرحلة ما قبل المدرسة.",
+    imageSrc: IMG.book,
+    href: "/products/book-3",
+    free: false,
+    ageRange: "5-8 سنوات",
+    level: "مبتدئ",
+    rating: 4.9,
+    views: "9.4 k",
+  },
+  {
+    id: "book-4",
+    title: "رياضيات ممتعة",
+    author: "د. خالد العمري",
+    description:
+      "تمارين وألغاز رياضية مبسّطة تُنمّي التفكير المنطقي والحساب الذهني.",
+    imageSrc: IMG.book2,
+    href: "/products/book-4",
+    ageRange: "7-10 سنوات",
+    level: "متوسط",
+    rating: 4.7,
+    views: "7.8 k",
+  },
+  {
+    id: "book-5",
+    title: "عالم الفضاء",
+    author: "فريق العلوم",
+    description:
+      "رحلة بصرية مذهلة لاستكشاف الكواكب والنجوم بصور ورسوم توضيحية جذابة.",
+    imageSrc: IMG.book,
+    href: "/products/book-5",
+    free: true,
+    ageRange: "8-12 سنة",
+    level: "متقدم",
+    rating: 4.5,
+    views: "15.2 k",
+  },
+];
+
+export const ACTIVITIES_ITEMS: ActivityCardProps[] = [
+  {
+    id: "activity-1",
+    title: "ورشة الطين والنحت",
+    description:
+      "نشاط يدوي ممتع يُنمّي الحس الفني والمهارات الحركية الدقيقة لدى الأطفال.",
+    imageSrc: IMG.activity,
+    href: "/products/activity-1",
+    ageRange: "3-5 سنوات",
+    activityType: "فردي",
+    skillTags: ["الإبداع", "التعبير", "المهارات الحركية الدقيقة"],
+    rating: 4.8,
+  },
+  {
+    id: "activity-2",
+    title: "مختبر الألوان الصغير",
+    description:
+      "تجارب آمنة وممتعة لاكتشاف الألوان والخلط بينها في بيئة منزلية أو صفية.",
+    imageSrc: IMG.activity2,
+    href: "/products/activity-2",
+    ageRange: "4-6 سنوات",
+    activityType: "جماعي",
+    skillTags: ["الاستكشاف", "التعاون", "الملاحظة"],
+    rating: 4.7,
+  },
+  {
+    id: "activity-3",
+    title: "بناء بالمكعبات",
+    description:
+      "تحديات هندسية ممتعة لتعزيز التفكير المكاني وحل المشكلات.",
+    imageSrc: IMG.activity,
+    href: "/products/activity-3",
+    ageRange: "5-8 سنوات",
+    activityType: "فردي",
+    skillTags: ["الهندسة", "التركيز", "الإبداع"],
+    rating: 4.9,
+  },
+  {
+    id: "activity-4",
+    title: "رحلة في الحديقة",
+    description:
+      "نشاط خارجي يشجّع على التواصل مع الطبيعة وملاحظة النباتات والحشرات.",
+    imageSrc: IMG.activity2,
+    href: "/products/activity-4",
+    ageRange: "6-9 سنوات",
+    activityType: "جماعي",
+    skillTags: ["الطبيعة", "الملاحظة", "الصحة"],
+    rating: 4.6,
+  },
+];
+
+export const COURSES_ITEMS: CourseCardProps[] = [
+  {
+    id: "course-1",
+    title: "أساسيات البرمجة للأطفال",
+    description:
+      "دورة تفاعلية تساعد الأطفال على تعلم أساسيات البرمجة والتفكير المنطقي من خلال أنشطة وألعاب تعليمية ممتعة.",
+    imageSrc: IMG.course,
+    href: "/products/course-1",
+    instructorName: "د. محمد الشهري",
+    instructorAvatar: AVATAR,
+    duration: "6 أسابيع",
+    sessions: "12 جلسة",
+    free: true,
+    online: true,
+    rating: 4.8,
+  },
+  {
+    id: "course-2",
+    title: "مهارات القراءة والكتابة",
+    description:
+      "مسار تعليمي متدرّج لتقوية اللغة العربية والتعبير الكتابي للأطفال.",
+    imageSrc: IMG.course2,
+    href: "/products/course-2",
+    instructorName: "أ. سارة العتيبي",
+    instructorAvatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80",
+    duration: "8 أسابيع",
+    sessions: "16 جلسة",
+    rating: 4.9,
+  },
+  {
+    id: "course-3",
+    title: "الرياضيات التفاعلية",
+    description:
+      "دروس مرئية وأنشطة رقمية تجعل الرياضيات ممتعة وسهلة الفهم.",
+    imageSrc: IMG.course,
+    href: "/products/course-3",
+    instructorName: "د. خالد العمري",
+    instructorAvatar: AVATAR,
+    duration: "5 أسابيع",
+    sessions: "10 جلسات",
+    free: false,
+    online: true,
+    rating: 4.7,
+  },
+  {
+    id: "course-4",
+    title: "فنون وإبداع",
+    description:
+      "ورش أونلاين لتعليم الرسم والتلوين وتنمية الخيال الإبداعي.",
+    imageSrc: IMG.course2,
+    href: "/products/course-4",
+    instructorName: "أ. نورة القحطاني",
+    instructorAvatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&q=80",
+    duration: "4 أسابيع",
+    sessions: "8 جلسات",
+    free: true,
+    rating: 4.6,
+  },
+];
+
+export const SERVICES_ITEMS: ServiceCardProps[] = [
+  {
+    id: "service-1",
+    title: "استشارة التطور المعرفي",
+    description:
+      "خدمة مخصصة لتقييم وتوجيه مهارات الطفل المعرفية باستخدام تقنيات حديثة.",
+    imageSrc: IMG.service,
+    href: "/products/service-1",
+    tags: ["مجانية", "أونلاين", "للآباء"],
+    rating: 4.8,
+  },
+  {
+    id: "service-2",
+    title: "جلسة توجيه تربوي",
+    description:
+      "لقاء مع مختص لتقديم نصائح عملية لدعم تعلّم الطفل في المنزل.",
+    imageSrc: IMG.guide,
+    href: "/products/service-2",
+    tags: ["أونلاين", "للآباء"],
+    rating: 4.7,
+  },
+  {
+    id: "service-3",
+    title: "تقييم المستوى التعليمي",
+    description:
+      "تقرير مفصّل عن نقاط القوة ومجالات التحسين مع خطة متابعة شهرية.",
+    imageSrc: IMG.service,
+    href: "/products/service-3",
+    tags: ["مجانية", "للمدارس"],
+    rating: 4.9,
+  },
+];
+
+export const GUIDES_ITEMS: GuideCardProps[] = [
+  {
+    id: "guide-1",
+    title: "دليل تنمية مهارات الطفل",
+    description:
+      "خطوات عملية وأنشطة تساعد على تعزيز التفكير الإبداعي لدى الأطفال في المنزل والمدرسة.",
+    imageSrc: IMG.guide,
+    href: "/products/guide-1",
+    tags: ["للآباء", "مجاني"],
+    pages: "42 صفحة",
+    rating: 4.8,
+  },
+  {
+    id: "guide-2",
+    title: "دليل المعلم في الفصل الرقمي",
+    description:
+      "إرشادات لتطبيق أدوات التعليم الرقمي وإدارة الصف الافتراضي بفعالية.",
+    imageSrc: IMG.activity,
+    href: "/products/guide-2",
+    tags: ["للمعلمين", "مجاني"],
+    pages: "56 صفحة",
+    rating: 4.7,
+  },
+  {
+    id: "guide-3",
+    title: "أساسيات التعلم في المنزل",
+    description:
+      "نصائح منظمة لبناء روتين تعليمي ممتع يدعم نمو الطفل المعرفي والاجتماعي.",
+    imageSrc: IMG.guide,
+    href: "/products/guide-3",
+    tags: ["للآباء", "مجاني"],
+    pages: "38 صفحة",
+    rating: 4.9,
+  },
+];

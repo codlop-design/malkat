@@ -39,7 +39,7 @@ export default function VisionCard({
   return (
     <article
       className="rounded-[20px] bg-linear-to-b from-(--primary) to-[#0F3D40] p-8 text-white shadow-sm md:p-10"
-      dir="rtl"
+      
     >
       <div className="flex justify-center flex-col items-center gap-4">
         <div
