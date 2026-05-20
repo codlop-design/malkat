@@ -33,7 +33,7 @@ export default function ProductCarousel<T extends { id?: string }>({
         </Link>
       </div>
 
-      <div className="-mx-5 overflow-visible ps-5 md:mx-0 md:ps-0">
+      <div className="-mx-5 overflow-visible ps-5 md:mx-0 md:ps-0 pb-4">
         <Swiper
           
           speed={500}
