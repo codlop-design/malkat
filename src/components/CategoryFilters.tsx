@@ -1,43 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
 import type { Swiper as SwiperType } from "swiper";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { FreeMode } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  categoryFilterHref,
-  type ProductCategoryId,
-} from "@/src/features/products/types";
+import Link from "next/link";
 
 import "swiper/css";
 
-type Category = {
-  id: ProductCategoryId;
+export type CategoryFilterItem<T extends string = string> = {
+  id: T;
   icon: string;
   label: string;
   count: number;
 };
 
-const CATEGORIES: Category[] = [
-  { id: "all", icon: "✨", label: "الكل", count: 247 },
-  { id: "books", icon: "📚", label: "الكتب", count: 84 },
-  { id: "activities", icon: "🎮", label: "الأنشطة", count: 65 },
-  { id: "courses", icon: "🎓", label: "الدورات", count: 40 },
-  { id: "services", icon: "💼", label: "الخدمات", count: 33 },
-  { id: "guides", icon: "📖", label: "أدلة إجرائية", count: 25 },
-];
+type CategoryFiltersProps<T extends string> = {
+  active: T;
+  categories: readonly CategoryFilterItem<T>[];
+  getHref: (id: T) => string;
+  ariaLabel?: string;
+};
 
 const tapSpring = { type: "spring" as const, stiffness: 520, damping: 28 };
 
-type CategoryFiltersProps = {
-  active: ProductCategoryId;
-};
-
-export default function CategoryFilters({ active }: CategoryFiltersProps) {
+export default function CategoryFilters<T extends string>({
+  active,
+  categories,
+  getHref,
+  ariaLabel = "تصفية",
+}: CategoryFiltersProps<T>) {
   const swiperRef = useRef<SwiperType | null>(null);
-  const activeIndex = CATEGORIES.findIndex((c) => c.id === active);
+  const activeIndex = categories.findIndex((c) => c.id === active);
 
   useEffect(() => {
     if (activeIndex < 0 || !swiperRef.current) return;
@@ -49,7 +44,7 @@ export default function CategoryFilters({ active }: CategoryFiltersProps) {
       className="-mx-4 overflow-visible px-4 sm:mx-0 sm:px-0"
       dir="rtl"
       role="tablist"
-      aria-label="تصفية المنتجات"
+      aria-label={ariaLabel}
     >
       <Swiper
         modules={[FreeMode]}
@@ -65,16 +60,14 @@ export default function CategoryFilters({ active }: CategoryFiltersProps) {
         grabCursor
         watchOverflow
         className="category-filters-swiper overflow-visible!"
-        breakpoints={{
-          1024: { spaceBetween: 16 },
-        }}
+        breakpoints={{ 1024: { spaceBetween: 16 } }}
       >
-        {CATEGORIES.map(({ id, icon, label, count }) => {
+        {categories.map(({ id, icon, label, count }) => {
           const isActive = active === id;
           return (
             <SwiperSlide key={id} className="w-auto!">
               <Link
-                href={categoryFilterHref(id)}
+                href={getHref(id)}
                 scroll={false}
                 replace
                 role="tab"

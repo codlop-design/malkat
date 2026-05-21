@@ -4,48 +4,16 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-
 import { FAQ_ITEMS } from "@/src/features/contact/data/contact";
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
+import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 export default function ContactFAQ() {
   const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
 
   return (
-    <section className="bg-white py-14 md:py-20">
+    <section className="md:py-14 py-10">
       <div className="container">
-        <div
-          className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14"
-          dir="rtl"
-        >
-          <motion.div
-            className="relative mx-auto aspect-square w-full max-w-[420px] lg:max-w-none"
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={motionViewport}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
-              alt=""
-              fill
-              className="rounded-3xl object-cover"
-              sizes="(max-width: 1024px) 90vw, 50vw"
-            />
-            <div
-              className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-3xl bg-(--primary)/10"
-              aria-hidden
-            >
-              <span className="text-7xl font-black tracking-tight text-(--primary)/25 md:text-8xl">
-                FAQ
-              </span>
-            </div>
-          </motion.div>
-
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -88,7 +56,10 @@ export default function ContactFAQ() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{
+                          duration: 0.25,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
                         className="overflow-hidden"
                       >
                         <p className="px-5 pb-4 pt-2 text-sm leading-relaxed text-[#454545] md:text-base">
@@ -100,6 +71,16 @@ export default function ContactFAQ() {
                 </motion.div>
               );
             })}
+          </motion.div>
+
+          <motion.div
+            className="relative mx-auto w-full max-w-[420px] lg:max-w-none flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={motionViewport}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Image src="/faq.svg" width={420} height={420} alt="FAQ" />
           </motion.div>
         </div>
       </div>

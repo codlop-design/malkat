@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-
+import { Baloo_Bhaijaan_2 } from "next/font/google";
 import { Toaster } from "sonner";
 
 import "./globals.css";
+
+const balooBhaijaan2 = Baloo_Bhaijaan_2({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-baloo-bhaijaan-2",
+  display: "swap",
+});
 
 const SITE_URL = process.env.SITE_URL || "http://localhost:3000";
 const SITE_NAME = "منصة تعليم الأطفال";
@@ -91,8 +98,13 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+    <html
+      lang="ar"
+      dir="rtl"
+      className={balooBhaijaan2.variable}
+      suppressHydrationWarning
+    >
+      <body className={balooBhaijaan2.className} suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

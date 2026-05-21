@@ -4,11 +4,7 @@ import { motion } from "framer-motion";
 import { Phone } from "lucide-react";
 
 import { CONTACT_INFO } from "@/src/features/contact/data/contact";
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
+import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -34,8 +30,10 @@ export default function ContactInfo() {
       className="flex flex-col gap-4"
     >
       <motion.div variants={fadeUp}>
-        <h2 className="text-xl font-bold text-black md:text-2xl">بيانات التواصل</h2>
-        <p className="mt-2 text-sm text-[#454545] md:text-base">
+        <h2 className="text-xl font-bold text-black md:text-2xl text-center">
+          بيانات التواصل
+        </h2>
+        <p className="mt-2 text-sm text-[#454545] md:text-base text-center">
           يمكنك التواصل معنا من خلال
         </p>
       </motion.div>
@@ -44,9 +42,16 @@ export default function ContactInfo() {
         <motion.article
           key={item.id}
           variants={fadeUp}
-          className="flex items-start justify-between gap-4 rounded-2xl border border-[#E8E8E8] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+          className="flex flex-col justify-center items-center gap-4 rounded-2xl border border-[#E8E8E8] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
         >
-          <div className="min-w-0 flex-1 text-right">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#E8F6F4]">
+            <item.icon
+              className="size-5 text-(--primary)"
+              strokeWidth={1.75}
+              aria-hidden
+            />
+          </div>
+          <div className="min-w-0 flex-1 text-center">
             <h3 className="text-base font-bold text-black">{item.title}</h3>
             <ul className="mt-2 flex flex-col gap-2">
               {item.lines.map((line) => (
@@ -55,7 +60,6 @@ export default function ContactInfo() {
                     <a
                       href={line.href}
                       className="inline-flex items-center gap-2 text-sm text-[#454545] transition-colors hover:text-(--primary) md:text-base"
-                      dir="ltr"
                     >
                       {line.icon === "whatsapp" ? (
                         <WhatsAppIcon className="size-4 shrink-0 text-[#25D366]" />
@@ -76,13 +80,6 @@ export default function ContactInfo() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#E8F6F4]">
-            <item.icon
-              className="size-5 text-(--primary)"
-              strokeWidth={1.75}
-              aria-hidden
-            />
           </div>
         </motion.article>
       ))}

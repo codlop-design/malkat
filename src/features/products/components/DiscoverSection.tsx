@@ -5,7 +5,8 @@ import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import CategoryFilters from "@/src/features/products/components/CategoryFilters";
+import CategoryFilters from "@/src/components/CategoryFilters";
+import { PRODUCT_CATEGORIES } from "@/src/features/products/data/categories";
 import ProductCarousel from "@/src/features/products/components/ProductCarousel";
 import ActivityCard, {
   type ActivityCardProps,
@@ -30,6 +31,7 @@ import {
   SERVICES_ITEMS,
 } from "@/src/features/products/data/catalog";
 import {
+  categoryFilterHref,
   parseProductCategory,
   VISIBLE_BY_CATEGORY,
   type CatalogSectionKey,
@@ -139,7 +141,12 @@ export default function DiscoverSection() {
             viewport={motionViewport}
             variants={fadeUp}
           >
-            <CategoryFilters active={category} />
+            <CategoryFilters
+              active={category}
+              categories={PRODUCT_CATEGORIES}
+              getHref={categoryFilterHref}
+              ariaLabel="تصفية المنتجات"
+            />
           </motion.div>
         </div>
       </section>
