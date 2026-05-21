@@ -295,6 +295,66 @@ export const SERVICES_ITEMS: ServiceCardProps[] = [
     tags: ["مجانية", "للمدارس"],
     rating: 4.9,
   },
+  {
+    id: "service-4",
+    slug: "early-reading",
+    title: "برنامج القراءة المبكرة",
+    description:
+      "برنامج تفاعلي لتعزيز مهارات القراءة المبكرة لدى الأطفال من خلال أنشطة وألعاب تعليمية.",
+    imageSrc: IMG.service,
+    tags: ["أونلاين", "مجانية"],
+    rating: 4.8,
+  },
+  {
+    id: "service-5",
+    slug: "interactive-skills",
+    title: "برنامج المهارات التفاعلية",
+    description:
+      "مسار تعليمي يطوّر مهارات التفكير والتفاعل الرقمي لدى الطفل بأسلوب ممتع.",
+    imageSrc: IMG.service,
+    tags: ["أونلاين", "للآباء"],
+    rating: 4.7,
+  },
+  {
+    id: "service-6",
+    slug: "art-workshop",
+    title: "ورشة الإبداع الفني",
+    description:
+      "ورشة عملية لتنمية الإبداع الفني والتعبير من خلال أنشطة يدوية موجهة.",
+    imageSrc: IMG.guide,
+    tags: ["للمدارس", "أونلاين"],
+    rating: 4.6,
+  },
+  {
+    id: "service-7",
+    slug: "science-workshop",
+    title: "ورشة العلوم الممتعة",
+    description:
+      "تجارب علمية مبسّطة تشجّع الفضول والاستكشاف لدى الأطفال.",
+    imageSrc: IMG.service,
+    tags: ["مجانية", "أونلاين"],
+    rating: 4.8,
+  },
+  {
+    id: "service-8",
+    slug: "community-learning",
+    title: "مبادرة التعلم المجتمعي",
+    description:
+      "مبادرة تربط الأسر والمدارس بأنشطة تعليمية مشتركة في المجتمع.",
+    imageSrc: IMG.service,
+    tags: ["للمدارس", "مجانية"],
+    rating: 4.7,
+  },
+  {
+    id: "service-9",
+    slug: "family-support",
+    title: "مبادرة دعم الأسر",
+    description:
+      "دعم تربوي ومتابعة تعليمية للأسر لبناء بيئة تعلّم إيجابية في المنزل.",
+    imageSrc: IMG.guide,
+    tags: ["للآباء", "أونلاين"],
+    rating: 4.9,
+  },
 ];
 
 export const GUIDES_ITEMS: GuideCardProps[] = [

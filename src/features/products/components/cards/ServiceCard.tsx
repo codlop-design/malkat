@@ -2,6 +2,7 @@ import CardMedia, { RatingBadge } from "@/src/features/products/components/CardM
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
 import {
+  productDetailHref,
   resolveProductHref,
   type CatalogSectionKey,
 } from "@/src/features/products/types";
@@ -27,9 +28,11 @@ export default function ServiceCard({
   rating = 4.8,
 }: ServiceCardProps) {
   const href =
-    category != null
-      ? resolveProductHref(category, slug, hrefProp)
-      : (hrefProp ?? "#");
+    category === "services"
+      ? productDetailHref("services", slug)
+      : category != null
+        ? resolveProductHref(category, slug, hrefProp)
+        : (hrefProp ?? "#");
 
   return (
     <ProductCard href={href} title={title}>

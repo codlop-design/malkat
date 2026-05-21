@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
 import QuantityControl from "@/src/components/QuantityControl";
 import SideCartSkeleton from "@/src/features/cart/components/SideCartSkeleton";
 import {
@@ -285,9 +290,18 @@ const CART_ITEMS: CartItemCategory[] = [
 ];
 
 const SideCart = ({ isLoading = false }: SideCartProps) => {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === "/cart") {
+      setOpen(false);
+    }
+  }, [pathname]);
+
   return (
     <>
-      <Drawer direction="left">
+      <Drawer direction="left" open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
           <Button
             className="border-primary rounded-full size-11 hover:bg-primary/10 p-0 "
@@ -465,12 +479,14 @@ const SideCart = ({ isLoading = false }: SideCartProps) => {
               </svg>
               <span className="text-base font-bold">تأكيد الطلب</span>
             </Button>
-            <Link
-              href={"/cart"}
-              className="flex items-center justify-center font-bold text-base py-3 px-2 h-12 rounded-2xl hover:bg-primary/10 border border-primary text-primary!"
-            >
-              عرض السلة
-            </Link>
+            <DrawerClose asChild>
+              <Link
+                href="/cart"
+                className="flex h-12 items-center justify-center rounded-2xl border border-primary px-2 py-3 text-base font-bold text-primary! hover:bg-primary/10"
+              >
+                عرض السلة
+              </Link>
+            </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

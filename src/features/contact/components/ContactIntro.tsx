@@ -22,7 +22,7 @@ export default function ContactIntro() {
           className="mt-4 text-base leading-[1.9] text-[#454545] md:text-lg"
         >
           نحن مستعدون لاستقبال استفساراتكم واقتراحاتكم لدعم رحلة تعليمية ممتعة
-          وآمنة لأطفالكم. املأ النموذج أو تواصل معنا عبر البيانات أدناه.
+          وآمنة لأطفالكم.
         </motion.p>
       </motion.div>
     </section>

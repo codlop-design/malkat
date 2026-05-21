@@ -3,10 +3,10 @@ import type { ServiceCategoryId } from "@/src/features/services/types";
 export type ServiceItem = {
   id: string;
   category: Exclude<ServiceCategoryId, "all">;
+  slug: string;
   title: string;
   description: string;
   imageSrc: string;
-  href: string;
   tags: string[];
 };
 
@@ -49,56 +49,71 @@ export const SERVICES: ServiceItem[] = [
   {
     id: "svc-1",
     category: "consultations",
+    slug: "cognitive-development-consultation",
     ...BASE,
-    href: "/services/cognitive-consultation",
+    title: "استشارة التطور المعرفي",
   },
   {
     id: "svc-2",
     category: "consultations",
+    slug: "parental-guidance-session",
     ...BASE,
-    href: "/services/learning-assessment",
+    title: "جلسة توجيه تربوي",
+    description:
+      "لقاء مع مختص لتقديم نصائح عملية لدعم تعلّم الطفل في المنزل.",
+    tags: ["أونلاين", "للآباء"],
   },
   {
     id: "svc-3",
-    category: "programs",
+    category: "consultations",
+    slug: "educational-level-assessment",
     ...BASE,
-    title: "برنامج المهارات التفاعلية",
-    href: "/services/interactive-skills",
+    title: "تقييم المستوى التعليمي",
+    description:
+      "تقرير مفصّل عن نقاط القوة ومجالات التحسين مع خطة متابعة شهرية.",
+    tags: ["مجانية", "للمدارس"],
   },
   {
     id: "svc-4",
     category: "programs",
+    slug: "early-reading",
     ...BASE,
     title: "برنامج القراءة المبكرة",
-    href: "/services/early-reading",
   },
   {
     id: "svc-5",
-    category: "workshops",
+    category: "programs",
+    slug: "interactive-skills",
     ...BASE,
-    title: "ورشة الإبداع الفني",
-    href: "/services/art-workshop",
+    title: "برنامج المهارات التفاعلية",
   },
   {
     id: "svc-6",
     category: "workshops",
+    slug: "art-workshop",
     ...BASE,
-    title: "ورشة العلوم الممتعة",
-    href: "/services/science-workshop",
+    title: "ورشة الإبداع الفني",
   },
   {
     id: "svc-7",
-    category: "initiatives",
+    category: "workshops",
+    slug: "science-workshop",
     ...BASE,
-    title: "مبادرة التعلم المجتمعي",
-    href: "/services/community-learning",
+    title: "ورشة العلوم الممتعة",
   },
   {
     id: "svc-8",
     category: "initiatives",
+    slug: "community-learning",
+    ...BASE,
+    title: "مبادرة التعلم المجتمعي",
+  },
+  {
+    id: "svc-9",
+    category: "initiatives",
+    slug: "family-support",
     ...BASE,
     title: "مبادرة دعم الأسر",
-    href: "/services/family-support",
   },
 ];
 

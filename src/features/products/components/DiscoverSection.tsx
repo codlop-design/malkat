@@ -57,7 +57,7 @@ const CATALOG_SECTIONS: Record<CatalogSectionKey, SectionConfig> = {
   },
   services: {
     title: "الخدمات",
-    viewAllHref: categoryListingHref("services"),
+    viewAllHref: "/services",
     items: SERVICES_ITEMS,
     renderSlide: (item) =>
       renderCatalogCard("services", item as CatalogListItem),

@@ -17,7 +17,7 @@ export default function ServicesCTA() {
         src="/services-bg.png"
         alt=""
         fill
-        className="object-cover object-center w-full h-full"
+        className="h-full w-full object-cover object-center"
         priority={false}
       />
 
@@ -57,7 +57,7 @@ export default function ServicesCTA() {
             className="mt-2 flex flex-wrap items-center justify-center gap-4"
           >
             <Link
-              href="/contact"
+              href="/request-service"
               className="inline-flex min-w-[160px] items-center justify-center rounded-full bg-primary px-8 py-3.5 text-base font-medium text-white shadow-[0_4px_16px_rgba(0,128,117,0.35)] transition-opacity hover:opacity-90"
             >
               طلب خدمة
