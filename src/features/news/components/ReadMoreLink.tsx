@@ -27,7 +27,7 @@ export default function ReadMoreLink({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-2 text-sm font-medium text-(--primary) transition-colors hover:underline md:text-base ${className}`}
+      className={`inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:underline md:text-base ${className}`}
     >
       <span>قراءة المزيد</span>
       <ArrowLeft className="size-4" strokeWidth={2} aria-hidden />

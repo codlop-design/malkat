@@ -75,7 +75,7 @@ export default function CategoryFilters<T extends string>({
                 aria-label={`${label} (${count})`}
                 className={`relative flex shrink-0 items-center gap-2.5 rounded-full px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-all duration-300 md:gap-3 md:px-5 md:py-3 md:text-base ${
                   isActive
-                    ? "border border-transparent bg-(--primary) text-white shadow-none"
+                    ? "border border-transparent bg-primary text-white shadow-none"
                     : "border border-[#E8E8E8] bg-white text-[#1F1F1F] shadow-[0_2px_10px_rgba(0,0,0,0.07)] hover:border-[#D4D4D4]"
                 }`}
               >

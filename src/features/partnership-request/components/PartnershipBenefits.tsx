@@ -18,7 +18,7 @@ export default function PartnershipBenefits() {
         variants={staggerContainer()}
       >
         <motion.div variants={fadeUp} className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-medium text-(--primary) md:text-base">
+          <p className="text-sm font-medium text-primary md:text-base">
             لماذا الشراكة معنا
           </p>
           <h2 className="mt-2 text-2xl font-bold text-black md:text-3xl">
@@ -44,7 +44,7 @@ export default function PartnershipBenefits() {
                 variants={fadeUp}
                 className="flex flex-col items-center text-center"
               >
-                <span className="text-sm font-bold text-(--primary)/60">
+                <span className="text-sm font-bold text-primary/60">
                   {number}
                 </span>
                 <div className="mt-3 flex h-24 w-full items-center justify-center">

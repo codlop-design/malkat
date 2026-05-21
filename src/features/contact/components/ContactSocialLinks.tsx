@@ -121,7 +121,7 @@ export default function ContactSocialLinks() {
                 <Link
                   href={href}
                   aria-label={label}
-                  className="flex size-14 items-center justify-center rounded-full bg-(--primary) text-white transition-opacity hover:opacity-90"
+                  className="flex size-14 items-center justify-center rounded-full bg-primary text-white transition-opacity hover:opacity-90"
                 >
                   <Icon className="size-8" />
                 </Link>

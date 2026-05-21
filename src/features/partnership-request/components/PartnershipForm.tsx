@@ -19,7 +19,7 @@ import {
 } from "@/src/features/partnership-request/schemas/partnershipSchema";
 
 const textareaClassName =
-  "w-full min-h-[120px] resize-none rounded-xl border border-[#E5E5E5] bg-[#FAF8F5] p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-(--primary) disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full min-h-[120px] resize-none rounded-xl border border-[#E5E5E5] bg-[#FAF8F5] p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary disabled:cursor-not-allowed disabled:opacity-60";
 
 const defaultValues: PartnershipFormValues = {
   entityName: "",

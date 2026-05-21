@@ -46,7 +46,7 @@ const whyContactReasons = [
 ];
 
 const inputClassName =
-  "w-full rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-(--primary)";
+  "w-full rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary";
 
 function RequiredLabel({ children }: { children: string }) {
   return (
@@ -115,7 +115,7 @@ export default function ContactSection() {
                   {item.href ? (
                     <a
                       href={item.href}
-                      className="mt-1 block text-base font-medium text-black hover:text-(--primary)"
+                      className="mt-1 block text-base font-medium text-black hover:text-primary"
                       dir="ltr"
                     >
                       {item.value}
@@ -128,7 +128,7 @@ export default function ContactSection() {
                 </div>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white">
                   <item.icon
-                    className="size-5 text-(--primary)"
+                    className="size-5 text-primary"
                     strokeWidth={1.75}
                     aria-hidden
                   />
@@ -138,7 +138,7 @@ export default function ContactSection() {
 
             <motion.div
               variants={fadeUp}
-              className="rounded-2xl bg-(--primary) px-6 py-6 text-white"
+              className="rounded-2xl bg-primary px-6 py-6 text-white"
             >
               <h2 className="mb-5 text-lg font-bold">
                 لماذا تتواصل معنا؟ 👋
@@ -227,7 +227,7 @@ export default function ContactSection() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-(--primary) py-3.5 text-base font-medium text-white transition-opacity hover:opacity-95 disabled:opacity-70"
+                className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-3.5 text-base font-medium text-white transition-opacity hover:opacity-95 disabled:opacity-70"
               >
                 {isSubmitting ? "جاري الإرسال..." : "إرسال الرسالة"}
                 <span className="flex size-8 items-center justify-center rounded-full bg-white/20">

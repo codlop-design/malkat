@@ -27,7 +27,7 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
         >
           {images.map((src, index) => (
             <SwiperSlide key={`${src}-${index}`}>
-              <div className="relative aspect-[4/3] w-full">
+              <div className="relative aspect-4/3 w-full">
                 <Image
                   src={src}
                   alt=""
@@ -72,7 +72,7 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
               onClick={() => swiper?.slideTo(index)}
               className={`relative aspect-square overflow-hidden rounded-xl transition-opacity ${
                 index === activeIndex
-                  ? "ring-2 ring-(--primary) ring-offset-2"
+                  ? "ring-2 ring-primary ring-offset-2"
                   : "opacity-70 hover:opacity-100"
               }`}
               aria-label={`عرض الصورة ${index + 1}`}

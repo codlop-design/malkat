@@ -20,3 +20,11 @@ export const CATALOG_SECTION_KEYS = Object.keys(
 export function isCatalogSectionKey(value: string): value is CatalogSectionKey {
   return value in CATEGORY_META;
 }
+
+export const CATEGORY_DETAIL_LABEL: Record<CatalogSectionKey, string> = {
+  books: "تفاصيل الكتاب",
+  activities: "تفاصيل النشاط",
+  courses: "تفاصيل الدورة",
+  services: "تفاصيل الخدمة",
+  guides: "تفاصيل الدليل",
+};

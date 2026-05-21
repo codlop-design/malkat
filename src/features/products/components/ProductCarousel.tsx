@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 
-type ProductCarouselProps<T extends { id?: string }> = {
+type ProductCarouselProps<T extends { id?: string; slug?: string }> = {
   title: string;
   viewAllHref?: string;
   items: T[];
@@ -19,7 +19,10 @@ export default function ProductCarousel<T extends { id?: string }>({
   viewAllHref = "#",
   items,
   renderSlide,
-  getKey = (item, index) => item.id ?? String(index),
+  getKey = (item, index) => {
+    if ("slug" in item && typeof item.slug === "string") return item.slug;
+    return item.id ?? String(index);
+  },
 }: ProductCarouselProps<T>) {
   return (
     <section className="overflow-hidden">
@@ -27,7 +30,7 @@ export default function ProductCarousel<T extends { id?: string }>({
         <h2 className="text-xl font-bold text-black md:text-2xl">{title}</h2>
         <Link
           href={viewAllHref}
-          className="shrink-0 text-sm font-medium text-(--primary) hover:underline md:text-base"
+          className="shrink-0 text-sm font-medium text-primary hover:underline md:text-base"
         >
           عرض الكل
         </Link>

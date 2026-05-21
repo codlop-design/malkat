@@ -277,7 +277,7 @@ const CartPageContent = () => {
   return (
     <section className="py-10">
       <div className="container">
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {CART_ITEMS.map((item) => (
             <Accordion
               key={item.id}

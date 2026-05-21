@@ -17,7 +17,7 @@ export default function PartnershipIntro() {
         variants={staggerContainer()}
       >
         <motion.div variants={fadeUp} className="max-w-3xl text-center">
-          <p className="text-lg font-medium text-(--primary) md:text-xl">
+          <p className="text-lg font-medium text-primary md:text-xl">
             لنصنع أثراً تعليمياً أكبر معاً
           </p>
           <p className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base">
@@ -33,11 +33,11 @@ export default function PartnershipIntro() {
         >
           {PARTNERSHIP_STATS.map(({ id, value, label, icon: Icon }) => (
             <li key={id} className="flex items-center gap-3">
-              <span className="flex size-12 items-center justify-center rounded-full bg-white text-(--primary) shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+              <span className="flex size-12 items-center justify-center rounded-full bg-white text-primary shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
                 <Icon className="size-6" strokeWidth={1.75} aria-hidden />
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-lg font-bold text-(--primary) md:text-xl">
+                <span className="text-lg font-bold text-primary md:text-xl">
                   {value}
                 </span>
                 <span className="text-sm text-[#454545] md:text-base">

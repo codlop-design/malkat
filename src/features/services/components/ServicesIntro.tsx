@@ -36,7 +36,7 @@ export default function ServicesIntro() {
               </span>
 
               <div className="flex flex-col items-center gap-1">
-                <span className="text-lg font-bold text-(--primary) md:text-xl">
+                <span className="text-lg font-bold text-primary md:text-xl">
                   {stat.value}
                 </span>
 

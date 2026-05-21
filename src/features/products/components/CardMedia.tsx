@@ -15,23 +15,27 @@ export default function CardMedia({
 }: CardMediaProps) {
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
-      <Image
-        src={imageSrc}
-        alt=""
-        fill
-        className="object-cover"
-        sizes="260px"
-      />
+      <Link href={href} className="absolute inset-0 z-[1] block" tabIndex={-1}>
+        <Image
+          src={imageSrc}
+          alt=""
+          fill
+          className="object-cover"
+          sizes="260px"
+        />
+      </Link>
       <button
         type="button"
-        className="absolute top-3 inset-s-3 flex size-9 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-sm transition-colors hover:bg-white"
+        onClick={(e) => e.stopPropagation()}
+        className="absolute top-3 inset-s-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-sm transition-colors hover:bg-white"
         aria-label="إضافة للمفضلة"
       >
         <Heart className="size-5" strokeWidth={1.5} />
       </button>
       <Link
         href={href}
-        className="absolute bottom-3 inset-e-3 z-10 flex size-10 items-center justify-center rounded-full bg-(--primary) text-white shadow-md transition-opacity hover:opacity-90"
+        onClick={(e) => e.stopPropagation()}
+        className="absolute bottom-3 inset-e-3 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-md transition-opacity hover:opacity-90"
         aria-label={cartLabel}
       >
         <Image src="/basket-add.svg" alt="إضافة للسلة" width={20} height={20} />

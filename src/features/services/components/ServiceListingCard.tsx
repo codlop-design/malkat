@@ -21,7 +21,7 @@ export default function ServiceListingCard({ service }: ServiceListingCardProps)
               key={tag}
               className={`rounded-full px-2.5 py-0.5 text-xs ${
                 tag === "مجانية"
-                  ? "bg-[#E0F5F3] font-medium text-(--primary)"
+                  ? "bg-[#E0F5F3] font-medium text-primary"
                   : "bg-[#F5EDE4] text-[#454545]"
               }`}
             >

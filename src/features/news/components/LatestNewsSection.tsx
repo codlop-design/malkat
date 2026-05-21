@@ -31,7 +31,7 @@ export default function LatestNewsSection() {
             </h2>
             <Link
               href="/news/all"
-              className="shrink-0 text-sm font-medium text-(--primary) hover:underline md:text-base"
+              className="shrink-0 text-sm font-medium text-primary hover:underline md:text-base"
             >
               عرض الكل
             </Link>

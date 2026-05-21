@@ -23,7 +23,7 @@ export default function PartnersSection() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-sm font-medium text-(--primary) md:text-base"
+            className="text-sm font-medium text-primary md:text-base"
           >
             شركاؤنا
           </motion.p>
@@ -53,7 +53,7 @@ export default function PartnersSection() {
           <motion.div variants={fadeUp}>
             <Link
               href="/request-partnership"
-              className="mt-4 inline-flex items-center gap-3 rounded-full bg-(--primary) px-8 py-3.5 text-base font-medium text-white transition-opacity hover:opacity-90"
+              className="mt-4 inline-flex items-center gap-3 rounded-full bg-primary px-8 py-3.5 text-base font-medium text-white transition-opacity hover:opacity-90"
             >
               <span>اطلب شراكة</span>
               <Image

@@ -85,7 +85,7 @@ export default function Header() {
               <SideCart />
               <Link
                 href="/login"
-                className="rounded-full bg-(--primary) px-4 py-2.5 text-white"
+                className="rounded-full bg-primary px-4 py-2.5 text-white"
               >
                 تسجيل الدخول
               </Link>

@@ -25,17 +25,32 @@ import {
   SERVICES_ITEMS,
 } from "@/src/features/products/data/catalog";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import { resolveProductHref } from "@/src/features/products/types";
 
-export type CatalogListItem = { id?: string; title: string; description: string };
+export type CatalogListItem = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+};
 
 type CatalogRegistryEntry = {
   items: CatalogListItem[];
   renderCard: (item: CatalogListItem) => ReactNode;
 };
 
-function asCatalog<T extends { id?: string; title: string; description: string }>(
-  items: T[],
-): CatalogListItem[] {
+function withCatalogCardProps<T extends { slug: string }>(
+  category: CatalogSectionKey,
+  item: T,
+): T & { category: CatalogSectionKey; href: string } {
+  return {
+    ...item,
+    category,
+    href: resolveProductHref(category, item.slug),
+  };
+}
+
+function asCatalog<T extends CatalogListItem>(items: T[]): CatalogListItem[] {
   return items;
 }
 
@@ -43,23 +58,37 @@ export const CATALOG_REGISTRY: Record<CatalogSectionKey, CatalogRegistryEntry> =
   {
     books: {
       items: asCatalog(BOOKS_ITEMS),
-      renderCard: (item) => <BookCard {...(item as BookCardProps)} />,
+      renderCard: (item) => (
+        <BookCard {...withCatalogCardProps("books", item as BookCardProps)} />
+      ),
     },
     activities: {
       items: asCatalog(ACTIVITIES_ITEMS),
-      renderCard: (item) => <ActivityCard {...(item as ActivityCardProps)} />,
+      renderCard: (item) => (
+        <ActivityCard
+          {...withCatalogCardProps("activities", item as ActivityCardProps)}
+        />
+      ),
     },
     courses: {
       items: asCatalog(COURSES_ITEMS),
-      renderCard: (item) => <CourseCard {...(item as CourseCardProps)} />,
+      renderCard: (item) => (
+        <CourseCard {...withCatalogCardProps("courses", item as CourseCardProps)} />
+      ),
     },
     services: {
       items: asCatalog(SERVICES_ITEMS),
-      renderCard: (item) => <ServiceCard {...(item as ServiceCardProps)} />,
+      renderCard: (item) => (
+        <ServiceCard
+          {...withCatalogCardProps("services", item as ServiceCardProps)}
+        />
+      ),
     },
     guides: {
       items: asCatalog(GUIDES_ITEMS),
-      renderCard: (item) => <GuideCard {...(item as GuideCardProps)} />,
+      renderCard: (item) => (
+        <GuideCard {...withCatalogCardProps("guides", item as GuideCardProps)} />
+      ),
     },
   };
 
@@ -85,6 +114,7 @@ export function searchCatalogItems(
     const haystack = [
       item.title,
       item.description,
+      item.slug,
       getCatalogSearchExtra(category, item),
     ]
       .join(" ")

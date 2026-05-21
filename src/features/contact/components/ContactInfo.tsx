@@ -46,7 +46,7 @@ export default function ContactInfo() {
         >
           <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#E8F6F4]">
             <item.icon
-              className="size-5 text-(--primary)"
+              className="size-5 text-primary"
               strokeWidth={1.75}
               aria-hidden
             />
@@ -59,13 +59,13 @@ export default function ContactInfo() {
                   {line.href ? (
                     <a
                       href={line.href}
-                      className="inline-flex items-center gap-2 text-sm text-[#454545] transition-colors hover:text-(--primary) md:text-base"
+                      className="inline-flex items-center gap-2 text-sm text-[#454545] transition-colors hover:text-primary md:text-base"
                     >
                       {line.icon === "whatsapp" ? (
                         <WhatsAppIcon className="size-4 shrink-0 text-[#25D366]" />
                       ) : line.icon === "phone" ? (
                         <Phone
-                          className="size-4 shrink-0 text-(--primary)"
+                          className="size-4 shrink-0 text-primary"
                           strokeWidth={1.75}
                           aria-hidden
                         />

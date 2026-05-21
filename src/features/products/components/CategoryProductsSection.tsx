@@ -78,7 +78,7 @@ export default function CategoryProductsSection({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={searchPlaceholder}
-            className="h-14 w-full rounded-2xl border border-[#E5E5E5] bg-white ps-12 pe-4 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-(--primary)"
+            className="h-14 w-full rounded-2xl border border-[#E5E5E5] bg-white ps-12 pe-4 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary"
           />
         </motion.form>
 
@@ -95,7 +95,7 @@ export default function CategoryProductsSection({
         >
           {pageItems.map((item) => (
             <motion.li
-              key={item.id ?? item.title}
+              key={item.slug}
               variants={fadeUp}
               className="h-full"
             >

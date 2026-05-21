@@ -67,7 +67,7 @@ export default function Pagination({
           aria-current={p === page ? "page" : undefined}
           className={`flex size-9 items-center justify-center rounded-full text-sm font-medium transition-colors ${
             p === page
-              ? "bg-(--primary) text-white"
+              ? "bg-primary text-white"
               : "text-[#454545] hover:bg-[#F5F5F5]"
           }`}
         >

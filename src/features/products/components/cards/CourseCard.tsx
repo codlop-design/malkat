@@ -1,11 +1,15 @@
 import { BookOpen, Calendar } from "lucide-react";
 import Image from "next/image";
-import CardMedia, {
-  RatingBadge,
-} from "@/src/features/products/components/CardMedia";
+import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
+import ProductCard from "@/src/features/products/components/cards/ProductCard";
+import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
+import {
+  resolveProductHref,
+  type CatalogSectionKey,
+} from "@/src/features/products/types";
 
-export type CourseCardProps = {
-  id?: string;
+export type CourseCardProps = CatalogItemBase & {
+  category?: CatalogSectionKey;
   title: string;
   description: string;
   imageSrc: string;
@@ -20,10 +24,12 @@ export type CourseCardProps = {
 };
 
 export default function CourseCard({
+  category,
+  slug,
   title,
   description,
   imageSrc,
-  href = "#",
+  href: hrefProp,
   instructorName,
   instructorAvatar,
   duration,
@@ -32,15 +38,20 @@ export default function CourseCard({
   online = true,
   rating = 4.8,
 }: CourseCardProps) {
+  const href =
+    category != null
+      ? resolveProductHref(category, slug, hrefProp)
+      : (hrefProp ?? "#");
+
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+    <ProductCard href={href} title={title}>
       <CardMedia imageSrc={imageSrc} href={href} cartLabel="عرض الدورة" />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <RatingBadge rating={rating} />
           <div className="flex flex-wrap items-center gap-2">
             {free ? (
-              <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-(--primary)">
+              <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">
                 مجانية
               </span>
             ) : null}
@@ -78,6 +89,6 @@ export default function CourseCard({
           {description}
         </p>
       </div>
-    </article>
+    </ProductCard>
   );
 }

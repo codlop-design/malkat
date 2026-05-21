@@ -74,7 +74,7 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
         type="button"
         disabled={isSubmitting}
         onClick={onContinueWithPhone}
-        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-(--primary) text-base font-medium text-[#000000] disabled:cursor-not-allowed disabled:opacity-70"
+        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000] disabled:cursor-not-allowed disabled:opacity-70"
       >
         <Image
           src="/calling.svg"

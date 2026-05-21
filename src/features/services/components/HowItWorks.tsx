@@ -59,7 +59,7 @@ export default function HowItWorks() {
         variants={staggerContainer(0.08, 0.05)}
       >
         <motion.div variants={fadeUp} className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-(--primary) md:text-base">
+          <p className="text-sm font-medium text-primary md:text-base">
             كيف تعمل
           </p>
           <h2 className="mt-2 text-2xl font-bold text-black md:text-[28px]">

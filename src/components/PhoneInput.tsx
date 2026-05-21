@@ -28,7 +28,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         </label>
 
         <div
-          className={`flex h-14 items-stretch overflow-hidden rounded-xl border text-sm outline-none focus-within:border-(--primary)${
+          className={`flex h-14 items-stretch overflow-hidden rounded-xl border text-sm outline-none focus-within:border-primary${
             error ? " border-red-600" : " border-[#E5E5E5]"
           }`}
         >

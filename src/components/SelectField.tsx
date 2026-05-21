@@ -39,7 +39,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           ref={ref}
           id={selectId}
           disabled={disabled}
-          className={`h-14 w-full appearance-none rounded-xl border bg-white bg-size-[16px] bg-position-[left_1rem_center] bg-no-repeat p-3 text-sm text-[#717171] outline-none transition-colors focus:border-(--primary) disabled:cursor-not-allowed disabled:opacity-60${
+          className={`h-14 w-full appearance-none rounded-xl border bg-white bg-size-[16px] bg-position-[left_1rem_center] bg-no-repeat p-3 text-sm text-[#717171] outline-none transition-colors focus:border-primary disabled:cursor-not-allowed disabled:opacity-60${
             error ? " border-red-600" : " border-[#E5E5E5]"
           }`}
           style={{

@@ -53,7 +53,7 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
         type="button"
         disabled={isSubmitting}
         onClick={onContinueWithEmail}
-        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-(--primary) text-base font-medium text-[#000000] disabled:cursor-not-allowed disabled:opacity-70"
+        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000] disabled:cursor-not-allowed disabled:opacity-70"
       >
         <Mail className="size-6" strokeWidth={1.75} aria-hidden />
         <span>متابعة باستخدام البريد الإلكتروني</span>

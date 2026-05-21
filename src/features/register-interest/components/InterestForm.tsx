@@ -23,7 +23,7 @@ const REGISTRANT_OPTIONS = [
 ];
 
 const textareaClassName =
-  "w-full min-h-[140px] resize-none rounded-xl border border-[#E5E5E5] bg-white p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#717171] focus:border-(--primary) disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full min-h-[140px] resize-none rounded-xl border border-[#E5E5E5] bg-white p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#717171] focus:border-primary disabled:cursor-not-allowed disabled:opacity-60";
 
 const defaultValues: InterestFormValues = {
   registrantType: "entity",
@@ -111,7 +111,7 @@ export default function InterestForm() {
                         }
                       }}
                       disabled={isSubmitting}
-                      className="size-4 accent-(--primary)"
+                      className="size-4 accent-primary"
                     />
                     <span>{label}</span>
                   </label>
