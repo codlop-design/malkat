@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import PhoneInput from "@/src/components/ui/PhoneInput";
-import { InputField } from "@/src/components/ui/InputField";
-import { SubmitButton } from "@/src/components/ui/SubmitButton";
+import PhoneInput from "@/src/components/PhoneInput";
+import { InputField } from "@/src/components/InputField";
+import { SubmitButton } from "@/src/components/SubmitButton";
 import {
   contactSchema,
   type ContactFormValues,
@@ -140,8 +140,8 @@ export default function ContactForm() {
           ) : null}
         </div>
 
-        <div className="flex justify-end pt-1">
-          <SubmitButton loading={isSubmitting}>إرسال الرسالة</SubmitButton>
+        <div className="flex justify-start">
+          <SubmitButton loading={isSubmitting} className="w-[200px] h-[50px] rounded-full!">إرسال الرسالة</SubmitButton>
         </div>
       </form>
     </div>

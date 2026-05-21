@@ -1,8 +1,8 @@
-import PageHeader from "@/src/components/ui/PageHeader";
-import AboutPageContent from "@/src/components/about/AboutPageContent";
-import PartnersSection from "@/src/components/about/PartnersSection";
-import ValuesSection from "@/src/components/about/ValuesSection";
-import VisionSection from "@/src/components/about/VisionSection";
+import PageHeader from "@/src/components/PageHeader";
+import AboutPageContent from "@/src/features/about/AboutPageContent";
+import PartnersSection from "@/src/features/about/PartnersSection";
+import ValuesSection from "@/src/features/about/ValuesSection";
+import VisionSection from "@/src/features/about/VisionSection";
 
 export default function AboutPage() {
   return (

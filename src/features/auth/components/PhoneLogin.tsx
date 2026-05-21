@@ -1,8 +1,8 @@
 "use client";
 
-import PhoneInput from "@/src/components/ui/PhoneInput";
-import GoogleAuth from "@/src/components/ui/GoogleAuth";
-import { SubmitButton } from "@/src/components/ui/SubmitButton";
+import PhoneInput from "@/src/components/PhoneInput";
+import GoogleAuth from "@/src/components/GoogleAuth";
+import { SubmitButton } from "@/src/components/SubmitButton";
 import {
   phoneLoginSchema,
   type PhoneLoginFormValues,

@@ -1,10 +1,10 @@
 "use client";
 
-import GoogleAuth from "@/src/components/ui/GoogleAuth";
-import PhoneInput from "@/src/components/ui/PhoneInput";
+import GoogleAuth from "@/src/components/GoogleAuth";
+import PhoneInput from "@/src/components/PhoneInput";
 import Link from "next/link";
-import { InputField } from "@/src/components/ui/InputField";
-import { SubmitButton } from "@/src/components/ui/SubmitButton";
+import { InputField } from "@/src/components/InputField";
+import { SubmitButton } from "@/src/components/SubmitButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {

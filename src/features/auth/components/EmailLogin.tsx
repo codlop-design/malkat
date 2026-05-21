@@ -1,8 +1,8 @@
 "use client";
 
-import GoogleAuth from "@/src/components/ui/GoogleAuth";
-import { InputField } from "@/src/components/ui/InputField";
-import { SubmitButton } from "@/src/components/ui/SubmitButton";
+import GoogleAuth from "@/src/components/GoogleAuth";
+import { InputField } from "@/src/components/InputField";
+import { SubmitButton } from "@/src/components/SubmitButton";
 import {
   loginSchema,
   type LoginFormValues,

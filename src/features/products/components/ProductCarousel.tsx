@@ -40,11 +40,10 @@ export default function ProductCarousel<T extends { id?: string }>({
           spaceBetween={16}
           slidesPerView={1.35}
           breakpoints={{
-            480: { slidesPerView: 2.1, spaceBetween: 16 },
+            480: { slidesPerView: 1, spaceBetween: 16 },
             640: { slidesPerView: 2.5, spaceBetween: 20 },
-            768: { slidesPerView: 3.2, spaceBetween: 20 },
-            1024: { slidesPerView: 4, spaceBetween: 24 },
-            1280: { slidesPerView: 5, spaceBetween: 24 },
+            768: { slidesPerView: 3, spaceBetween: 20 },
+            1280: { slidesPerView: 4, spaceBetween: 24 },
           }}
           className="products-swiper overflow-visible!"
         >

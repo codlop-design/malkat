@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { DiscoverSection } from "@/src/features/products";
-import PageHeader from "@/src/components/ui/PageHeader";
+import PageHeader from "@/src/components/PageHeader";
 import StartJourney from "@/src/features/products/components/StartJourney";
 
 export default function ProductsPage() {

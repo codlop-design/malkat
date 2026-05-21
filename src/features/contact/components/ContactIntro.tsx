@@ -1,11 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
+import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 export default function ContactIntro() {
   return (
@@ -18,10 +14,7 @@ export default function ContactIntro() {
         viewport={motionViewport}
         variants={staggerContainer()}
       >
-        <motion.h2
-          variants={fadeUp}
-          className="text-2xl font-bold text-black md:text-3xl"
-        >
+        <motion.h2 variants={fadeUp} className="text-2xl font-bold text-black">
           يسعدنا تواصلك معنا
         </motion.h2>
         <motion.p

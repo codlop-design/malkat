@@ -1,6 +1,6 @@
 "use client";
 
-import VisionCard from "@/src/components/about/VisionCard";
+import VisionCard from "@/src/features/about/VisionCard";
 import Image from "next/image";
 import { motion } from "framer-motion";
 

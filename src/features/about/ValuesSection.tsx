@@ -1,6 +1,6 @@
 "use client";
 
-import ValueCard from "@/src/components/about/ValueCard";
+import ValueCard from "@/src/features/about/ValueCard";
 import Image from "next/image";
 import { motion } from "framer-motion";
 

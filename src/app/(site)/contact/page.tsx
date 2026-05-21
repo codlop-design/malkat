@@ -1,4 +1,4 @@
-import PageHeader from "@/src/components/ui/PageHeader";
+import PageHeader from "@/src/components/PageHeader";
 import { ContactPageContent } from "@/src/features/contact";
 
 export default function ContactPage() {
