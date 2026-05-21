@@ -13,7 +13,6 @@ export const FEATURED_NEWS: NewsArticle = {
     "أطلقت المنصة مبادرة مبتكرو المستقبل بهدف اكتشاف ودعم المواهب الشابة في مجالات البرمجة والروبوتات والذكاء الاصطناعي، من خلال ورش تفاعلية وبرامج إرشادية يقودها خبراء متخصصون.",
   date: "الخميس 12 فبراير 2026",
   imageSrc: IMG.featured,
-  href: "/news.jpg",
 };
 
 export const LATEST_NEWS: NewsArticle[] = [
@@ -26,7 +25,6 @@ export const LATEST_NEWS: NewsArticle[] = [
       "في إطار شراكتها المجتمعية، وزّعت المنصة بالتعاون مع مؤسسة الغويري الخيرية الدفعة الأولى من السلال الغذائية على الأسر المستفيدة...",
     date: "الخميس 12 فبراير 2026",
     imageSrc: IMG.card,
-    href: "/news/ghuwairi-food-baskets",
   },
   {
     id: "news-2",
@@ -36,7 +34,6 @@ export const LATEST_NEWS: NewsArticle[] = [
       "يشمل البرنامج أنشطة تفاعلية وورشاً إبداعية مصممة لتنمية مهارات التفكير والتعاون لدى الأطفال من مختلف الأعمار...",
     date: "الأربعاء 5 فبراير 2026",
     imageSrc: IMG.card,
-    href: "/news/spring-education-program",
   },
   {
     id: "news-3",
@@ -46,7 +43,6 @@ export const LATEST_NEWS: NewsArticle[] = [
       "نظّمت المنصة سلسلة ورش مجانية للأهالي تناقش أفضل الممارسات لحماية الأطفال أثناء استخدام الإنترنت والألعاب التعليمية...",
     date: "الاثنين 27 يناير 2026",
     imageSrc: IMG.card,
-    href: "/news/parent-workshops",
   },
   {
     id: "news-4",
@@ -56,6 +52,15 @@ export const LATEST_NEWS: NewsArticle[] = [
       "سجّل أكثر من ألف طفل مشاركتهم في تحدي القراءة الشتوي، مع جوائز تحفيزية وشهادات تقدير للمتميزين من المدارس الشريكة...",
     date: "السبت 18 يناير 2026",
     imageSrc: IMG.card,
-    href: "/news/reading-challenge",
   },
 ];
+
+export const ALL_NEWS: NewsArticle[] = [FEATURED_NEWS, ...LATEST_NEWS];
+
+export function getNewsBySlug(slug: string): NewsArticle | undefined {
+  return ALL_NEWS.find((item) => item.slug === slug);
+}
+
+export function getAllNewsSlugs(): string[] {
+  return [...new Set(ALL_NEWS.map((item) => item.slug))];
+}

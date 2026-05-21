@@ -20,7 +20,7 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={isDisabled}
-      className={`mt-2 h-14 flex shadow-[0px_2px_4px_0px_#006C3540] items-center justify-center gap-2 rounded-xl cursor-pointer bg-(--primary) text-base font-medium text-white disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
+      className={`mt-2 h-14 flex shadow-[0px_2px_4px_0px_#006C3540] items-center justify-center gap-2 rounded-xl cursor-pointer bg-primary text-base font-medium text-white disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
       {...buttonProps}
     >
       {loading ? (

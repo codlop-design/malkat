@@ -55,12 +55,12 @@ function ServiceCard({ title, description, icon: Icon, featured }: Service) {
   return (
     <article
       className={`flex h-full flex-col items-center gap-4 rounded-3xl px-5 py-8 text-center transition-colors ${
-        featured ? "bg-(--primary) text-white" : "bg-[#E8F6F4] text-[#1F1F1F]"
+        featured ? "bg-primary text-white" : "bg-[#E8F6F4] text-[#1F1F1F]"
       }`}
     >
       <div className="flex size-14 items-center justify-center rounded-full bg-white">
         <Icon
-          className="size-7 text-(--primary)"
+          className="size-7 text-primary"
           strokeWidth={1.75}
           aria-hidden
         />
@@ -99,7 +99,7 @@ export default function PlatformServices() {
         >
           <motion.span
             variants={fadeUp}
-            className="text-base font-medium text-(--primary)"
+            className="text-base font-medium text-primary"
           >
             استكشف المحتوى
           </motion.span>

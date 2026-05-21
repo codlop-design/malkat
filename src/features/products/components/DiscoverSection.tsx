@@ -8,21 +8,6 @@ import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
 import { PRODUCT_CATEGORIES } from "@/src/features/products/data/categories";
 import ProductCarousel from "@/src/features/products/components/ProductCarousel";
-import ActivityCard, {
-  type ActivityCardProps,
-} from "@/src/features/products/components/cards/ActivityCard";
-import BookCard, {
-  type BookCardProps,
-} from "@/src/features/products/components/cards/BookCard";
-import CourseCard, {
-  type CourseCardProps,
-} from "@/src/features/products/components/cards/CourseCard";
-import GuideCard, {
-  type GuideCardProps,
-} from "@/src/features/products/components/cards/GuideCard";
-import ServiceCard, {
-  type ServiceCardProps,
-} from "@/src/features/products/components/cards/ServiceCard";
 import {
   ACTIVITIES_ITEMS,
   BOOKS_ITEMS,
@@ -31,7 +16,12 @@ import {
   SERVICES_ITEMS,
 } from "@/src/features/products/data/catalog";
 import {
+  renderCatalogCard,
+  type CatalogListItem,
+} from "@/src/features/products/data/catalogRegistry";
+import {
   categoryFilterHref,
+  categoryListingHref,
   parseProductCategory,
   VISIBLE_BY_CATEGORY,
   type CatalogSectionKey,
@@ -48,33 +38,35 @@ type SectionConfig = {
 const CATALOG_SECTIONS: Record<CatalogSectionKey, SectionConfig> = {
   books: {
     title: "الكتب",
-    viewAllHref: "/products?category=books",
+    viewAllHref: categoryListingHref("books"),
     items: BOOKS_ITEMS,
-    renderSlide: (item) => <BookCard {...(item as BookCardProps)} />,
+    renderSlide: (item) => renderCatalogCard("books", item as CatalogListItem),
   },
   activities: {
     title: "الأنشطة",
-    viewAllHref: "/products?category=activities",
+    viewAllHref: categoryListingHref("activities"),
     items: ACTIVITIES_ITEMS,
-    renderSlide: (item) => <ActivityCard {...(item as ActivityCardProps)} />,
+    renderSlide: (item) =>
+      renderCatalogCard("activities", item as CatalogListItem),
   },
   courses: {
     title: "الدورات",
-    viewAllHref: "/products?category=courses",
+    viewAllHref: categoryListingHref("courses"),
     items: COURSES_ITEMS,
-    renderSlide: (item) => <CourseCard {...(item as CourseCardProps)} />,
+    renderSlide: (item) => renderCatalogCard("courses", item as CatalogListItem),
   },
   services: {
     title: "الخدمات",
-    viewAllHref: "/products?category=services",
+    viewAllHref: "/services",
     items: SERVICES_ITEMS,
-    renderSlide: (item) => <ServiceCard {...(item as ServiceCardProps)} />,
+    renderSlide: (item) =>
+      renderCatalogCard("services", item as CatalogListItem),
   },
   guides: {
     title: "أدلة إجرائية",
-    viewAllHref: "/products?category=guides",
+    viewAllHref: categoryListingHref("guides"),
     items: GUIDES_ITEMS,
-    renderSlide: (item) => <GuideCard {...(item as GuideCardProps)} />,
+    renderSlide: (item) => renderCatalogCard("guides", item as CatalogListItem),
   },
 };
 

@@ -44,7 +44,7 @@ export default function NavLinks({
               aria-current={isActive ? "page" : undefined}
               className={`rounded-xl px-4 py-3.5 text-base transition-colors ${
                 isActive
-                  ? "bg-[#E8F6F4] font-bold text-(--primary)"
+                  ? "bg-[#E8F6F4] font-bold text-primary"
                   : "font-medium text-[#454545] hover:bg-[#FAFAFA]"
               }`}
             >
@@ -64,7 +64,7 @@ export default function NavLinks({
             <span
               className={`inline-block border-b-2 pb-1 text-base ${
                 isActive
-                  ? "border-(--primary) font-bold text-black"
+                  ? "border-primary font-bold text-black"
                   : "border-transparent font-medium text-[#454545]"
               }`}
             >

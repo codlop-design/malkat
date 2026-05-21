@@ -8,14 +8,14 @@ type NewsCardProps = {
 };
 
 export default function NewsCard({ article }: NewsCardProps) {
-  const { title, excerpt, date, imageSrc, href } = article;
+  const { slug, title, excerpt, date, imageSrc } = article;
 
   return (
     <article
       className="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
       dir="rtl"
     >
-      <div className="relative aspect-[4/3] w-full">
+      <div className="relative aspect-4/3 w-full">
         <Image
           src={imageSrc}
           alt=""
@@ -34,7 +34,7 @@ export default function NewsCard({ article }: NewsCardProps) {
           {excerpt}
         </p>
         <div className="mt-5 flex justify-center">
-          <ReadMoreLink href={href} variant="pill" />
+          <ReadMoreLink href={`/news/all/${slug}`} variant="pill" />
         </div>
       </div>
     </article>

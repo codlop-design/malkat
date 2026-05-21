@@ -35,3 +35,22 @@ export function categoryFilterHref(category: ProductCategoryId): string {
   if (category === "all") return "/products";
   return `/products?category=${category}`;
 }
+
+export function categoryListingHref(category: CatalogSectionKey): string {
+  return `/products/${category}`;
+}
+
+export function productDetailHref(
+  category: CatalogSectionKey,
+  slug: string,
+): string {
+  return `/products/${category}/${slug}`;
+}
+
+export function resolveProductHref(
+  category: CatalogSectionKey,
+  slug: string,
+  href?: string,
+): string {
+  return href ?? productDetailHref(category, slug);
+}

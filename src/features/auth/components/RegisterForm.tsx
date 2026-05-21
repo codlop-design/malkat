@@ -87,7 +87,7 @@ export default function RegisterForm() {
             id="register-terms"
             type="checkbox"
             disabled={isSubmitting}
-            className="mt-0.5 size-[18px] shrink-0 cursor-pointer rounded border border-[#CFCFCF] bg-white text-(--primary) accent-(--primary) focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-0.5 size-[18px] shrink-0 cursor-pointer rounded border border-[#CFCFCF] bg-white text-primary accent-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
             {...register("acceptedTerms")}
           />
           <p className="text-sm leading-relaxed text-black">

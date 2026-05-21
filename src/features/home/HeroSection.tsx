@@ -35,7 +35,7 @@ export default function HeroSection() {
             >
               <Link
                 href="/products"
-                className="bg-(--primary) text-white py-3 px-6 rounded-full text-[18px] font-medium w-full md:w-auto"
+                className="bg-primary text-white py-3 px-6 rounded-full text-[18px] font-medium w-full md:w-auto"
               >
                 استكشف المحتوى
               </Link>

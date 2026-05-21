@@ -38,7 +38,7 @@ export default function VisionCard({
 }: VisionCardProps) {
   return (
     <article
-      className="rounded-[20px] bg-linear-to-b from-(--primary) to-[#0F3D40] p-8 text-white shadow-sm md:p-10"
+      className="rounded-[20px] bg-linear-to-b from-primary to-[#0F3D40] p-8 text-white shadow-sm md:p-10"
       
     >
       <div className="flex justify-center flex-col items-center gap-4">

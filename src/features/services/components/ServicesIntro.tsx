@@ -27,16 +27,16 @@ export default function ServicesIntro() {
 
         <motion.ul
           variants={fadeUp}
-          className="flex items-center justify-center gap-12"
+          className="flex items-center justify-center gap-12 flex-wrap"
         >
           {SERVICE_STATS.map((stat) => (
             <li key={stat.id} className="flex  items-center gap-4 text-center">
-              <span className="text-3xl" aria-hidden>
+              <span className="text-3xl md:block hidden" aria-hidden>
                 {stat.icon}
               </span>
 
               <div className="flex flex-col items-center gap-1">
-                <span className="text-lg font-bold text-(--primary) md:text-xl">
+                <span className="text-lg font-bold text-primary md:text-xl">
                   {stat.value}
                 </span>
 

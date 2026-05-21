@@ -80,7 +80,7 @@ export default function SideMenu({
               <Link
                 href="/login"
                 onClick={closeMenu}
-                className="flex w-full items-center justify-center rounded-full bg-(--primary) py-3 text-base font-medium text-white"
+                className="flex w-full items-center justify-center rounded-full bg-primary py-3 text-base font-medium text-white"
               >
                 تسجيل الدخول
               </Link>

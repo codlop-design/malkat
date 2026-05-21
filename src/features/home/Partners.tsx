@@ -32,7 +32,7 @@ export default function Partners() {
         >
           <motion.span
             variants={fadeUp}
-            className="text-base font-medium text-(--primary)"
+            className="text-base font-medium text-primary"
           >
             شركاؤنا
           </motion.span>

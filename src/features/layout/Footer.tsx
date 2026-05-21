@@ -100,7 +100,7 @@ function FooterColumnBlock({ title, links }: FooterColumn) {
           <li key={link.href + link.label}>
             <Link
               href={link.href}
-              className="text-sm text-[#454545] transition-colors hover:text-(--primary)"
+              className="text-sm text-[#454545] transition-colors hover:text-primary"
             >
               {link.label}
             </Link>
@@ -138,7 +138,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex size-10 items-center justify-center rounded-full bg-(--primary) text-white transition-opacity hover:opacity-90"
+                  className="flex size-10 items-center justify-center rounded-full bg-primary text-white transition-opacity hover:opacity-90"
                 >
                   {Icon === TikTokIcon ? (
                     <Icon className="size-5" />
@@ -162,7 +162,7 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-[#454545] transition-colors hover:text-(--primary)"
+                  className="text-sm text-[#454545] transition-colors hover:text-primary"
                 >
                   {link.label}
                 </Link>

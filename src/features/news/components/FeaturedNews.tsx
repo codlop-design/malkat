@@ -1,14 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-
 import ReadMoreLink from "@/src/features/news/components/ReadMoreLink";
+import { motion } from "framer-motion";
 import { FEATURED_NEWS } from "@/src/features/news/data/news";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 export default function FeaturedNews() {
-  const { title, excerpt, date, imageSrc, href } = FEATURED_NEWS;
+  const { slug, title, excerpt, date, imageSrc } = FEATURED_NEWS;
 
   return (
     <section className="bg-white py-10 md:py-14">
@@ -52,7 +51,7 @@ export default function FeaturedNews() {
             </p>
 
             <div className="mt-8 md:mt-10">
-              <ReadMoreLink href={href} />
+              <ReadMoreLink href={`/news/all/${slug}`} />
             </div>
           </motion.div>
         </motion.div>

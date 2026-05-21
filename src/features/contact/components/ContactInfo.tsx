@@ -29,11 +29,11 @@ export default function ContactInfo() {
       variants={staggerContainer(0.08, 0.05)}
       className="flex flex-col gap-4"
     >
-      <motion.div variants={fadeUp}>
-        <h2 className="text-xl font-bold text-black md:text-2xl text-center">
+      <motion.div variants={fadeUp} className="text-right">
+        <h2 className="text-xl font-bold text-black md:text-2xl">
           بيانات التواصل
         </h2>
-        <p className="mt-2 text-sm text-[#454545] md:text-base text-center">
+        <p className="mt-2 text-sm text-[#454545] md:text-base">
           يمكنك التواصل معنا من خلال
         </p>
       </motion.div>
@@ -42,35 +42,41 @@ export default function ContactInfo() {
         <motion.article
           key={item.id}
           variants={fadeUp}
-          className="flex flex-col justify-center items-center gap-4 rounded-2xl border border-[#E8E8E8] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+          className="flex items-start gap-4 rounded-2xl border border-[#E8E8E8] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
         >
           <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#E8F6F4]">
             <item.icon
-              className="size-5 text-(--primary)"
+              className="size-5 text-primary"
               strokeWidth={1.75}
               aria-hidden
             />
           </div>
-          <div className="min-w-0 flex-1 text-center">
+          <div className="min-w-0 flex-1 text-right">
             <h3 className="text-base font-bold text-black">{item.title}</h3>
             <ul className="mt-2 flex flex-col gap-2">
               {item.lines.map((line) => (
-                <li key={line.text}>
+                <li key={line.text} className="break-words">
                   {line.href ? (
                     <a
                       href={line.href}
-                      className="inline-flex items-center gap-2 text-sm text-[#454545] transition-colors hover:text-(--primary) md:text-base"
+                      className="inline-flex flex-wrap items-center justify-end gap-2 text-sm text-[#454545] transition-colors hover:text-primary md:text-base"
                     >
                       {line.icon === "whatsapp" ? (
                         <WhatsAppIcon className="size-4 shrink-0 text-[#25D366]" />
                       ) : line.icon === "phone" ? (
                         <Phone
-                          className="size-4 shrink-0 text-(--primary)"
+                          className="size-4 shrink-0 text-primary"
                           strokeWidth={1.75}
                           aria-hidden
                         />
                       ) : null}
-                      <span>{line.text}</span>
+                      <span
+                        className={
+                          line.icon ? "dir-ltr text-end" : undefined
+                        }
+                      >
+                        {line.text}
+                      </span>
                     </a>
                   ) : (
                     <p className="text-sm leading-relaxed text-[#454545] md:text-base">
