@@ -41,7 +41,7 @@ export default function StartJourney() {
 
           <motion.div variants={fadeUp}>
             <Link
-              href="/contact"
+              href="/register-your-interest"
               className="mt-4 inline-flex items-center gap-3 rounded-full justify-center bg-(--primary) w-[300px] px-8 py-3.5 text-base font-medium text-white transition-opacity hover:opacity-90"
             >
               <span>سجل اهتمامك</span>

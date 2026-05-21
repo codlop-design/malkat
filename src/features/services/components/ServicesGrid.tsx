@@ -28,7 +28,7 @@ export default function ServicesGrid() {
     <section className="bg-[#FAFAFA] pb-14 md:pb-20">
       <div className="container">
         <motion.div
-          className="overflow-visible rounded-2xl bg-white p-4 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:p-5"
+          className="mt-10 overflow-hidden rounded-2xl bg-[#F5F5F5] p-4 md:mt-12 lg:mt-14"
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}

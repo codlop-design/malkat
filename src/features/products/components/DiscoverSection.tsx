@@ -32,6 +32,7 @@ import {
 } from "@/src/features/products/data/catalog";
 import {
   categoryFilterHref,
+  categoryListingHref,
   parseProductCategory,
   VISIBLE_BY_CATEGORY,
   type CatalogSectionKey,
@@ -48,31 +49,31 @@ type SectionConfig = {
 const CATALOG_SECTIONS: Record<CatalogSectionKey, SectionConfig> = {
   books: {
     title: "الكتب",
-    viewAllHref: "/products?category=books",
+    viewAllHref: categoryListingHref("books"),
     items: BOOKS_ITEMS,
     renderSlide: (item) => <BookCard {...(item as BookCardProps)} />,
   },
   activities: {
     title: "الأنشطة",
-    viewAllHref: "/products?category=activities",
+    viewAllHref: categoryListingHref("activities"),
     items: ACTIVITIES_ITEMS,
     renderSlide: (item) => <ActivityCard {...(item as ActivityCardProps)} />,
   },
   courses: {
     title: "الدورات",
-    viewAllHref: "/products?category=courses",
+    viewAllHref: categoryListingHref("courses"),
     items: COURSES_ITEMS,
     renderSlide: (item) => <CourseCard {...(item as CourseCardProps)} />,
   },
   services: {
     title: "الخدمات",
-    viewAllHref: "/products?category=services",
+    viewAllHref: categoryListingHref("services"),
     items: SERVICES_ITEMS,
     renderSlide: (item) => <ServiceCard {...(item as ServiceCardProps)} />,
   },
   guides: {
     title: "أدلة إجرائية",
-    viewAllHref: "/products?category=guides",
+    viewAllHref: categoryListingHref("guides"),
     items: GUIDES_ITEMS,
     renderSlide: (item) => <GuideCard {...(item as GuideCardProps)} />,
   },

@@ -102,9 +102,9 @@ export const SERVICES: ServiceItem[] = [
   },
 ];
 
-/** مؤقت: يعرض كل الخدمات حتى ربط التصفية بالـ API */
 export function filterServicesByCategory(
-  _category: ServiceCategoryId,
+  category: ServiceCategoryId,
 ): ServiceItem[] {
-  return SERVICES;
+  if (category === "all") return SERVICES;
+  return SERVICES.filter((s) => s.category === category);
 }

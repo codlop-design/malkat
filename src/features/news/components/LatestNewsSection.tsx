@@ -30,7 +30,7 @@ export default function LatestNewsSection() {
               آخر الأخبار
             </h2>
             <Link
-              href="/news"
+              href="/news/all"
               className="shrink-0 text-sm font-medium text-(--primary) hover:underline md:text-base"
             >
               عرض الكل
