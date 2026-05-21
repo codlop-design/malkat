@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import NavLinks from "./NavLinks";
 import SideMenu from "./SideMenu";
+import SideCart from "../../cart/components/SideCart";
 
 export default function Header() {
   const pathname = usePathname();
@@ -81,6 +82,7 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-4">
+              <SideCart />
               <Link
                 href="/login"
                 className="rounded-full bg-(--primary) px-4 py-2.5 text-white"
