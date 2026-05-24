@@ -19,7 +19,6 @@ type Service = {
   title: string;
   description: string;
   icon: LucideIcon;
-  featured?: boolean;
 };
 
 const services: Service[] = [
@@ -37,7 +36,6 @@ const services: Service[] = [
     title: "الدورات التعليمية",
     description: "دورات أونلاين وحضورية متخصصة",
     icon: GraduationCap,
-    featured: true,
   },
   {
     title: "الخدمات التعليمية",
@@ -51,13 +49,9 @@ const services: Service[] = [
   },
 ];
 
-function ServiceCard({ title, description, icon: Icon, featured }: Service) {
+function ServiceCard({ title, description, icon: Icon }: Service) {
   return (
-    <article
-      className={`flex h-full flex-col items-center gap-4 rounded-3xl px-5 py-8 text-center transition-colors ${
-        featured ? "bg-primary text-white" : "bg-[#E8F6F4] text-[#1F1F1F]"
-      }`}
-    >
+    <article className="group flex h-full flex-col items-center gap-4 rounded-3xl bg-[#E8F6F4] px-5 py-8 text-center transition-colors hover:bg-primary">
       <div className="flex size-14 items-center justify-center rounded-full bg-white">
         <Icon
           className="size-7 text-primary"
@@ -67,18 +61,10 @@ function ServiceCard({ title, description, icon: Icon, featured }: Service) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3
-          className={`text-lg font-bold leading-snug ${
-            featured ? "text-white" : "text-black"
-          }`}
-        >
+        <h3 className="text-lg font-bold leading-snug text-black transition-colors group-hover:text-white">
           {title}
         </h3>
-        <p
-          className={`text-sm leading-relaxed ${
-            featured ? "text-white/90" : "text-[#454545]"
-          }`}
-        >
+        <p className="text-sm leading-relaxed text-[#454545] transition-colors group-hover:text-white/90">
           {description}
         </p>
       </div>
