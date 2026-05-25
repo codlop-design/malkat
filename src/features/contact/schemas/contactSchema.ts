@@ -1,19 +1,13 @@
 import { z } from "zod";
 
-import { loginSchema } from "@/src/features/auth/schemas/loginSchema";
 import { phoneLoginSchema } from "@/src/features/auth/schemas/phoneLoginSchema";
 
 export const contactSchema = z.object({
-  purpose: z.enum(["inquiry", "suggestion"], {
-    message: "يرجى اختيار غرض الرسالة",
-  }),
-  name: z.string().min(2, "الاسم مطلوب"),
+  full_name: z.string().trim().min(3, "يرجى إدخال الاسم الكامل"),
+  email: z.string().trim().email("يرجى إدخال بريد إلكتروني صحيح"),
   phone: phoneLoginSchema.shape.phone,
-  email: loginSchema.shape.email,
-  message: z
-    .string()
-    .min(10, "يرجى كتابة رسالة لا تقل عن 10 أحرف")
-    .max(2000, "الرسالة طويلة جداً"),
+  contact_type: z.string().min(1, "يرجى اختيار نوع التواصل"),
+  message: z.string().trim().min(50, "يرجى كتابة رسالتك"),
 });
 
 export type ContactFormValues = z.infer<typeof contactSchema>;

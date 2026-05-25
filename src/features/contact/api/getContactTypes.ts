@@ -1,5 +1,5 @@
 import { fetcher } from "@/src/lib/fetch";
-import type { ContactType } from "@/src/features/home/types/contact";
+import type { ContactType } from "@/src/features/contact/types";
 
 export async function getContactTypes(): Promise<ContactType[]> {
   const response = await fetcher<ContactType[]>("/contact-us/types");

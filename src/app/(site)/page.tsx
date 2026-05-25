@@ -1,4 +1,4 @@
-import { getContactTypes } from "@/src/features/home/api/getContactTypes";
+import { getContactTypes } from "@/src/features/contact/api/getContactTypes";
 import { getHomeContent } from "@/src/features/home/api/getHomeContent";
 import AboutSection from "@/src/features/home/components/AboutSection";
 import ContactSection from "@/src/features/home/components/ContactSection";

@@ -4,11 +4,19 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { FAQ_ITEMS } from "@/src/features/contact/data/contact";
+import type { ContactPageFaq } from "@/src/features/contact/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
-export default function ContactFAQ() {
-  const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
+type ContactFAQProps = {
+  faqs?: ContactPageFaq[];
+};
+
+export default function ContactFAQ({ faqs = [] }: ContactFAQProps) {
+  const [openId, setOpenId] = useState<string | null>(
+    faqs.length > 0 ? "0" : null,
+  );
+
+  if (faqs.length === 0) return null;
 
   return (
     <section className="md:py-14 py-10">
@@ -28,14 +36,15 @@ export default function ContactFAQ() {
               الأسئلة الشائعة
             </motion.h2>
 
-            {FAQ_ITEMS.map((item) => {
-              const isOpen = openId === item.id;
+            {faqs.map((item, index) => {
+              const id = String(index);
+              const isOpen = openId === id;
               return (
-                <motion.div key={item.id} variants={fadeUp}>
+                <motion.div key={id} variants={fadeUp}>
                   <button
                     type="button"
                     onClick={() =>
-                      setOpenId((prev) => (prev === item.id ? null : item.id))
+                      setOpenId((prev) => (prev === id ? null : id))
                     }
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-4 rounded-2xl bg-[#F5F0E8] px-5 py-4 text-right transition-colors hover:bg-[#EDE6DA]"

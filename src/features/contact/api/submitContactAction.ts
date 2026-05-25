@@ -1,6 +1,9 @@
 "use server";
 
-import { contactSchema, type ContactFormValues } from "@/src/features/home/schemas/contactSchema";
+import {
+  contactSchema,
+  type ContactFormValues,
+} from "@/src/features/contact/schemas/contactSchema";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

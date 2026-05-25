@@ -1,7 +1,14 @@
 import PageHeader from "@/src/components/PageHeader";
+import { getContactPageContent } from "@/src/features/contact/api/getContactPageContent";
+import { getContactTypes } from "@/src/features/contact/api/getContactTypes";
 import { ContactPageContent } from "@/src/features/contact";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [contactData, contactTypes] = await Promise.all([
+    getContactPageContent(),
+    getContactTypes(),
+  ]);
+
   return (
     <>
       <PageHeader
@@ -11,7 +18,7 @@ export default function ContactPage() {
           { label: "تواصل معنا" },
         ]}
       />
-      <ContactPageContent />
+      <ContactPageContent data={contactData} contactTypes={contactTypes} />
     </>
   );
 }

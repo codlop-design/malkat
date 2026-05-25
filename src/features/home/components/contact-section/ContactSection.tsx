@@ -2,10 +2,9 @@
 
 import { motion } from "framer-motion";
 
-import type { ContactType } from "@/src/features/home/types/contact";
+import ContactForm from "@/src/features/contact/components/ContactForm";
+import type { ContactType } from "@/src/features/contact/types";
 import { fadeUp, motionViewport } from "@/src/lib/motion";
-
-import ContactForm from "../ContactForm";
 import ContactInfoPanel from "./ContactInfoPanel";
 import ContactSectionHeader from "./ContactSectionHeader";
 
