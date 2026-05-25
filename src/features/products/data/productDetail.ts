@@ -20,8 +20,42 @@ export type ProductReview = {
   text: string;
 };
 
+export type ProductBookMeta = {
+  pageCount: number;
+  fileType: string;
+  language: string;
+};
+
+export type ProductCourseMeta = {
+  hoursCount: number;
+  lessonsCount: number;
+  studentsRegistered: number | null;
+  practiceProjects: number;
+  instructorBio: string;
+  jobTitle: string;
+};
+
+export type ProductSessionMeta = {
+  duration: string;
+  sessionType: string;
+  target: string;
+  isFree: boolean;
+};
+
+export type ProductGuideMeta = {
+  forWhom: string;
+  target: string;
+  pageCount: number;
+};
+
+export type ProductContributorDisplay = {
+  name: string;
+  image: string;
+};
+
 export type ProductDetailMeta = {
   longDescription: string;
+  contributor?: ProductContributorDisplay;
   accordions: ProductAccordionItem[];
   chapters?: ProductChapter[];
   curriculum?: ProductChapter[];
@@ -32,6 +66,10 @@ export type ProductDetailMeta = {
   ratingLabel: string;
   ratingDistribution: number[];
   reviews: ProductReview[];
+  bookMeta?: ProductBookMeta;
+  courseMeta?: ProductCourseMeta;
+  sessionMeta?: ProductSessionMeta;
+  guideMeta?: ProductGuideMeta;
 };
 
 const SAMPLE_REVIEWS: ProductReview[] = [

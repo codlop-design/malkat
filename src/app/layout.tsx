@@ -12,7 +12,9 @@ const balooBhaijaan2 = Baloo_Bhaijaan_2({
   display: "swap",
 });
 
-const SITE_URL = process.env.SITE_URL || "http://localhost:3000";
+import { getSiteUrl } from "@/src/lib/siteUrl";
+
+const SITE_URL = getSiteUrl();
 const SITE_NAME = "منصة تعليم الأطفال";
 const SITE_DESCRIPTION = "منصة تعليم الأطفال";
 const SITE_KEYWORDS = ["منصة تعليم الأطفال"];

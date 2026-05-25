@@ -18,7 +18,7 @@ function isFreePrice(price: string): boolean {
   return price === "مجاني" || price.includes("مجاني");
 }
 
-function mapBookItem(item: BookApiItem): BookCardProps {
+export function mapBookItem(item: BookApiItem): BookCardProps {
   return {
     id: String(item.id),
     slug: item.slug,
@@ -32,7 +32,7 @@ function mapBookItem(item: BookApiItem): BookCardProps {
   };
 }
 
-function mapCourseItem(item: CourseApiItem): CourseCardProps {
+export function mapCourseItem(item: CourseApiItem): CourseCardProps {
   const sessions =
     item.lessons_count > 0
       ? `${item.lessons_count} دروس`
@@ -53,7 +53,7 @@ function mapCourseItem(item: CourseApiItem): CourseCardProps {
   };
 }
 
-function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
+export function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
   const tags = [
     item.is_free ? "مجانية" : `${item.price} ر.س`,
     item.session_type,
@@ -70,7 +70,7 @@ function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
   };
 }
 
-function mapActivityItem(item: ActivityApiItem): ActivityCardProps {
+export function mapActivityItem(item: ActivityApiItem): ActivityCardProps {
   return {
     id: String(item.id),
     slug: item.slug,
@@ -83,7 +83,7 @@ function mapActivityItem(item: ActivityApiItem): ActivityCardProps {
   };
 }
 
-function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
+export function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
   return {
     id: String(item.id),
     slug: item.slug,

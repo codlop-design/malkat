@@ -46,7 +46,18 @@ export async function getNewsList(page = 1): Promise<NewsListResult | null> {
 }
 
 export async function getAllNewsSlugs(): Promise<string[]> {
-  const result = await getNewsList();
-  if (!result) return [];
-  return result.items.map((item) => item.slug);
+  const slugs: string[] = [];
+  let page = 1;
+  let lastPage = 1;
+
+  do {
+    const result = await getNewsList(page);
+    if (!result) break;
+
+    slugs.push(...result.items.map((item) => item.slug));
+    lastPage = result.pagination.last_page;
+    page += 1;
+  } while (page <= lastPage);
+
+  return slugs;
 }

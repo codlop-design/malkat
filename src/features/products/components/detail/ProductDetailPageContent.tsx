@@ -28,8 +28,6 @@ import type { CourseCardProps } from "@/src/features/products/components/cards/C
 import type { GuideCardProps } from "@/src/features/products/components/cards/GuideCard";
 import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
-import { getRelatedProducts } from "@/src/features/products/data/catalogAccess";
-import { getProductDetail } from "@/src/features/products/data/productDetail";
 import ProductDetailMedia from "@/src/features/products/components/detail/ProductDetailMedia";
 import ProductReviewsSection from "@/src/features/products/components/detail/ProductReviewsSection";
 import RelatedProductsSection from "@/src/features/products/components/detail/RelatedProductsSection";
@@ -37,9 +35,6 @@ import { RatingBadge } from "@/src/features/products/components/CardMedia";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { LucideIcon } from "lucide-react";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
-
-const AVATAR =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80";
 
 const REVIEWS_TITLE: Record<CatalogSectionKey, string> = {
   books: "آراء القراء",
@@ -59,9 +54,12 @@ const CART_LABEL: Record<CatalogSectionKey, string> = {
 
 type ProductDetailPageContentProps = {
   product: CatalogProduct;
+  detail: ProductDetailMeta;
+  related: CatalogProduct[];
 };
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
+  if (rating <= 0) return null;
   return (
     <span className="inline-flex items-center gap-1 text-sm text-[#454545]">
       <svg
@@ -79,14 +77,20 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
 
 export default function ProductDetailPageContent({
   product,
+  detail,
+  related,
 }: ProductDetailPageContentProps) {
   const { category, data } = product;
-  const detail = getProductDetail(category, data.description);
-  const related = getRelatedProducts(category, data.slug, 5);
   const imageFirst = category === "books" || category === "guides";
 
-  const rating = "rating" in data ? (data.rating ?? 4.8) : 4.8;
+  const rating =
+    detail.averageRating > 0
+      ? detail.averageRating
+      : "rating" in data
+        ? (data.rating ?? 0)
+        : 0;
   const reviewCount = detail.reviewCount;
+  const showReviews = detail.reviews.length > 0 || rating > 0;
 
   return (
     <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
@@ -120,14 +124,20 @@ export default function ProductDetailPageContent({
               </p>
 
               {category === "books" && "author" in data ? (
-                <BookInfo data={data} />
+                <BookInfo data={data} detail={detail} />
               ) : null}
               {category === "courses" && "instructorName" in data ? (
                 <CourseInfo data={data} detail={detail} />
               ) : null}
-              {category === "activities" ? <ActivityInfo data={data} /> : null}
-              {category === "services" ? <ServiceInfo data={data} /> : null}
-              {category === "guides" ? <GuideInfo data={data} /> : null}
+              {category === "activities" ? (
+                <ActivityInfo data={data} detail={detail} />
+              ) : null}
+              {category === "services" ? (
+                <ServiceInfo data={data} detail={detail} />
+              ) : null}
+              {category === "guides" ? (
+                <GuideInfo data={data} detail={detail} />
+              ) : null}
 
               {category !== "courses" ? (
                 <Button className="mt-6 hidden h-12 w-full gap-2 bg-primary text-base text-white hover:bg-primary/90 lg:inline-flex">
@@ -268,19 +278,29 @@ export default function ProductDetailPageContent({
           </section>
         ) : null}
 
-        <ProductReviewsSection
-          detail={detail}
-          title={REVIEWS_TITLE[category]}
-        />
+        {showReviews ? (
+          <ProductReviewsSection
+            detail={detail}
+            title={REVIEWS_TITLE[category]}
+          />
+        ) : null}
         <RelatedProductsSection products={related} />
       </div>
     </div>
   );
 }
 
-function BookInfo({ data }: { data: CatalogProduct["data"] }) {
+function BookInfo({
+  data,
+  detail,
+}: {
+  data: CatalogProduct["data"];
+  detail: ProductDetailMeta;
+}) {
   if (!("author" in data)) return null;
   const book = data as BookCardProps;
+  const meta = detail.bookMeta;
+
   return (
     <>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -291,23 +311,27 @@ function BookInfo({ data }: { data: CatalogProduct["data"] }) {
         ) : null}
         {book.ageRange ? (
           <span className="rounded-full bg-[#F5EDE4] px-3 py-1 text-xs text-[#454545]">
-            {book.ageRange} {book.level ?? ""}
+            {book.ageRange}
+          </span>
+        ) : null}
+        {book.level ? (
+          <span className="rounded-full bg-[#F5EDE4] px-3 py-1 text-xs text-[#454545]">
+            {book.level}
           </span>
         ) : null}
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <MetaItem icon={FileText} label="عدد الصفحات" value="145" />
-        <MetaItem icon={BookOpen} label="نوع الملف" value="pdf" />
-        <MetaItem icon={Languages} label="اللغة" value="العربية" />
-        <MetaItem icon={Globe} label="التحميلات" value={book.views ?? "18.3 k"} />
-      </div>
-      <div className="mt-5 flex items-center gap-3">
-        <Avatar className="size-10">
-          <AvatarImage src={AVATAR} alt="" />
-          <AvatarFallback>م</AvatarFallback>
-        </Avatar>
-        <span className="text-sm font-medium text-black">{book.author}</span>
-      </div>
+      {meta ? (
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <MetaItem
+            icon={FileText}
+            label="عدد الصفحات"
+            value={String(meta.pageCount)}
+          />
+          <MetaItem icon={BookOpen} label="نوع الملف" value={meta.fileType} />
+          <MetaItem icon={Languages} label="اللغة" value={meta.language} />
+        </div>
+      ) : null}
+      <InstructorRow contributor={detail.contributor} fallbackName={book.author} />
     </>
   );
 }
@@ -321,6 +345,8 @@ function CourseInfo({
 }) {
   if (!("instructorName" in data)) return null;
   const course = data as CourseCardProps;
+  const meta = detail.courseMeta;
+
   return (
     <>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -333,18 +359,34 @@ function CourseInfo({
           <span className="rounded-full bg-[#F5EDE4] px-3 py-1 text-xs text-[#454545]">
             أونلاين
           </span>
-        ) : null}
+        ) : (
+          <span className="rounded-full bg-[#F5EDE4] px-3 py-1 text-xs text-[#454545]">
+            أوفلاين
+          </span>
+        )}
       </div>
       <div className="mt-5 flex flex-wrap gap-4 border-y border-[#E8E8E8] py-4 text-xs text-[#454545] md:text-sm">
         <span>{course.duration}</span>
         <span>|</span>
         <span>{course.sessions}</span>
-        <span>|</span>
-        <RatingBadge rating={course.rating ?? 4.8} />
-        <span>|</span>
-        <span>96% معدل الرضا</span>
-        <span>|</span>
-        <span>186 طالب مسجل</span>
+        {meta?.hoursCount ? (
+          <>
+            <span>|</span>
+            <span>{meta.hoursCount} ساعة</span>
+          </>
+        ) : null}
+        {detail.averageRating > 0 ? (
+          <>
+            <span>|</span>
+            <RatingBadge rating={detail.averageRating} />
+          </>
+        ) : null}
+        {meta?.studentsRegistered ? (
+          <>
+            <span>|</span>
+            <span>{meta.studentsRegistered} طالب مسجل</span>
+          </>
+        ) : null}
       </div>
       <div className="mt-6">
         <h3 className="text-base font-bold text-black">المدرب</h3>
@@ -355,9 +397,14 @@ function CourseInfo({
           </Avatar>
           <div>
             <p className="font-medium text-black">{course.instructorName}</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#454545]">
-              {detail.longDescription.slice(0, 120)}...
-            </p>
+            {meta?.jobTitle ? (
+              <p className="mt-1 text-sm text-[#717171]">{meta.jobTitle}</p>
+            ) : null}
+            {meta?.instructorBio ? (
+              <p className="mt-2 text-sm leading-relaxed text-[#454545]">
+                {meta.instructorBio}
+              </p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -365,15 +412,25 @@ function CourseInfo({
   );
 }
 
-function ActivityInfo({ data }: { data: CatalogProduct["data"] }) {
+function ActivityInfo({
+  data,
+  detail,
+}: {
+  data: CatalogProduct["data"];
+  detail: ProductDetailMeta;
+}) {
   if (!("ageRange" in data) || !("activityType" in data)) return null;
   const activity = data as ActivityCardProps;
+  const session = detail.sessionMeta;
+
   return (
     <>
       <div className="mt-4 flex flex-wrap gap-2">
-        <span className="rounded-full bg-[#E0F5F3] px-3 py-1 text-xs font-medium text-primary">
-          مجاني
-        </span>
+        {session?.isFree ? (
+          <span className="rounded-full bg-[#E0F5F3] px-3 py-1 text-xs font-medium text-primary">
+            مجاني
+          </span>
+        ) : null}
         <span className="rounded-full bg-[#F5EDE4] px-3 py-1 text-xs text-[#454545]">
           {activity.ageRange}
         </span>
@@ -381,15 +438,22 @@ function ActivityInfo({ data }: { data: CatalogProduct["data"] }) {
           {activity.activityType}
         </span>
       </div>
-      <SessionMeta />
-      <InstructorRow name="د. محمد الشهري" />
+      <SessionMeta session={session} />
+      <InstructorRow contributor={detail.contributor} />
     </>
   );
 }
 
-function ServiceInfo({ data }: { data: CatalogProduct["data"] }) {
+function ServiceInfo({
+  data,
+  detail,
+}: {
+  data: CatalogProduct["data"];
+  detail: ProductDetailMeta;
+}) {
   if (!("tags" in data)) return null;
   const service = data as ServiceCardProps;
+
   return (
     <>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -406,15 +470,23 @@ function ServiceInfo({ data }: { data: CatalogProduct["data"] }) {
           </span>
         ))}
       </div>
-      <SessionMeta />
-      <InstructorRow name="د. محمد الشمري" />
+      <SessionMeta session={detail.sessionMeta} />
+      <InstructorRow contributor={detail.contributor} />
     </>
   );
 }
 
-function GuideInfo({ data }: { data: CatalogProduct["data"] }) {
+function GuideInfo({
+  data,
+  detail,
+}: {
+  data: CatalogProduct["data"];
+  detail: ProductDetailMeta;
+}) {
   if (!("pages" in data)) return null;
   const guide = data as GuideCardProps;
+  const meta = detail.guideMeta;
+
   return (
     <>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -422,7 +494,7 @@ function GuideInfo({ data }: { data: CatalogProduct["data"] }) {
           <span
             key={tag}
             className={`rounded-full px-3 py-1 text-xs ${
-              tag === "مجاني"
+              tag.includes("مجان")
                 ? "bg-[#E0F5F3] font-medium text-primary"
                 : "bg-[#F5EDE4] text-[#454545]"
             }`}
@@ -431,38 +503,58 @@ function GuideInfo({ data }: { data: CatalogProduct["data"] }) {
           </span>
         ))}
       </div>
-      <p className="mt-4 text-sm text-[#454545]">
-        المستهدف: الآباء والمعلمين · {guide.pages}
-      </p>
+      {meta ? (
+        <p className="mt-4 text-sm text-[#454545]">
+          {meta.forWhom} · {guide.pages}
+        </p>
+      ) : null}
+      <InstructorRow contributor={detail.contributor} />
     </>
   );
 }
 
-function SessionMeta() {
+function SessionMeta({
+  session,
+}: {
+  session?: ProductDetailMeta["sessionMeta"];
+}) {
+  if (!session) return null;
+
   return (
     <ul className="mt-5 flex flex-col gap-2 text-sm text-[#454545]">
       <li className="flex items-center gap-2">
         <Clock className="size-4 text-primary" strokeWidth={1.5} />
-        مدة الجلسة: 45–60 دقيقة
+        مدة الجلسة: {session.duration}
       </li>
       <li className="flex items-center gap-2">
         <Globe className="size-4 text-primary" strokeWidth={1.5} />
-        نوع الجلسة: أونلاين
+        نوع الجلسة: {session.sessionType}
       </li>
       <li className="flex items-center gap-2">
         <Users className="size-4 text-primary" strokeWidth={1.5} />
-        المستهدف: الأطفال + أولياء الأمور
+        المستهدف: {session.target}
       </li>
     </ul>
   );
 }
 
-function InstructorRow({ name }: { name: string }) {
+function InstructorRow({
+  contributor,
+  fallbackName,
+}: {
+  contributor?: ProductDetailMeta["contributor"];
+  fallbackName?: string;
+}) {
+  const name = contributor?.name ?? fallbackName;
+  if (!name) return null;
+
   return (
     <div className="mt-5 flex items-center gap-3">
       <Avatar className="size-10">
-        <AvatarImage src={AVATAR} alt="" />
-        <AvatarFallback>م</AvatarFallback>
+        {contributor?.image ? (
+          <AvatarImage src={contributor.image} alt="" />
+        ) : null}
+        <AvatarFallback>{name.charAt(0)}</AvatarFallback>
       </Avatar>
       <span className="text-sm font-medium text-black">{name}</span>
     </div>
