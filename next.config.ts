@@ -3,11 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
+      new URL("https://images.unsplash.com/**"),
+      new URL("https://malkat-dashboard.codlop.sa/**"),
     ],
   },
 };

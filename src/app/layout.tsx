@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2 } from "next/font/google";
-import { Toaster } from "sonner";
+import { RootProviders } from "@/src/components/providers/RootProviders";
+import { getSettings } from "@/src/features/settings";
 
 import "./globals.css";
 
@@ -16,72 +17,84 @@ const SITE_NAME = "منصة تعليم الأطفال";
 const SITE_DESCRIPTION = "منصة تعليم الأطفال";
 const SITE_KEYWORDS = ["منصة تعليم الأطفال"];
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
 
-  title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
-  },
+  const siteName = settings?.meta.title ?? settings?.title ?? SITE_NAME;
+  const description =
+    settings?.meta.description ?? settings?.description ?? SITE_DESCRIPTION;
+  const keywords = settings?.meta.keywords
+    ? settings.meta.keywords.split(",").map((k) => k.trim())
+    : SITE_KEYWORDS;
+  const favicon = settings?.meta.favicon ?? "/images/fav.svg";
+  const ogImage = settings?.logo ?? "/images/logo.svg";
 
-  description: SITE_DESCRIPTION,
+  return {
+    metadataBase: new URL(SITE_URL),
 
-  keywords: SITE_KEYWORDS,
-
-  authors: [
-    {
-      name: SITE_NAME,
-      url: SITE_URL,
+    title: {
+      default: siteName,
+      template: `%s | ${settings?.title ?? SITE_NAME}`,
     },
-  ],
 
-  creator: SITE_NAME,
-  publisher: SITE_NAME,
+    description,
 
-  robots: {
-    index: true,
-    follow: true,
-  },
+    keywords,
 
-  alternates: {
-    canonical: SITE_URL,
-  },
-
-  openGraph: {
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    type: "website",
-
-    images: [
+    authors: [
       {
-        url: "/images/logo.svg",
-        width: 1200,
-        height: 630,
-        alt: SITE_NAME,
+        name: settings?.title ?? SITE_NAME,
+        url: SITE_URL,
       },
     ],
-  },
 
-  twitter: {
-    card: "summary_large_image",
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    images: ["/images/logo.svg"],
-  },
+    creator: settings?.title ?? SITE_NAME,
+    publisher: settings?.title ?? SITE_NAME,
 
-  icons: {
-    icon: "/images/fav.svg",
-    apple: "/images/fav.svg",
-  },
+    robots: {
+      index: true,
+      follow: true,
+    },
 
-  category: "Education",
+    alternates: {
+      canonical: SITE_URL,
+    },
 
-  verification: {
-    google: process.env.NEXT_GOOGLE_VERIFICATION || "",
-  },
-};
+    openGraph: {
+      title: siteName,
+      description,
+      url: SITE_URL,
+      siteName: settings?.title ?? SITE_NAME,
+      type: "website",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: siteName,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: siteName,
+      description,
+      images: [ogImage],
+    },
+
+    icons: {
+      icon: favicon,
+      apple: favicon,
+    },
+
+    category: "Education",
+
+    verification: {
+      google: process.env.NEXT_GOOGLE_VERIFICATION || "",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
@@ -111,8 +124,7 @@ export default function RootLayout({
             __html: JSON.stringify(schema),
           }}
         />
-        <Toaster position="top-center" richColors />
-        {children}
+        <RootProviders>{children}</RootProviders>
       </body>
     </html>
   );

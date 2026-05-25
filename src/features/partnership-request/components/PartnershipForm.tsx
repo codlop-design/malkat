@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import PhoneInput from "@/src/components/PhoneInput";
@@ -37,6 +37,7 @@ const defaultValues: PartnershipFormValues = {
 export default function PartnershipForm() {
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -115,21 +116,35 @@ export default function PartnershipForm() {
             dir="ltr"
             {...register("confirmEmail")}
           />
-          <SelectField
-            label="نوع الجهة *"
-            placeholder="اختر نوع الجهة"
-            options={[...ENTITY_TYPE_OPTIONS]}
-            error={errors.entityType?.message}
-            disabled={isSubmitting}
-            {...register("entityType")}
+          <Controller
+            name="entityType"
+            control={control}
+            render={({ field }) => (
+              <SelectField
+                label="نوع الجهة *"
+                placeholder="اختر نوع الجهة"
+                options={[...ENTITY_TYPE_OPTIONS]}
+                value={field.value}
+                onValueChange={field.onChange}
+                error={errors.entityType?.message}
+                disabled={isSubmitting}
+              />
+            )}
           />
-          <SelectField
-            label="نوع الشراكة *"
-            placeholder="اختر نوع الشراكة"
-            options={[...PARTNERSHIP_TYPE_OPTIONS]}
-            error={errors.partnershipType?.message}
-            disabled={isSubmitting}
-            {...register("partnershipType")}
+          <Controller
+            name="partnershipType"
+            control={control}
+            render={({ field }) => (
+              <SelectField
+                label="نوع الشراكة *"
+                placeholder="اختر نوع الشراكة"
+                options={[...PARTNERSHIP_TYPE_OPTIONS]}
+                value={field.value}
+                onValueChange={field.onChange}
+                error={errors.partnershipType?.message}
+                disabled={isSubmitting}
+              />
+            )}
           />
         </div>
 

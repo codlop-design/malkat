@@ -3,10 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+import type { HomeContentMediaSection } from "../types";
 
-export default function AboutSection() {
+type AboutSectionProps = {
+  content?: HomeContentMediaSection | null;
+};
+
+export default function AboutSection({ content }: AboutSectionProps) {
+  if (!content) {
+    return null;
+  }
+
   return (
     <section className="py-12">
       <div className="container">
@@ -29,12 +37,11 @@ export default function AboutSection() {
               variants={fadeUp}
               className="text-2xl font-bold text-black"
             >
-              نبني جيلاً واعياً بمحتوى تعليمي يُلهم ويُبدع
+              {content.title}
             </motion.h2>
 
             <motion.p variants={fadeUp} className="text-base text-[#1F1F1F]">
-              نافذة المستقبل منصة تعليمية متخصصة تقدّم تجارب تعليمية ثرية
-              للأطفال والأسر، بمحتوى موثوق يجمع بين المتعة والتعلّم العميق.
+              {content.description}
             </motion.p>
 
             <motion.div variants={fadeUp}>
@@ -58,9 +65,13 @@ export default function AboutSection() {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={motionViewport}
-            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.55,
+              delay: 0.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
-            <Image src="/about.png" alt="About" width={500} height={500} />
+            <Image src={content.image} alt="About" width={500} height={500} />
           </motion.div>
         </div>
       </div>

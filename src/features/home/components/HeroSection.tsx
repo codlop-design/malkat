@@ -3,10 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
 import { fadeUp, staggerContainer } from "@/src/lib/motion";
+import type { HomeContentMediaSection } from "../types";
 
-export default function HeroSection() {
+type HeroSectionProps = {
+  content?: HomeContentMediaSection | null;
+};
+
+export default function HeroSection({ content }: HeroSectionProps) {
+  if (!content) {
+    return null;
+  }
+
   return (
     <section className="bg-[#FFF8F0] py-12">
       <div className="container">
@@ -21,12 +29,14 @@ export default function HeroSection() {
               variants={fadeUp}
               className="text-[32px] md:text-[48px] font-medium leading-[40px] md:leading-[64px] text-black"
             >
-              رحلة تعليمية ممتعة تُلهم أطفال المستقبل
+              {content.title}
             </motion.h1>
 
-            <motion.p variants={fadeUp} className="text-base md:text-2xl text-[#454545]">
-              منصة تفاعلية تقدم محتوى تعليمي وأنشطة ودورات مصممة خصيصًا لتنمية
-              مهارات الأطفال بطريقة ممتعة وآمنة
+            <motion.p
+              variants={fadeUp}
+              className="text-base md:text-2xl text-[#454545]"
+            >
+              {content.description}
             </motion.p>
 
             <motion.div
@@ -52,9 +62,19 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 48, scale: 0.88 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.7,
+              delay: 0.35,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
-            <Image src="/hero.png" alt="Hero Image" width={640} height={640} />
+            <Image
+              src={content.image || "/hero.png"}
+              alt={content.title}
+              width={640}
+              height={640}
+              priority
+            />
           </motion.div>
         </div>
       </div>
