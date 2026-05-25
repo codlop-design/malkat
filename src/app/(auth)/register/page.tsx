@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function page() {
   return (
     <div className="md:h-screen h-auto overflow-y-auto px-4 py-10 md:p-10">
-      <div className="max-w-2xl mx-auto flex flex-col h-full">
+      <div className="max-w-2xl mx-auto flex flex-col">
         <p className="text-center text-sm text-[#454545]">
           <Link
             href="/"

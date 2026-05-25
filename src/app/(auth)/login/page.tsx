@@ -9,7 +9,7 @@ export const metadata = {
 export default function LoginPage() {
   return (
     <div className="md:h-screen h-auto overflow-y-auto px-4 py-10 md:p-10">
-      <div className="max-w-2xl mx-auto flex flex-col md:gap-40 gap-10 h-full">
+      <div className="max-w-2xl mx-auto flex flex-col md:gap-40 gap-10">
         <p className="text-center text-sm text-[#454545]">
           <Link
             href="/"
