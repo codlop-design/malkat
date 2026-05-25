@@ -1,7 +1,15 @@
 import NewsCard from "@/src/features/news/components/NewsCard";
-import { ALL_NEWS } from "@/src/features/news/data/news";
+import type { NewsArticle } from "@/src/features/news/types";
 
-export default function AllNewsSection() {
+type AllNewsSectionProps = {
+  articles: NewsArticle[];
+};
+
+export default function AllNewsSection({ articles }: AllNewsSectionProps) {
+  if (!articles.length) {
+    return null;
+  }
+
   return (
     <section className="py-8">
       <div className="container">
@@ -9,7 +17,7 @@ export default function AllNewsSection() {
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
           dir="rtl"
         >
-          {ALL_NEWS.map((article) => (
+          {articles.map((article) => (
             <NewsCard key={article.id} article={article} />
           ))}
         </div>

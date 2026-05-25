@@ -4,14 +4,22 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import NewsCard from "@/src/features/news/components/NewsCard";
-import { LATEST_NEWS } from "@/src/features/news/data/news";
 import {
   fadeUp,
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+import type { NewsArticle } from "@/src/features/news/types";
 
-export default function LatestNewsSection() {
+type LatestNewsSectionProps = {
+  articles: NewsArticle[];
+};
+
+export default function LatestNewsSection({ articles }: LatestNewsSectionProps) {
+  if (!articles.length) {
+    return null;
+  }
+
   return (
     <section className="bg-[#FAFAFA] py-12 md:py-16">
       <div className="container">
@@ -38,7 +46,7 @@ export default function LatestNewsSection() {
           </motion.div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {LATEST_NEWS.map((article) => (
+            {articles.map((article) => (
               <motion.div key={article.id} variants={fadeUp} className="h-full">
                 <NewsCard article={article} />
               </motion.div>

@@ -3,11 +3,19 @@
 import Image from "next/image";
 import ReadMoreLink from "@/src/features/news/components/ReadMoreLink";
 import { motion } from "framer-motion";
-import { FEATURED_NEWS } from "@/src/features/news/data/news";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+import type { NewsArticle } from "@/src/features/news/types";
 
-export default function FeaturedNews() {
-  const { slug, title, excerpt, date, imageSrc } = FEATURED_NEWS;
+type FeaturedNewsProps = {
+  article: NewsArticle | null;
+};
+
+export default function FeaturedNews({ article }: FeaturedNewsProps) {
+  if (!article) {
+    return null;
+  }
+
+  const { slug, title, excerpt, date, imageSrc } = article;
 
   return (
     <section className="bg-white py-10 md:py-14">

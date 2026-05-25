@@ -1,20 +1,24 @@
 "use client";
 
-import type { NewsArticle } from "@/src/features/news/types";
-
 import { motion } from "framer-motion";
-import { getArticleDetail } from "@/src/features/news/data/articleDetail";
-import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+
 import NewsArticleGallery from "@/src/features/news/components/NewsArticleGallery";
-import Image from "next/image";
+import {
+  fadeUp,
+  motionViewport,
+  staggerContainer,
+} from "@/src/lib/motion";
+import type { NewsArticle, NewsArticleDetail } from "@/src/features/news/types";
 
 type NewsArticleSectionProps = {
   article: NewsArticle;
+  detail: NewsArticleDetail;
 };
 
-export default function NewsArticleSection({ article }: NewsArticleSectionProps) {
-  const detail = getArticleDetail(article);
-
+export default function NewsArticleSection({
+  article,
+  detail,
+}: NewsArticleSectionProps) {
   return (
     <section className="bg-white py-10 md:py-14">
       <motion.div
@@ -30,55 +34,36 @@ export default function NewsArticleSection({ article }: NewsArticleSectionProps)
             variants={fadeUp}
             className="min-w-0 flex-1 text-right lg:flex-[1.1]"
           >
-            <time className="text-sm text-[#717171]">{article.date}</time>
+            {article.date ? (
+              <time className="text-sm text-[#717171]">{article.date}</time>
+            ) : null}
 
-            <p className="mt-5 text-sm leading-[1.95] text-[#454545] md:text-base">
-              {detail.intro}
-            </p>
+            {detail.video ? (
+              <div className="mt-6 overflow-hidden rounded-2xl">
+                <video
+                  src={detail.video}
+                  controls
+                  playsInline
+                  className="aspect-video w-full bg-black object-cover"
+                />
+              </div>
+            ) : null}
 
-            <p className="mt-5 text-sm leading-[1.95] text-[#454545] md:text-base">
-              {detail.activitiesIntro}
-            </p>
-            <ul className="mt-3 list-disc space-y-2 pe-5 text-sm leading-[1.9] text-[#454545] md:text-base">
-              {detail.activities.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-
-            <h2 className="mt-8 text-lg font-bold text-black md:text-xl">
-              {detail.goalsTitle}
-            </h2>
-            <ul className="mt-3 list-disc space-y-2 pe-5 text-sm leading-[1.9] text-[#454545] md:text-base">
-              {detail.goals.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-
-            <h2 className="mt-8 text-lg font-bold text-black md:text-xl">
-              {detail.programStartTitle}
-            </h2>
-            <p className="mt-3 text-sm leading-[1.95] text-[#454545] md:text-base">
-              {detail.programStart}
-            </p>
+            <div
+              className="prose prose-sm mt-5 max-w-none text-[#454545] md:prose-base [&_a]:text-primary [&_strong]:text-black"
+              dangerouslySetInnerHTML={{ __html: detail.contentHtml }}
+            />
           </motion.article>
 
-          <motion.div variants={fadeUp} className="min-w-0 flex-1 lg:max-w-[540px]">
-            <NewsArticleGallery images={detail.gallery} />
-          </motion.div>
+          {detail.gallery.length > 0 ? (
+            <motion.div
+              variants={fadeUp}
+              className="min-w-0 flex-1 lg:max-w-[540px]"
+            >
+              <NewsArticleGallery images={detail.gallery} />
+            </motion.div>
+          ) : null}
         </div>
-
-        <motion.div
-          variants={fadeUp}
-          className="relative aspect-21/9 w-full overflow-hidden rounded-2xl md:aspect-[2.4/1]"
-        >
-          <Image
-            src={detail.featuredImage}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="100vw"
-          />
-        </motion.div>
       </motion.div>
     </section>
   );

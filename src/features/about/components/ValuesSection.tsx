@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-import ValueCard from "@/src/features/about/ValueCard";
+import ValueCard from "@/src/features/about/components/ValueCard";
 import {
   fadeUp,
   motionViewport,

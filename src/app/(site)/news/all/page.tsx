@@ -1,7 +1,10 @@
 import PageHeader from "@/src/components/PageHeader";
+import { getNewsList } from "@/src/features/news/api/getNewsList";
 import AllNewsSection from "@/src/features/news/components/AllNewsSection";
 
-export default function page() {
+export default async function AllNewsPage() {
+  const newsList = await getNewsList();
+
   return (
     <>
       <PageHeader
@@ -12,7 +15,7 @@ export default function page() {
           { label: "الكل" },
         ]}
       />
-      <AllNewsSection />
+      <AllNewsSection articles={newsList?.items ?? []} />
     </>
   );
 }
