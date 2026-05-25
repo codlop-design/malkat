@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export type VisionCardProps = {
   label: string;
   lead: string;
-  body: string;
+  body?: string;
   bullets: string[];
   icon: ReactNode;
 };
@@ -55,10 +55,12 @@ export default function VisionCard({
           <h3 className="text-xl font-bold leading-snug text-white md:text-2xl">
             {lead}
           </h3>
-          <p className="text-[15px] leading-[1.9] text-white/92 md:text-base">
-            {body}
-          </p>
-          <BulletList items={bullets} />
+          {body ? (
+            <p className="text-[15px] leading-[1.9] text-white/92 md:text-base">
+              {body}
+            </p>
+          ) : null}
+          {bullets.length > 0 ? <BulletList items={bullets} /> : null}
         </div>
       </div>
     </article>

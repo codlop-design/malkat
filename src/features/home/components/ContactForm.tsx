@@ -43,25 +43,15 @@ export default function ContactForm({ contactTypes }: ContactFormProps) {
   });
 
   async function onSubmit(values: ContactFormValues) {
-    await toast.promise(
-      submitContactAction(values).then((result) => {
-        if (!result.success) {
-          throw new Error(result.message);
-        }
-        return result;
-      }),
-      {
-        loading: "جاري إرسال رسالتك...",
-        success: (result) => {
-          reset(defaultValues);
-          return result.message;
-        },
-        error: (error) =>
-          error instanceof Error
-            ? error.message
-            : "تعذر إرسال الرسالة، حاول مرة أخرى",
-      },
-    );
+    const result = await submitContactAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    reset(defaultValues);
   }
 
   const typeOptions = contactTypes.map((type) => ({
@@ -149,21 +139,17 @@ export default function ContactForm({ contactTypes }: ContactFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
+        aria-busy={isSubmitting}
         className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-3.5 text-base font-medium text-white transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="size-5 animate-spin" aria-hidden />
-            <span>جاري الإرسال...</span>
-          </>
-        ) : (
-          <>
-            <span>إرسال الرسالة</span>
-            <span className="flex size-8 items-center justify-center rounded-full bg-white/20">
-              <ChevronsLeft className="size-4" strokeWidth={2.5} />
-            </span>
-          </>
-        )}
+        <span>{isSubmitting ? "جاري الإرسال..." : "إرسال الرسالة"}</span>
+        <span className="flex size-8 items-center justify-center rounded-full bg-white/20">
+          {isSubmitting ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <ChevronsLeft className="size-4" strokeWidth={2.5} aria-hidden />
+          )}
+        </span>
       </button>
     </form>
   );

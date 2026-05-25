@@ -1,24 +1,27 @@
 "use client";
 
-import VisionCard from "@/src/features/about/VisionCard";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+import VisionCard from "@/src/features/about/VisionCard";
 import {
   fadeUp,
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+import type { VisionMessage } from "@/src/features/about/types";
 
-const SHARED_FOCUS_POINTS = [
-  "تعليم متاح للجميع",
-  "محتوى يواكب المستقبل",
-  "تجربة ممتعة وآمنة",
-];
+type VisionSectionProps = {
+  messages: VisionMessage[];
+};
 
-export default function VisionSection() {
+export default function VisionSection({ messages }: VisionSectionProps) {
+  if (!messages.length) {
+    return null;
+  }
+
   return (
-    <section className="bg-[#006d6d] py-14 md:py-8 lg:py-14" >
+    <section className="bg-[#006d6d] py-14 md:py-8 lg:py-14">
       <div className="container">
         <motion.header
           className="mb-12 text-center md:mb-16"
@@ -48,29 +51,24 @@ export default function VisionSection() {
           viewport={motionViewport}
           variants={staggerContainer(0.15)}
         >
-          <motion.div variants={fadeUp}>
-            <VisionCard
-              label="رؤيتنا"
-              lead="أن نكون المنصة التعليمية الأولى للطفل العربي"
-              body="نتطلع إلى عالم يتساوى فيه الأطفال في الحصول على تعليم عالي الجودة، بغض النظر عن موقعهم أو إمكاناتهم – تعليم يُلهمهم، يُمكنّهم، ويُحضّرهم لقيادة مستقبل أفضل."
-              bullets={SHARED_FOCUS_POINTS}
-              icon={
-                <Image src="/v1.svg" alt="" width={40} height={40} />
-              }
-            />
-          </motion.div>
-
-          <motion.div variants={fadeUp}>
-            <VisionCard
-              label="رسالتنا"
-              lead="تمكين كل طفل بتعلّم يُناسب عالمه وطموحه"
-              body="نبني تجارب تعليمية تفاعلية تجمع الترفيه والمعرفة، بالشراكة مع الأسرة والمجتمع، لتنشئة جيل يحب التعلم ويثق بقدراته."
-              bullets={SHARED_FOCUS_POINTS}
-              icon={
-                <Image src="/v2.svg" alt="" width={40} height={40} />
-              }
-            />
-          </motion.div>
+          {messages.map((message) => (
+            <motion.div key={message.title} variants={fadeUp}>
+              <VisionCard
+                label={message.title}
+                lead={message.content}
+                bullets={message.items}
+                icon={
+                  <Image
+                    src={message.icon}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="size-10 object-contain"
+                  />
+                }
+              />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

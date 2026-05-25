@@ -9,10 +9,19 @@ import {
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+import type { AboutPartnersBlock } from "@/src/features/about/types";
 
-export default function PartnersSection() {
+type PartnersSectionProps = {
+  partners?: AboutPartnersBlock | null;
+};
+
+export default function PartnersSection({ partners }: PartnersSectionProps) {
+  if (!partners) {
+    return null;
+  }
+
   return (
-    <section className="bg-[#F5F0E8] py-14 md:py-8 lg:py-14" >
+    <section className="bg-[#F5F0E8] py-14 md:py-8 lg:py-14">
       <div className="container">
         <motion.div
           className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center md:gap-3"
@@ -32,22 +41,21 @@ export default function PartnersSection() {
             variants={fadeUp}
             className="text-2xl font-bold text-black md:text-3xl lg:text-[32px]"
           >
-            نبني معاً مستقبلاً أفضل
+            {partners.title}
           </motion.h2>
 
           <motion.p
             variants={fadeUp}
             className="text-base leading-[1.85] text-[#454545] md:text-lg"
           >
-            بالتعاون مع مؤسسات رائدة وشركاء استراتيجيين نوسع تأثيرنا ونصل لكل
-            طفل يحتاج التعلم
+            {partners.sub_title}
           </motion.p>
 
           <motion.p
             variants={fadeUp}
             className="mt-2 text-base font-medium text-black md:text-lg"
           >
-            هل مؤسستك أو شركتك مهتمة بالتعاون معنا؟
+            {partners.content}
           </motion.p>
 
           <motion.div variants={fadeUp}>
