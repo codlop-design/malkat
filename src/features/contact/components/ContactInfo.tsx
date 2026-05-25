@@ -64,7 +64,7 @@ export default function ContactInfo({ contacts }: ContactInfoProps) {
             <h3 className="text-base font-bold text-black">{item.title}</h3>
             <ul className="mt-2 flex flex-col gap-2">
               {item.lines.map((line) => (
-                <li key={line.text} className="break-words">
+                <li key={line.text} className="wrap-break-words">
                   {line.href ? (
                     <a
                       href={line.href}

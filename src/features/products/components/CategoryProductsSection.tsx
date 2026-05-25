@@ -7,42 +7,40 @@ import { motion } from "framer-motion";
 
 import Pagination from "@/src/components/Pagination";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
+import type { CatalogListItem } from "@/src/features/products/data/catalogRegistry";
 import {
-  getCatalogItems,
   renderCatalogCard,
   searchCatalogItems,
 } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
-import { fadeUp, motionViewport } from "@/src/lib/motion";
-
-const PAGE_SIZE = 10;
+import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
+import { fadeUp } from "@/src/lib/motion";
 
 type CategoryProductsSectionProps = {
   category: CatalogSectionKey;
+  items: CatalogListItem[];
+  pagination: CatalogPagination;
+  initialQuery?: string;
 };
 
 export default function CategoryProductsSection({
   category,
+  items,
+  pagination,
+  initialQuery = "",
 }: CategoryProductsSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const [query, setQuery] = useState(initialQuery || searchParams.get("q") || "");
 
-  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const currentPage = pagination.current_page;
+  const totalPages = Math.max(1, pagination.last_page);
   const { searchPlaceholder } = CATEGORY_META[category];
   const basePath = `/products/${category}`;
 
-  const filtered = useMemo(() => {
-    return searchCatalogItems(category, getCatalogItems(category), query);
-  }, [category, query]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const currentPage = Math.min(page, totalPages);
-
   const pageItems = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return filtered.slice(start, start + PAGE_SIZE);
-  }, [filtered, currentPage]);
+    return searchCatalogItems(category, items, query);
+  }, [category, items, query]);
 
   const paginationSearchParams = useMemo(() => {
     const params: Record<string, string> = {};
@@ -83,11 +81,11 @@ export default function CategoryProductsSection({
         </motion.form>
 
         <motion.ul
+          key={currentPage}
           className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           dir="rtl"
           initial="hidden"
-          whileInView="visible"
-          viewport={motionViewport}
+          animate="visible"
           variants={{
             hidden: {},
             visible: { transition: { staggerChildren: 0.05 } },
