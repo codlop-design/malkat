@@ -1,7 +1,14 @@
 import PageHeader from "@/src/components/PageHeader";
 import { PartnershipPageContent } from "@/src/features/partnership-request";
+import { getOrganizationTypes } from "@/src/features/register-interest/api/getOrganizationTypes";
+import { getPartnershipTypes } from "@/src/features/register-interest/api/getPartnershipTypes";
 
-export default function RequestPartnershipPage() {
+export default async function RequestPartnershipPage() {
+  const [organizationTypes, partnershipTypes] = await Promise.all([
+    getOrganizationTypes(),
+    getPartnershipTypes(),
+  ]);
+
   return (
     <>
       <PageHeader
@@ -12,7 +19,10 @@ export default function RequestPartnershipPage() {
           { label: "طلب شراكة" },
         ]}
       />
-      <PartnershipPageContent />
+      <PartnershipPageContent
+        organizationTypes={organizationTypes}
+        partnershipTypes={partnershipTypes}
+      />
     </>
   );
 }

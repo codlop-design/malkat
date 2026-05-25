@@ -8,34 +8,53 @@ import PhoneInput from "@/src/components/PhoneInput";
 import { InputField } from "@/src/components/InputField";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
-import {
-  ENTITY_TYPE_OPTIONS,
-  PARTNERSHIP_TYPE_OPTIONS,
-} from "@/src/features/register-interest/data/options";
+import { submitUserInterestAction } from "@/src/features/register-interest/api/submitUserInterestAction";
+import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
 import {
   interestSchema,
   type InterestFormValues,
 } from "@/src/features/register-interest/schemas/interestSchema";
-
-const REGISTRANT_OPTIONS = [
-  { value: "entity" as const, label: "جهة" },
-  { value: "individual" as const, label: "فرد" },
-];
+import type { RegisterInterestFormOptions } from "@/src/features/register-interest/types";
 
 const textareaClassName =
   "w-full min-h-[140px] resize-none rounded-xl border border-[#E5E5E5] bg-white p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#717171] focus:border-primary disabled:cursor-not-allowed disabled:opacity-60";
 
-const defaultValues: InterestFormValues = {
-  registrantType: "entity",
-  entityName: "",
-  entityType: "",
-  partnershipType: "",
-  phone: "",
-  email: "",
-  message: "",
-};
+function buildDefaultValues(
+  applicantType: InterestFormValues["interested_applicant_types"],
+): InterestFormValues {
+  const shared = { name: "", phone: "", email: "", message: "" };
 
-export default function InterestForm() {
+  if (applicantType === "organization") {
+    return {
+      interested_applicant_types: "organization",
+      orgnization_type_id: "",
+      parternes_type_id: "",
+      ...shared,
+    };
+  }
+
+  return {
+    interested_applicant_types: "individual",
+    ...shared,
+  };
+}
+
+type InterestFormProps = RegisterInterestFormOptions;
+
+export default function InterestForm({
+  applicantTypes,
+  organizationTypes,
+  partnershipTypes,
+}: InterestFormProps) {
+  const defaultApplicantType =
+    applicantTypes.find((t) => t.key === "organization")?.key ??
+    applicantTypes[0]?.key ??
+    "organization";
+
+  const defaultValues = buildDefaultValues(
+    defaultApplicantType as InterestFormValues["interested_applicant_types"],
+  );
+
   const {
     register,
     control,
@@ -49,13 +68,22 @@ export default function InterestForm() {
     defaultValues,
   });
 
-  const registrantType = watch("registrantType");
-  const isEntity = registrantType === "entity";
+  const interestedApplicantType = watch("interested_applicant_types");
+  const isOrganization = interestedApplicantType === "organization";
 
-  async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    toast.success("تم إرسال طلبك بنجاح");
-    reset(defaultValues);
+  const organizationTypeOptions = mapLookupOptions(organizationTypes);
+  const partnershipTypeOptions = mapLookupOptions(partnershipTypes);
+
+  async function onSubmit(values: InterestFormValues) {
+    const result = await submitUserInterestAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    reset(buildDefaultValues(values.interested_applicant_types));
   }
 
   return (
@@ -75,40 +103,29 @@ export default function InterestForm() {
             نوع المسجل
           </legend>
           <Controller
-            name="registrantType"
+            name="interested_applicant_types"
             control={control}
             render={({ field }) => (
               <div className="flex flex-wrap gap-6">
-                {REGISTRANT_OPTIONS.map(({ value, label }) => (
+                {applicantTypes.map(({ key, label }) => (
                   <label
-                    key={value}
+                    key={key}
                     className="flex cursor-pointer items-center gap-2.5 text-sm text-[#454545]"
                   >
                     <input
                       type="radio"
-                      value={value}
-                      checked={field.value === value}
+                      value={key}
+                      checked={field.value === key}
                       onChange={() => {
                         const { phone, email, message } = getValues();
-                        if (value === "entity") {
-                          reset({
-                            registrantType: "entity",
-                            entityName: "",
-                            entityType: "",
-                            partnershipType: "",
-                            phone,
-                            email,
-                            message: message ?? "",
-                          });
-                        } else {
-                          reset({
-                            registrantType: "individual",
-                            name: "",
-                            phone,
-                            email,
-                            message: message ?? "",
-                          });
-                        }
+                        reset({
+                          ...buildDefaultValues(
+                            key as InterestFormValues["interested_applicant_types"],
+                          ),
+                          phone,
+                          email,
+                          message: message ?? "",
+                        });
                       }}
                       disabled={isSubmitting}
                       className="size-4 accent-primary"
@@ -119,35 +136,22 @@ export default function InterestForm() {
               </div>
             )}
           />
-          {errors.registrantType ? (
+          {errors.interested_applicant_types ? (
             <p className="mt-1.5 text-sm text-red-600">
-              {errors.registrantType.message}
+              {errors.interested_applicant_types.message}
             </p>
           ) : null}
         </fieldset>
 
         <div className="grid gap-5 sm:grid-cols-2">
-          {isEntity ? (
-            <InputField
-              label="اسم الجهة *"
-              type="text"
-              placeholder="ادخل الاسم"
-              error={
-                "entityName" in errors ? errors.entityName?.message : undefined
-              }
-              disabled={isSubmitting}
-              {...register("entityName")}
-            />
-          ) : (
-            <InputField
-              label="الاسم *"
-              type="text"
-              placeholder="ادخل الاسم"
-              error={"name" in errors ? errors.name?.message : undefined}
-              disabled={isSubmitting}
-              {...register("name")}
-            />
-          )}
+          <InputField
+            label={isOrganization ? "اسم الجهة *" : "الاسم *"}
+            type="text"
+            placeholder="ادخل الاسم"
+            error={errors.name?.message}
+            disabled={isSubmitting}
+            {...register("name")}
+          />
           <PhoneInput
             label="رقم الجوال *"
             placeholder="ادخل رقم الجوال"
@@ -166,43 +170,43 @@ export default function InterestForm() {
           {...register("email")}
         />
 
-        {isEntity ? (
+        {isOrganization ? (
           <div className="grid gap-5 sm:grid-cols-2">
             <Controller
-              name="entityType"
+              name="orgnization_type_id"
               control={control}
               render={({ field }) => (
                 <SelectField
                   label="نوع الجهة *"
                   placeholder="اختر نوع الجهة"
-                  options={[...ENTITY_TYPE_OPTIONS]}
+                  options={organizationTypeOptions}
                   value={field.value}
                   onValueChange={field.onChange}
                   error={
-                    "entityType" in errors
-                      ? errors.entityType?.message
+                    "orgnization_type_id" in errors
+                      ? errors.orgnization_type_id?.message
                       : undefined
                   }
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || organizationTypeOptions.length === 0}
                 />
               )}
             />
             <Controller
-              name="partnershipType"
+              name="parternes_type_id"
               control={control}
               render={({ field }) => (
                 <SelectField
                   label="نوع الشراكة *"
                   placeholder="اختر نوع الشراكة"
-                  options={[...PARTNERSHIP_TYPE_OPTIONS]}
+                  options={partnershipTypeOptions}
                   value={field.value}
                   onValueChange={field.onChange}
                   error={
-                    "partnershipType" in errors
-                      ? errors.partnershipType?.message
+                    "parternes_type_id" in errors
+                      ? errors.parternes_type_id?.message
                       : undefined
                   }
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || partnershipTypeOptions.length === 0}
                 />
               )}
             />
@@ -214,7 +218,7 @@ export default function InterestForm() {
             htmlFor="interest-message"
             className="mb-2 block text-sm font-medium text-black"
           >
-            محتوى الرسالة
+            محتوى الرسالة *
           </label>
           <textarea
             id="interest-message"
@@ -222,6 +226,7 @@ export default function InterestForm() {
             placeholder="محتوى الرسالة"
             disabled={isSubmitting}
             className={textareaClassName}
+            aria-invalid={errors.message ? true : undefined}
             {...register("message")}
           />
           {errors.message ? (

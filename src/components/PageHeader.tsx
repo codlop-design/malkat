@@ -23,7 +23,7 @@ type PageHeaderProps = {
 
 export default function PageHeader({ title, breadcrumbs }: PageHeaderProps) {
   return (
-    <section className="relative h-[340px] md:block hidden" >
+    <section className="relative h-[180px] md:block hidden" >
       <Image
         src="/bg-header.png"
         alt=""

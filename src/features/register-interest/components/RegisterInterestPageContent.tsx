@@ -4,9 +4,14 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 import InterestForm from "@/src/features/register-interest/components/InterestForm";
+import type { RegisterInterestFormOptions } from "@/src/features/register-interest/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
-export default function RegisterInterestPageContent() {
+type RegisterInterestPageContentProps = RegisterInterestFormOptions;
+
+export default function RegisterInterestPageContent(
+  props: RegisterInterestPageContentProps,
+) {
   return (
     <section className="bg-[#FFFBF7] pb-14 pt-8 md:pb-20 md:pt-10">
       <motion.div
@@ -18,7 +23,7 @@ export default function RegisterInterestPageContent() {
       >
         <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
           <motion.div variants={fadeUp} className="flex-2">
-            <InterestForm />
+            <InterestForm {...props} />
           </motion.div>
 
           <motion.div

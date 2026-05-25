@@ -9,14 +9,17 @@ import PhoneInput from "@/src/components/PhoneInput";
 import { InputField } from "@/src/components/InputField";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
-import {
-  ENTITY_TYPE_OPTIONS,
-  PARTNERSHIP_TYPE_OPTIONS,
-} from "@/src/features/register-interest/data/options";
+import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
+import type { LookupOption } from "@/src/features/register-interest/types";
 import {
   partnershipSchema,
   type PartnershipFormValues,
 } from "@/src/features/partnership-request/schemas/partnershipSchema";
+
+type PartnershipFormProps = {
+  organizationTypes: LookupOption[];
+  partnershipTypes: LookupOption[];
+};
 
 const textareaClassName =
   "w-full min-h-[120px] resize-none rounded-xl border border-[#E5E5E5] bg-[#FAF8F5] p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary disabled:cursor-not-allowed disabled:opacity-60";
@@ -34,7 +37,12 @@ const defaultValues: PartnershipFormValues = {
   partnershipDetails: "",
 };
 
-export default function PartnershipForm() {
+export default function PartnershipForm({
+  organizationTypes,
+  partnershipTypes,
+}: PartnershipFormProps) {
+  const organizationTypeOptions = mapLookupOptions(organizationTypes);
+  const partnershipTypeOptions = mapLookupOptions(partnershipTypes);
   const {
     register,
     control,
@@ -123,7 +131,7 @@ export default function PartnershipForm() {
               <SelectField
                 label="نوع الجهة *"
                 placeholder="اختر نوع الجهة"
-                options={[...ENTITY_TYPE_OPTIONS]}
+                options={organizationTypeOptions}
                 value={field.value}
                 onValueChange={field.onChange}
                 error={errors.entityType?.message}
@@ -138,7 +146,7 @@ export default function PartnershipForm() {
               <SelectField
                 label="نوع الشراكة *"
                 placeholder="اختر نوع الشراكة"
-                options={[...PARTNERSHIP_TYPE_OPTIONS]}
+                options={partnershipTypeOptions}
                 value={field.value}
                 onValueChange={field.onChange}
                 error={errors.partnershipType?.message}

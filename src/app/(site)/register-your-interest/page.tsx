@@ -1,7 +1,10 @@
 import PageHeader from "@/src/components/PageHeader";
+import { getRegisterInterestFormOptions } from "@/src/features/register-interest/api/getRegisterInterestFormOptions";
 import { RegisterInterestPageContent } from "@/src/features/register-interest";
 
-export default function RegisterYourInterestPage() {
+export default async function RegisterYourInterestPage() {
+  const formOptions = await getRegisterInterestFormOptions();
+
   return (
     <>
       <PageHeader
@@ -11,7 +14,7 @@ export default function RegisterYourInterestPage() {
           { label: "سجل الإهتمام" },
         ]}
       />
-      <RegisterInterestPageContent />
+      <RegisterInterestPageContent {...formOptions} />
     </>
   );
 }
