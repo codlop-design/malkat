@@ -7,9 +7,18 @@ import ContactForm from "@/src/features/contact/components/ContactForm";
 import ContactInfo from "@/src/features/contact/components/ContactInfo";
 import ContactIntro from "@/src/features/contact/components/ContactIntro";
 import ContactSocialLinks from "@/src/features/contact/components/ContactSocialLinks";
+import type { ContactPageData, ContactType } from "@/src/features/contact/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
-export default function ContactPageContent() {
+type ContactPageContentProps = {
+  data: ContactPageData | null;
+  contactTypes: ContactType[];
+};
+
+export default function ContactPageContent({
+  data,
+  contactTypes,
+}: ContactPageContentProps) {
   return (
     <>
       <ContactIntro />
@@ -25,17 +34,17 @@ export default function ContactPageContent() {
         >
           <div className="grid gap-8 lg:grid-cols-[minmax(280px,1fr)_minmax(0,1.65fr)] lg:items-start">
             <motion.div variants={fadeUp} className="min-w-0">
-              <ContactInfo />
+              <ContactInfo contacts={data?.contacts} />
             </motion.div>
             <motion.div variants={fadeUp} className="min-w-0">
-              <ContactForm />
+              <ContactForm contactTypes={contactTypes} variant="page" />
             </motion.div>
           </div>
         </motion.div>
       </section>
 
-      <ContactSocialLinks />
-      <ContactFAQ />
+      <ContactSocialLinks social={data?.social_media} />
+      <ContactFAQ faqs={data?.faqs} />
     </>
   );
 }

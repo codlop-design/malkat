@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      new URL("https://malkat-dashboard.codlop.sa/**"),
     ],
   },
 };

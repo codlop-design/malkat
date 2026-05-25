@@ -2,11 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { InputField } from "@/src/components/InputField";
-import PhoneInput from "@/src/components/PhoneInput";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import {
@@ -17,6 +15,7 @@ import {
   serviceRequestSchema,
   type ServiceRequestFormValues,
 } from "@/src/features/services/schemas/serviceRequestSchema";
+import PhoneInput from "@/src/components/PhoneInput";
 
 const textareaClassName =
   "w-full min-h-[140px] resize-none rounded-xl border border-[#E5E5E5] bg-white p-3 text-sm text-[#717171] outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary disabled:cursor-not-allowed disabled:opacity-60";
@@ -33,6 +32,7 @@ const defaultValues: ServiceRequestFormValues = {
 export default function ServiceRequestForm() {
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -90,21 +90,35 @@ export default function ServiceRequestForm() {
         />
 
         <div className="grid gap-5 sm:grid-cols-2">
-          <SelectField
-            label="نوع الخدمة *"
-            placeholder="اختر نوع الخدمة"
-            options={SERVICE_TYPE_OPTIONS}
-            error={errors.serviceType?.message}
-            disabled={isSubmitting}
-            {...register("serviceType")}
+          <Controller
+            name="serviceType"
+            control={control}
+            render={({ field }) => (
+              <SelectField
+                label="نوع الخدمة *"
+                placeholder="اختر نوع الخدمة"
+                options={SERVICE_TYPE_OPTIONS}
+                value={field.value}
+                onValueChange={field.onChange}
+                error={errors.serviceType?.message}
+                disabled={isSubmitting}
+              />
+            )}
           />
-          <SelectField
-            label="الفئة المستهدفة *"
-            placeholder="اختر الفئة"
-            options={TARGET_GROUP_OPTIONS}
-            error={errors.targetGroup?.message}
-            disabled={isSubmitting}
-            {...register("targetGroup")}
+          <Controller
+            name="targetGroup"
+            control={control}
+            render={({ field }) => (
+              <SelectField
+                label="الفئة المستهدفة *"
+                placeholder="اختر الفئة"
+                options={TARGET_GROUP_OPTIONS}
+                value={field.value}
+                onValueChange={field.onChange}
+                error={errors.targetGroup?.message}
+                disabled={isSubmitting}
+              />
+            )}
           />
         </div>
 

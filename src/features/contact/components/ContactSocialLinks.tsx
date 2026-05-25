@@ -4,8 +4,14 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { SVGProps } from "react";
 
-import { SOCIAL_LINKS } from "@/src/features/contact/data/contact";
+import type { SiteSettingsSocialMedia } from "@/src/features/contact/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+
+type ContactSocialLinksProps = {
+  social?: SiteSettingsSocialMedia;
+};
+
+type SocialId = "tiktok" | "x" | "instagram" | "facebook";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -70,30 +76,51 @@ function InstagramIcon(props: IconProps) {
   );
 }
 
-function SnapchatIcon(props: IconProps) {
+function FacebookIcon(props: IconProps) {
   return (
     <SocialSvg {...props}>
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M15.9996 30.333C17.5884 30.333 18.7136 29.6118 19.69 28.9854C19.8415 28.8882 19.9898 28.7927 20.1353 28.7031C21.2342 28.0269 22.5349 27.3702 24.8883 27.3701C25.347 27.3701 25.7476 27.0583 25.859 26.6133C26.2245 25.151 26.5444 24.462 26.9849 24.0215C27.4255 23.5812 28.1139 23.2619 29.5758 22.8965C29.9907 22.7927 30.2938 22.436 30.3297 22.0098C30.3405 21.8803 30.3222 21.754 30.2857 21.6348C30.4278 21.1874 30.2387 20.688 29.8111 20.4551C27.297 19.0855 26.4466 17.9537 26.3443 16.9941C26.2378 15.9939 26.8725 14.6555 28.7759 12.6973C29.1608 12.3013 29.1513 11.6681 28.7554 11.2832C28.3595 10.8983 27.7263 10.9068 27.3414 11.3027C26.0174 12.6648 24.9993 14.0103 24.564 15.3662C24.2803 13.9383 24.232 12.1836 24.232 9.89941C24.232 5.35268 20.5463 1.66699 15.9996 1.66699C11.4529 1.66705 7.76716 5.35271 7.76716 9.89941C7.76716 12.1828 7.71764 13.9366 7.43415 15.3643C6.99851 14.0091 5.98106 12.6641 4.65778 11.3027C4.27282 10.9069 3.63968 10.8983 3.24372 11.2832C2.84791 11.6682 2.83932 12.3013 3.22419 12.6973C5.12741 14.6554 5.76137 15.9939 5.65485 16.9941C5.55256 17.9537 4.70229 19.0854 2.18806 20.4551C1.7606 20.6879 1.57059 21.1875 1.71247 21.6348C1.67608 21.7539 1.65864 21.8804 1.6695 22.0098C1.70535 22.436 2.00852 22.7926 2.42341 22.8965C3.88566 23.262 4.57469 23.581 5.0152 24.0215C5.45572 24.462 5.77464 25.151 6.1402 26.6133C6.25158 27.0583 6.65213 27.3701 7.11091 27.3701C9.46473 27.3701 10.7658 28.0268 11.8648 28.7031C12.0103 28.7926 12.1577 28.8882 12.3091 28.9854C13.2855 29.6117 14.4108 30.333 15.9996 30.333ZM15.9996 28.333C15.0326 28.333 14.4278 27.9516 13.44 27.3291C13.276 27.2258 13.1012 27.116 12.9127 27C11.7281 26.2711 10.253 25.5261 7.88337 25.3916C7.54972 24.2405 7.13956 23.3177 6.42927 22.6074C6.07405 22.2522 5.66511 21.9725 5.20173 21.7393C6.97359 20.6439 8.11779 19.3585 8.8072 17.7266C9.70162 15.6089 9.76716 13.0241 9.76716 9.89941C9.76716 6.45728 12.5575 3.66705 15.9996 3.66699C19.4417 3.66699 22.232 6.45725 22.232 9.89941C22.232 13.0241 22.2975 15.6089 23.192 17.7266C23.8814 19.3586 25.0255 20.6439 26.7974 21.7393C26.334 21.9725 25.9251 22.2522 25.5699 22.6074C24.8596 23.3177 24.4494 24.2405 24.1158 25.3916C21.7461 25.5261 20.271 26.271 19.0865 27C18.8982 27.1159 18.7239 27.2259 18.5601 27.3291C17.5722 27.9516 16.9667 28.333 15.9996 28.333Z"
+        d="M18 2h-4a6 6 0 0 0-6 6v4H4v6h4v10h6V18h5l1-6h-6V8a2 2 0 0 1 2-2h4V2z"
         fill="currentColor"
       />
     </SocialSvg>
   );
 }
 
-const SOCIAL_ICONS: Record<
-  (typeof SOCIAL_LINKS)[number]["id"],
-  (props: IconProps) => React.JSX.Element
-> = {
+const SOCIAL_ICONS: Record<SocialId, (props: IconProps) => React.JSX.Element> = {
   tiktok: TikTokIcon,
   x: XIcon,
   instagram: InstagramIcon,
-  snapchat: SnapchatIcon,
+  facebook: FacebookIcon,
 };
 
-export default function ContactSocialLinks() {
+function buildSocialLinks(
+  social?: SiteSettingsSocialMedia,
+): { id: SocialId; label: string; href: string }[] {
+  if (!social) return [];
+
+  const links: { id: SocialId; label: string; href: string }[] = [];
+
+  if (social.instagram) {
+    links.push({ id: "instagram", label: "Instagram", href: social.instagram });
+  }
+  if (social.facebook) {
+    links.push({ id: "facebook", label: "Facebook", href: social.facebook });
+  }
+  if (social.x) {
+    links.push({ id: "x", label: "X", href: social.x });
+  }
+  if (social.tiktok) {
+    links.push({ id: "tiktok", label: "TikTok", href: social.tiktok });
+  }
+
+  return links;
+}
+
+export default function ContactSocialLinks({ social }: ContactSocialLinksProps) {
+  const links = buildSocialLinks(social);
+
+  if (links.length === 0) return null;
   return (
     <section className="bg-white py-12 md:py-16">
       <motion.div
@@ -114,7 +141,7 @@ export default function ContactSocialLinks() {
           variants={fadeUp}
           className="mt-8 flex flex-wrap items-center justify-center gap-5"
         >
-          {SOCIAL_LINKS.map(({ id, label, href }) => {
+          {links.map(({ id, label, href }) => {
             const Icon = SOCIAL_ICONS[id];
             return (
               <li key={id}>

@@ -168,27 +168,43 @@ export default function InterestForm() {
 
         {isEntity ? (
           <div className="grid gap-5 sm:grid-cols-2">
-            <SelectField
-              label="نوع الجهة *"
-              placeholder="اختر نوع الجهة"
-              options={[...ENTITY_TYPE_OPTIONS]}
-              error={
-                "entityType" in errors ? errors.entityType?.message : undefined
-              }
-              disabled={isSubmitting}
-              {...register("entityType")}
+            <Controller
+              name="entityType"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  label="نوع الجهة *"
+                  placeholder="اختر نوع الجهة"
+                  options={[...ENTITY_TYPE_OPTIONS]}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  error={
+                    "entityType" in errors
+                      ? errors.entityType?.message
+                      : undefined
+                  }
+                  disabled={isSubmitting}
+                />
+              )}
             />
-            <SelectField
-              label="نوع الشراكة *"
-              placeholder="اختر نوع الشراكة"
-              options={[...PARTNERSHIP_TYPE_OPTIONS]}
-              error={
-                "partnershipType" in errors
-                  ? errors.partnershipType?.message
-                  : undefined
-              }
-              disabled={isSubmitting}
-              {...register("partnershipType")}
+            <Controller
+              name="partnershipType"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  label="نوع الشراكة *"
+                  placeholder="اختر نوع الشراكة"
+                  options={[...PARTNERSHIP_TYPE_OPTIONS]}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  error={
+                    "partnershipType" in errors
+                      ? errors.partnershipType?.message
+                      : undefined
+                  }
+                  disabled={isSubmitting}
+                />
+              )}
             />
           </div>
         ) : null}

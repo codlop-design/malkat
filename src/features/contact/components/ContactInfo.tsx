@@ -3,8 +3,13 @@
 import { motion } from "framer-motion";
 import { Phone } from "lucide-react";
 
-import { CONTACT_INFO } from "@/src/features/contact/data/contact";
+import { buildContactInfoCards } from "@/src/features/contact/lib/buildContactInfoCards";
+import type { SiteSettingsContacts } from "@/src/features/contact/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+
+type ContactInfoProps = {
+  contacts?: SiteSettingsContacts;
+};
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -19,7 +24,11 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-export default function ContactInfo() {
+export default function ContactInfo({ contacts }: ContactInfoProps) {
+  const cards = buildContactInfoCards(contacts);
+
+  if (cards.length === 0) return null;
+
   return (
     <motion.div
       dir="rtl"
@@ -38,7 +47,7 @@ export default function ContactInfo() {
         </p>
       </motion.div>
 
-      {CONTACT_INFO.map((item) => (
+      {cards.map((item) => (
         <motion.article
           key={item.id}
           variants={fadeUp}

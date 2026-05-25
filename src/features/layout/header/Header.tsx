@@ -2,14 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useSettings } from "@/src/features/settings";
 import Image from "next/image";
 import Link from "next/link";
-
 import NavLinks from "./NavLinks";
 import SideMenu from "./SideMenu";
 import SideCart from "../../cart/components/SideCart";
 
 export default function Header() {
+  const settings = useSettings();
+  const logoSrc = settings?.logo ?? "/logo.png";
+  const logoAlt = settings?.title ?? "Logo";
+
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -66,8 +70,8 @@ export default function Header() {
 
                 <Link href="/">
                   <Image
-                    src="/logo.png"
-                    alt="Logo"
+                    src={logoSrc}
+                    alt={logoAlt}
                     width={120}
                     height={48}
                     className="h-auto w-auto object-contain"
@@ -94,11 +98,7 @@ export default function Header() {
         </div>
       </header>
 
-      <SideMenu
-        menuOpen={menuOpen}
-        closeMenu={closeMenu}
-        pathname={pathname}
-      />
+      <SideMenu menuOpen={menuOpen} closeMenu={closeMenu} pathname={pathname} />
     </>
   );
 }

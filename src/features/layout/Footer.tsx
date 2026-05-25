@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Facebook, Instagram, Linkedin } from "lucide-react";
+import { ChevronDown, Facebook, Instagram } from "lucide-react";
 import { useState } from "react";
+
+import { useSettings } from "@/src/features/settings";
+import type { SiteSettingsSocialMedia } from "@/src/features/settings/types";
 
 type FooterLink = { label: string; href: string };
 
@@ -42,18 +45,45 @@ const columns: FooterColumn[] = [
   { title: "الدعم", links: supportLinks },
 ];
 
-const socialLinks = [
-  { label: "Instagram", href: "#", icon: Instagram },
-  { label: "LinkedIn", href: "#", icon: Linkedin },
-  { label: "TikTok", href: "#", icon: TikTokIcon },
-  { label: "Facebook", href: "#", icon: Facebook },
-];
+type SocialLink = {
+  label: string;
+  href: string;
+  icon:
+    | typeof Instagram
+    | typeof Facebook
+    | typeof TikTokIcon
+    | typeof XIcon;
+};
+
+function buildSocialLinks(social?: SiteSettingsSocialMedia): SocialLink[] {
+  if (!social) return [];
+
+  return [
+    { label: "Instagram", href: social.instagram, icon: Instagram },
+    { label: "Facebook", href: social.facebook, icon: Facebook },
+    { label: "X", href: social.x, icon: XIcon },
+    { label: "TikTok", href: social.tiktok, icon: TikTokIcon },
+  ].filter((link) => link.href);
+}
 
 const legalLinks: FooterLink[] = [
   { label: "الشروط والأحكام", href: "/terms" },
   { label: "سياسة الخصوصية", href: "/privacy" },
   { label: "خريطة الموقع", href: "/sitemap" },
 ];
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -112,6 +142,14 @@ function FooterColumnBlock({ title, links }: FooterColumn) {
 }
 
 export default function Footer() {
+  const settings = useSettings();
+  const logoSrc = settings?.logo ?? "/logo.png";
+  const siteTitle = settings?.title ?? "منصة التعلم";
+  const description =
+    settings?.description ??
+    "منصة التعلم العربية الأولى. نمكن المتعلمين في كل مكان من الوصول لأفضل التعليم.";
+  const socialLinks = buildSocialLinks(settings?.social_media);
+
   return (
     <footer className="bg-white pt-14 pb-8">
       <div className="container">
@@ -119,8 +157,8 @@ export default function Footer() {
           <div className="mb-6 flex flex-col gap-5 md:mb-0">
             <Link href="/" className="inline-flex w-fit mx-auto md:mx-0">
               <Image
-                src="/logo.png"
-                alt="منصة التعلم"
+                src={logoSrc}
+                alt={siteTitle}
                 width={160}
                 height={48}
                 className="h-auto w-auto object-contain"
@@ -128,8 +166,7 @@ export default function Footer() {
             </Link>
 
             <p className="max-w-xs text-sm leading-relaxed text-[#454545] text-start md:text-start mx-auto md:mx-0">
-              منصة التعلم العربية الأولى. نمكن المتعلمين في كل مكان من الوصول
-              لأفضل التعليم.
+              {description}
             </p>
 
             <div className="flex items-center md:justify-start justify-center gap-3">
@@ -140,7 +177,7 @@ export default function Footer() {
                   aria-label={label}
                   className="flex size-10 items-center justify-center rounded-full bg-primary text-white transition-opacity hover:opacity-90"
                 >
-                  {Icon === TikTokIcon ? (
+                  {Icon === TikTokIcon || Icon === XIcon ? (
                     <Icon className="size-5" />
                   ) : (
                     <Icon className="size-5" strokeWidth={1.75} />
@@ -169,7 +206,7 @@ export default function Footer() {
               ))}
             </nav>
             <p className="text-sm text-[#454545]">
-              جميع الحقوق محفوظة لدى منصة التعلم @2026.
+              جميع الحقوق محفوظة لدى {siteTitle} @2026.
             </p>
           </div>
         </div>

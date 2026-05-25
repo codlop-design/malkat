@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-/** يحوّل إلى 9 أرقام وطنية تبدأ بـ 5 (بدون 966). يقبل لصقاً بصيغة +9665... أو 05... */
 function normalizeSaudiMobile(raw: string): string {
   let s = raw.replace(/\s/g, "");
   if (/^\+?966/.test(s)) {

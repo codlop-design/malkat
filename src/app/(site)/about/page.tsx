@@ -1,10 +1,13 @@
 import PageHeader from "@/src/components/PageHeader";
-import AboutPageContent from "@/src/features/about/AboutPageContent";
-import PartnersSection from "@/src/features/about/PartnersSection";
-import ValuesSection from "@/src/features/about/ValuesSection";
-import VisionSection from "@/src/features/about/VisionSection";
+import { getAboutContent } from "@/src/features/about/api/getAboutContent";
+import AboutPageContent from "@/src/features/about/components/AboutPageContent";
+import PartnersSection from "@/src/features/about/components/PartnersSection";
+import ValuesSection from "@/src/features/about/components/ValuesSection";
+import VisionSection from "@/src/features/about/components/VisionSection";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const aboutContent = await getAboutContent();
+
   return (
     <>
       <PageHeader
@@ -14,10 +17,10 @@ export default function AboutPage() {
           { label: "من نحن" },
         ]}
       />
-      <AboutPageContent />
-      <VisionSection />
-      <ValuesSection />
-      <PartnersSection />
+      <AboutPageContent sections={aboutContent?.aboutus_sections ?? []} />
+      <VisionSection messages={aboutContent?.vision_messages ?? []} />
+      <ValuesSection valuesBlock={aboutContent?.values?.[0]} />
+      <PartnersSection partners={aboutContent?.partners} />
     </>
   );
 }
