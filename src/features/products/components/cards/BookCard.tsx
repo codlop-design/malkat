@@ -1,4 +1,3 @@
-import { Eye } from "lucide-react";
 import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";

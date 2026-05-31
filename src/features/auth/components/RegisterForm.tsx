@@ -3,34 +3,48 @@
 import GoogleAuth from "@/src/components/GoogleAuth";
 import PhoneInput from "@/src/components/PhoneInput";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { registerAction } from "@/src/features/auth/api/registerAction";
 import {
   registerSchema,
   type RegisterFormValues,
 } from "@/src/features/auth/schemas/registerSchema";
 
+const defaultValues: RegisterFormValues = {
+  firstName: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+  acceptedTerms: false,
+};
+
 export default function RegisterForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      firstName: "",
-      email: "",
-      phone: "",
-      password: "",
-      confirmPassword: "",
-      acceptedTerms: false,
-    },
+    defaultValues,
   });
 
-  async function onSubmit() {
-    // TODO: wire up registration API (+966 قبل رقم الهاتف عند الطلب)
+  async function onSubmit(values: RegisterFormValues) {
+    const result = await registerAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    router.push("/login");
   }
 
   return (
