@@ -6,27 +6,29 @@ import { Plus, Minus } from "lucide-react";
 
 type QuantityControlProps = {
   quantity: number;
+  onChange?: (quantity: number) => void;
 };
 
-const QuantityControl = ({ quantity }: QuantityControlProps) => {
-  const [value, setValue] = useState<number>(quantity);
+const QuantityControl = ({ quantity, onChange }: QuantityControlProps) => {
+  const [internalValue, setInternalValue] = useState<number>(quantity);
+  const value = onChange ? quantity : internalValue;
 
-  const handleIncrement = () => {
-    setValue(value + 1);
-  };
-
-  const handleDecrement = () => {
-    if (value > 1) {
-      setValue(value - 1);
+  const setValue = (next: number) => {
+    const normalized = Math.max(1, next);
+    if (onChange) {
+      onChange(normalized);
+      return;
     }
+    setInternalValue(normalized);
   };
 
   return (
-    <div className="flex items-center gap-2 border p-1 rounded-full">
+    <div className="flex items-center gap-2 rounded-full border p-1">
       <Button
-        size={"icon"}
-        className="rounded-full bg-primary/90 text-white flex items-center justify-center"
-        onClick={handleIncrement}
+        size="icon"
+        type="button"
+        className="flex items-center justify-center rounded-full bg-primary/90 text-white"
+        onClick={() => setValue(value + 1)}
       >
         <Plus className="size-3" />
         <span className="sr-only">زيادة</span>
@@ -34,14 +36,15 @@ const QuantityControl = ({ quantity }: QuantityControlProps) => {
       <input
         type="number"
         value={value}
-        className="text-center w-10"
+        className="w-10 text-center"
         min={1}
-        onChange={(e) => setValue(Number(e.target.value))}
+        onChange={(e) => setValue(Number(e.target.value) || 1)}
       />
       <Button
-        size={"icon"}
-        className="rounded-full bg-primary/90 text-white flex items-center justify-center"
-        onClick={handleDecrement}
+        size="icon"
+        type="button"
+        className="flex items-center justify-center rounded-full bg-primary/90 text-white"
+        onClick={() => setValue(value - 1)}
       >
         <Minus className="size-3" />
         <span className="sr-only">تقليل</span>

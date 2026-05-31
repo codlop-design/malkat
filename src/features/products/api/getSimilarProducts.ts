@@ -1,4 +1,5 @@
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
+import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/getCatalogList";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import { mapCatalogItems } from "@/src/features/products/mapCatalogItems";
 import type { CatalogSectionKey } from "@/src/features/products/types";
@@ -21,7 +22,7 @@ export async function getSimilarProducts(
   try {
     const response = await fetch(`${API_URL}${endpoint}/${slug}/similar`, {
       headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
     if (!response.ok) {

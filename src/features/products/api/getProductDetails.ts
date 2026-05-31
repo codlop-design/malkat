@@ -1,4 +1,7 @@
-import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
+import {
+  CATALOG_API_ENDPOINTS,
+} from "@/src/features/products/api/catalogEndpoints";
+import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/getCatalogList";
 import {
   mapProductDetailResponse,
   type ProductDetailView,
@@ -23,7 +26,7 @@ export async function getProductDetails(
   try {
     const response = await fetch(`${API_URL}${endpoint}/${slug}/details`, {
       headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
     if (!response.ok) {

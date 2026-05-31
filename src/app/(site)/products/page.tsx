@@ -1,9 +1,18 @@
-import { Suspense } from "react";
-import { DiscoverSection } from "@/src/features/products";
+import { getAllCatalogLists } from "@/src/features/products/api/getCatalogList";
+import DiscoverSectionClient from "@/src/features/products/components/DiscoverSectionClient";
 import PageHeader from "@/src/components/PageHeader";
 import StartJourney from "@/src/features/products/components/StartJourney";
 
-export default function ProductsPage() {
+export const revalidate = 60;
+
+type PageProps = {
+  searchParams: Promise<{ category?: string }>;
+};
+
+export default async function ProductsPage({ searchParams }: PageProps) {
+  const { category } = await searchParams;
+  const catalogItems = await getAllCatalogLists();
+
   return (
     <>
       <PageHeader
@@ -11,9 +20,10 @@ export default function ProductsPage() {
         breadcrumbs={[{ label: "الرئيسية", href: "/" }, { label: "المنتجات" }]}
       />
 
-      <Suspense fallback={<div className="min-h-[480px]" aria-hidden />}>
-        <DiscoverSection />
-      </Suspense>
+      <DiscoverSectionClient
+        catalogItems={catalogItems}
+        initialCategory={category}
+      />
 
       <StartJourney />
     </>

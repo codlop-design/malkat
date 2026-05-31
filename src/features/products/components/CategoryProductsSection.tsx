@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
-import { motion } from "framer-motion";
 
 import Pagination from "@/src/components/Pagination";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
@@ -14,7 +13,6 @@ import {
 } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
-import { fadeUp } from "@/src/lib/motion";
 
 type CategoryProductsSectionProps = {
   category: CatalogSectionKey;
@@ -30,8 +28,7 @@ export default function CategoryProductsSection({
   initialQuery = "",
 }: CategoryProductsSectionProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [query, setQuery] = useState(initialQuery || searchParams.get("q") || "");
+  const [query, setQuery] = useState(initialQuery);
 
   const currentPage = pagination.current_page;
   const totalPages = Math.max(1, pagination.last_page);
@@ -59,14 +56,7 @@ export default function CategoryProductsSection({
   return (
     <section className="py-8">
       <div className="container">
-        <motion.form
-          onSubmit={handleSearchSubmit}
-          className="relative"
-          dir="rtl"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-        >
+        <form onSubmit={handleSearchSubmit} className="relative" dir="rtl">
           <Search
             className="pointer-events-none absolute top-1/2 inset-s-4 size-5 -translate-y-1/2 text-[#9CA3AF]"
             aria-hidden
@@ -78,29 +68,18 @@ export default function CategoryProductsSection({
             placeholder={searchPlaceholder}
             className="h-14 w-full rounded-2xl border border-[#E5E5E5] bg-white ps-12 pe-4 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary"
           />
-        </motion.form>
+        </form>
 
-        <motion.ul
-          key={currentPage}
+        <ul
           className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           dir="rtl"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.05 } },
-          }}
         >
           {pageItems.map((item) => (
-            <motion.li
-              key={item.slug}
-              variants={fadeUp}
-              className="h-full"
-            >
+            <li key={item.slug} className="h-full">
               {renderCatalogCard(category, item)}
-            </motion.li>
+            </li>
           ))}
-        </motion.ul>
+        </ul>
 
         {pageItems.length === 0 ? (
           <p className="mt-10 text-center text-[#717171]">

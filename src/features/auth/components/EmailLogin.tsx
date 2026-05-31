@@ -1,22 +1,27 @@
 "use client";
 
-import GoogleAuth from "@/src/components/GoogleAuth";
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
+import { loginWithEmail } from "@/src/features/auth/api/loginClient";
 import {
   loginSchema,
   type LoginFormValues,
 } from "@/src/features/auth/schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import GoogleAuth from "@/src/components/GoogleAuth";
 
 type EmailLoginProps = {
   onContinueWithPhone: () => void;
 };
 
 export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -29,8 +34,18 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
     },
   });
 
-  async function onSubmit() {
-    // TODO: wire up auth API
+  async function onSubmit(values: LoginFormValues) {
+    const result = await loginWithEmail(values);
+
+    console.log(result);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    router.push("/");
   }
 
   return (

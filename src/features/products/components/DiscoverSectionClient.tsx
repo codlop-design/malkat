@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
@@ -20,7 +19,6 @@ import {
   VISIBLE_BY_CATEGORY,
   type CatalogSectionKey,
 } from "@/src/features/products/types";
-import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 type SectionConfig = {
   title: string;
@@ -57,13 +55,14 @@ const SECTION_META: Record<
 
 type DiscoverSectionClientProps = {
   catalogItems: CatalogListsBySection;
+  initialCategory?: string | null;
 };
 
 export default function DiscoverSectionClient({
   catalogItems,
+  initialCategory = null,
 }: DiscoverSectionClientProps) {
-  const searchParams = useSearchParams();
-  const category = parseProductCategory(searchParams.get("category"));
+  const category = parseProductCategory(initialCategory);
 
   const visibleSections = useMemo(
     () => VISIBLE_BY_CATEGORY[category],
@@ -104,35 +103,17 @@ export default function DiscoverSectionClient({
       <section className="overflow-hidden pb-6 pt-6 md:pb-8 md:pt-8 lg:pb-10">
         <div className="container">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
-            <motion.div
-              className="order-2 max-w-xl space-y-4 text-right lg:order-1 lg:justify-self-start"
-              initial="hidden"
-              whileInView="visible"
-              viewport={motionViewport}
-              variants={staggerContainer()}
-            >
-              <motion.h1
-                variants={fadeUp}
-                className="text-2xl font-bold leading-snug text-black md:text-3xl lg:text-[40px] lg:leading-[1.35]"
-              >
+            <div className="order-2 max-w-xl space-y-4 text-right lg:order-1 lg:justify-self-start">
+              <h1 className="text-2xl font-bold leading-snug text-black md:text-3xl lg:text-[40px] lg:leading-[1.35]">
                 اكتشف عالماً من المحتوى التعليمي الممتع
-              </motion.h1>
-              <motion.p
-                variants={fadeUp}
-                className="text-base leading-[1.85] text-[#454545] md:text-lg"
-              >
+              </h1>
+              <p className="text-base leading-[1.85] text-[#454545] md:text-lg">
                 تصفّح الكتب والأنشطة والدورات والمنتجات المصممة لتنمية مهارات
                 الأطفال بطريقة عصرية وتفاعلية.
-              </motion.p>
-            </motion.div>
+              </p>
+            </div>
 
-            <motion.div
-              className="relative order-1 mx-auto w-full max-w-[520px] lg:order-2 lg:max-w-none"
-              initial={{ opacity: 0, x: 32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={motionViewport}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="relative order-1 mx-auto w-full max-w-[520px] lg:order-2 lg:max-w-none">
               <Image
                 src="/Group 16.svg"
                 alt=""
@@ -142,23 +123,17 @@ export default function DiscoverSectionClient({
                 priority
                 unoptimized
               />
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div
-            className="mt-10 overflow-hidden rounded-2xl bg-[#F5F5F5] p-4 md:mt-12 lg:mt-14"
-            initial="hidden"
-            whileInView="visible"
-            viewport={motionViewport}
-            variants={fadeUp}
-          >
+          <div className="mt-10 overflow-hidden rounded-2xl bg-[#F5F5F5] p-4 md:mt-12 lg:mt-14">
             <CategoryFilters
               active={category}
               categories={filterCategories}
               getHref={categoryFilterHref}
               ariaLabel="تصفية المنتجات"
             />
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -172,7 +147,7 @@ export default function DiscoverSectionClient({
                 <motion.div
                   key={key}
                   layout
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}

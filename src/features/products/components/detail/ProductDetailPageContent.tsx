@@ -16,7 +16,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
-import { Button } from "@/src/components/ui/button";
+import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
+import { buildCartPayloadFromProduct } from "@/src/features/cart/lib/buildCartPayload";
 import {
   Avatar,
   AvatarFallback,
@@ -82,6 +83,7 @@ export default function ProductDetailPageContent({
 }: ProductDetailPageContentProps) {
   const { category, data } = product;
   const imageFirst = category === "books" || category === "guides";
+  const cartPayload = buildCartPayloadFromProduct(product);
 
   const rating =
     detail.averageRating > 0
@@ -109,6 +111,7 @@ export default function ProductDetailPageContent({
                   category={category}
                   slug={data.slug}
                   isFavourite={data.isFavourite}
+                  cartPayload={cartPayload}
                 />
               </div>
             ) : null}
@@ -143,10 +146,12 @@ export default function ProductDetailPageContent({
               ) : null}
 
               {category !== "courses" ? (
-                <Button className="mt-6 hidden h-12 w-full gap-2 bg-primary text-base text-white hover:bg-primary/90 lg:inline-flex">
-                  <Image src="/basket-add.svg" alt="" width={20} height={20} />
-                  {CART_LABEL[category]}
-                </Button>
+                <AddToCartButton
+                  payload={cartPayload}
+                  label={CART_LABEL[category]}
+                  variant="button"
+                  className="mt-6 hidden h-12 w-full lg:inline-flex"
+                />
               ) : null}
 
               <div className="mt-6">
@@ -177,6 +182,7 @@ export default function ProductDetailPageContent({
                   category={category}
                   slug={data.slug}
                   isFavourite={data.isFavourite}
+                  cartPayload={cartPayload}
                 />
                 {category === "courses" && detail.courseFeatures ? (
                   <ul className="mt-6 flex flex-col gap-3">
@@ -192,10 +198,12 @@ export default function ProductDetailPageContent({
                   </ul>
                 ) : null}
                 {category === "courses" ? (
-                  <Button className="mt-6 hidden h-12 w-full gap-2 bg-primary text-base text-white hover:bg-primary/90 lg:inline-flex">
-                    <Image src="/basket-add.svg" alt="" width={20} height={20} />
-                    {CART_LABEL[category]}
-                  </Button>
+                  <AddToCartButton
+                    payload={cartPayload}
+                    label={CART_LABEL[category]}
+                    variant="button"
+                    className="mt-6 hidden h-12 w-full lg:inline-flex"
+                  />
                 ) : null}
               </div>
             ) : null}

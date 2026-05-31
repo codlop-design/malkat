@@ -11,7 +11,7 @@ import {
 } from "@/src/features/products/data/categoryMeta";
 import { categoryListingHref } from "@/src/features/products/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ category: string; slug: string }>;

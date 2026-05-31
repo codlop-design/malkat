@@ -1,11 +1,13 @@
-export type CartItem = {
-  id: string;
+import type { CatalogSectionKey } from "@/src/features/products/types";
+
+export type AddToCartPayload = {
+  category: CatalogSectionKey;
+  slug: string;
   title: string;
   description: string;
   image: string;
-  quantity: number;
-  isFree: boolean;
-  isOnline: boolean;
+  isFree?: boolean;
+  isOnline?: boolean;
   level?: string;
   ageRange?: string;
   duration?: string;
@@ -13,6 +15,19 @@ export type CartItem = {
   instructorName?: string;
   instructorAvatar?: string;
 };
+
+export type StoredCartItem = AddToCartPayload & {
+  id: string;
+  quantity: number;
+};
+
+export type OrderLineItem = {
+  type: string;
+  slug: string;
+  quantity?: number;
+};
+
+export type CartItem = StoredCartItem;
 
 export type CartItemCategory = {
   title: string;
@@ -23,4 +38,9 @@ export type CartItemCategory = {
 
 export type SideCartProps = {
   isLoading?: boolean;
+};
+
+export type PlaceOrderResult = {
+  success: boolean;
+  message: string;
 };

@@ -1,5 +1,6 @@
 import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
+import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
 import {
   resolveProductHref,
@@ -42,6 +43,19 @@ export default function BookCard(props: BookCardProps) {
       ? resolveProductHref(category, slug, hrefProp)
       : (hrefProp ?? "#");
 
+  const cartPayload =
+    category != null
+      ? buildCartPayload(category, {
+          slug,
+          title,
+          description,
+          image: imageSrc,
+          isFree: free,
+          level,
+          ageRange,
+        })
+      : undefined;
+
   return (
     <ProductCard href={href} title={title}>
       <CardMedia
@@ -50,6 +64,7 @@ export default function BookCard(props: BookCardProps) {
         category={category}
         slug={slug}
         isFavourite={isFavourite}
+        cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center gap-2">

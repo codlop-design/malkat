@@ -3,6 +3,8 @@
 import { Share2 } from "lucide-react";
 import Image from "next/image";
 
+import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
+import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
@@ -12,6 +14,7 @@ type ProductDetailMediaProps = {
   category: CatalogSectionKey;
   slug: string;
   isFavourite?: boolean;
+  cartPayload: AddToCartPayload;
 };
 
 export default function ProductDetailMedia({
@@ -20,6 +23,7 @@ export default function ProductDetailMedia({
   category,
   slug,
   isFavourite = false,
+  cartPayload,
 }: ProductDetailMediaProps) {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:aspect-square lg:max-h-[420px]">
@@ -46,13 +50,12 @@ export default function ProductDetailMedia({
           <Share2 className="size-5" strokeWidth={1.5} />
         </button>
       </div>
-      <button
-        type="button"
-        className="absolute bottom-4 inset-e-4 flex size-11 items-center justify-center rounded-full bg-primary text-white shadow-md transition-opacity hover:opacity-90 lg:hidden"
-        aria-label={cartLabel}
-      >
-        <Image src="/basket-add.svg" alt="" width={22} height={22} />
-      </button>
+      <AddToCartButton
+        payload={cartPayload}
+        label={cartLabel}
+        iconSize={22}
+        className="absolute bottom-4 inset-e-4 z-10 size-11 lg:hidden"
+      />
     </div>
   );
 }

@@ -10,6 +10,8 @@ import type {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export const CATALOG_REVALIDATE_SECONDS = 60;
+
 export type CatalogListResult = {
   items: CatalogListItem[];
   pagination: CatalogPagination;
@@ -41,7 +43,7 @@ export async function getCatalogList(
   try {
     const response = await fetch(`${API_URL}${endpoint}?page=${page}`, {
       headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
     if (!response.ok) {

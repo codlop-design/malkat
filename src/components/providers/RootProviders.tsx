@@ -2,6 +2,7 @@
 
 import { Direction } from "radix-ui";
 import { Toaster } from "@/src/components/ui/sonner";
+import { CartProvider } from "@/src/features/cart/context/CartProvider";
 
 type RootProvidersProps = {
   children: React.ReactNode;
@@ -10,8 +11,10 @@ type RootProvidersProps = {
 export function RootProviders({ children }: RootProvidersProps) {
   return (
     <Direction.Provider dir="rtl">
-      <Toaster />
-      {children}
+      <CartProvider>
+        <Toaster />
+        {children}
+      </CartProvider>
     </Direction.Provider>
   );
 }

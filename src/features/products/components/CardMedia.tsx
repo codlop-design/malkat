@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
+import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
@@ -11,6 +13,7 @@ type CardMediaProps = {
   category?: CatalogSectionKey;
   slug?: string;
   isFavourite?: boolean;
+  cartPayload?: AddToCartPayload;
 };
 
 export default function CardMedia({
@@ -20,6 +23,7 @@ export default function CardMedia({
   category,
   slug,
   isFavourite = false,
+  cartPayload,
 }: CardMediaProps) {
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
@@ -40,14 +44,13 @@ export default function CardMedia({
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}
-      <Link
-        href={href}
-        onClick={(e) => e.stopPropagation()}
-        className="absolute bottom-3 inset-e-3 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-md transition-opacity hover:opacity-90"
-        aria-label={cartLabel}
-      >
-        <Image src="/basket-add.svg" alt="إضافة للسلة" width={20} height={20} />
-      </Link>
+      {cartPayload ? (
+        <AddToCartButton
+          payload={cartPayload}
+          label={cartLabel}
+          className="absolute bottom-3 inset-e-3 z-10 size-10"
+        />
+      ) : null}
     </div>
   );
 }
