@@ -11,6 +11,7 @@ import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
 import type { LookupOption } from "@/src/features/register-interest/types";
+import { submitPartnershipRequestAction } from "@/src/features/partnership-request/api/submitPartnershipRequestAction";
 import {
   partnershipSchema,
   type PartnershipFormValues,
@@ -54,9 +55,15 @@ export default function PartnershipForm({
     defaultValues,
   });
 
-  async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    toast.success("تم إرسال طلب الشراكة بنجاح");
+  async function onSubmit(values: PartnershipFormValues) {
+    const result = await submitPartnershipRequestAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
     reset(defaultValues);
   }
 

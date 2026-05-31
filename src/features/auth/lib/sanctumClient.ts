@@ -1,8 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
-const SITE_ORIGIN = API_URL.replace(/\/api\/?$/, "");
+const API_ORIGIN = API_URL.replace(/\/api\/?$/, "");
 
-function getRequestOrigin() {
-  return SITE_ORIGIN;
+/** Same-origin in the browser (via Next rewrites); direct API origin on the server. */
+function getRequestOrigin(): string {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return API_ORIGIN;
 }
 
 function getXsrfToken(): string | null {
@@ -13,22 +17,15 @@ function getXsrfToken(): string | null {
 }
 
 export async function ensureCsrfCookie() {
-  const path = "/sanctum/csrf-cookie";
-  const url = `${getRequestOrigin()}${path}`;
-  const logUrl =
-    typeof window !== "undefined" ? `${window.location.origin}${path}` : url;
-
-  console.log("[auth/csrf] GET", logUrl);
-
-  const response = await fetch(url, {
+  const response = await fetch(`${getRequestOrigin()}/sanctum/csrf-cookie`, {
     method: "GET",
     credentials: "include",
     headers: { Accept: "application/json" },
   });
 
-  console.log("[auth/csrf] status", response.status, response.statusText);
-  console.log("[auth/csrf] XSRF-TOKEN set", Boolean(getXsrfToken()));
-  console.log("[auth/csrf] cookies", document.cookie);
+  if (!response.ok) {
+    throw new Error(`CSRF cookie request failed: ${response.status}`);
+  }
 }
 
 export async function sanctumFetch(
@@ -36,16 +33,9 @@ export async function sanctumFetch(
   options: RequestInit = {},
 ): Promise<Response> {
   const xsrf = getXsrfToken();
-  const url = `${getRequestOrigin()}${path}`;
-  const logUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}${path.startsWith("/") ? path : `/${path}`}`
-      : url;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
-  console.log("[auth/fetch]", options.method ?? "GET", logUrl);
-  console.log("[auth/fetch] XSRF-TOKEN present", Boolean(xsrf));
-
-  const response = await fetch(url, {
+  return fetch(`${getRequestOrigin()}${normalizedPath}`, {
     ...options,
     credentials: "include",
     headers: {
@@ -54,8 +44,4 @@ export async function sanctumFetch(
       ...options.headers,
     },
   });
-
-  console.log("[auth/fetch] status", response.status, response.statusText);
-
-  return response;
 }
