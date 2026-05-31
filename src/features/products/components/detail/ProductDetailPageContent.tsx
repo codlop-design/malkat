@@ -106,6 +106,9 @@ export default function ProductDetailPageContent({
                 <ProductDetailMedia
                   imageSrc={data.imageSrc}
                   cartLabel={CART_LABEL[category]}
+                  category={category}
+                  slug={data.slug}
+                  isFavourite={data.isFavourite}
                 />
               </div>
             ) : null}
@@ -171,6 +174,9 @@ export default function ProductDetailPageContent({
                 <ProductDetailMedia
                   imageSrc={data.imageSrc}
                   cartLabel={CART_LABEL[category]}
+                  category={category}
+                  slug={data.slug}
+                  isFavourite={data.isFavourite}
                 />
                 {category === "courses" && detail.courseFeatures ? (
                   <ul className="mt-6 flex flex-col gap-3">

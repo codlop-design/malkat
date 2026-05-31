@@ -29,7 +29,9 @@ export default function ActivityCard({
   ageRange = "3-5 سنوات",
   activityType = "فردي",
   skillTags = ["الإبداع", "التعبير", "المهارات الحركية الدقيقة"],
-  rating = 4.8,
+  rating,
+  ratingCount,
+  isFavourite = false,
 }: ActivityCardProps) {
   const href =
     category != null
@@ -38,7 +40,14 @@ export default function ActivityCard({
 
   return (
     <ProductCard href={href} title={title}>
-      <CardMedia imageSrc={imageSrc} href={href} cartLabel="حجز النشاط" />
+      <CardMedia
+        imageSrc={imageSrc}
+        href={href}
+        cartLabel="حجز النشاط"
+        category={category}
+        slug={slug}
+        isFavourite={isFavourite}
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
@@ -53,7 +62,7 @@ export default function ActivityCard({
           {description}
         </p>
         <div className="flex">
-          <RatingBadge rating={rating} />
+          <RatingBadge rating={rating} count={ratingCount} />
         </div>
         <div className="mt-auto flex flex-wrap gap-2">
           {skillTags.map((tag) => (

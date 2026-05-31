@@ -6,12 +6,12 @@ export interface NewsApiItem {
   date: string;
   time: string;
   title: string;
-  content: string;
+  content?: string | null;
 }
 
 export interface NewsMainApiData {
-  main_new: NewsApiItem;
-  latest_news: NewsApiItem[];
+  main_new?: NewsApiItem | null;
+  latest_news?: NewsApiItem[] | null;
 }
 
 export interface NewsDetailsApiData {

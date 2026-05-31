@@ -12,7 +12,18 @@ export interface ServiceContributor extends ProductContributor {
   id?: number;
 }
 
-export interface BookApiItem {
+export interface CatalogRate {
+  avg_rate: number;
+  count: number;
+}
+
+export interface CatalogSocialFields {
+  is_favourite?: boolean;
+  is_rated?: boolean;
+  rate?: CatalogRate;
+}
+
+export interface BookApiItem extends CatalogSocialFields {
   id: number;
   slug: string;
   title: string;
@@ -24,7 +35,7 @@ export interface BookApiItem {
   contributor: ProductContributor;
 }
 
-export interface CourseApiItem {
+export interface CourseApiItem extends CatalogSocialFields {
   id: number;
   slug: string;
   title: string;
@@ -37,7 +48,7 @@ export interface CourseApiItem {
   contributor: ProductContributor;
 }
 
-export interface ServiceApiItem {
+export interface ServiceApiItem extends CatalogSocialFields {
   id: number;
   slug: string;
   image: string;
@@ -46,10 +57,10 @@ export interface ServiceApiItem {
   session_type: string;
   price: number;
   is_free: boolean;
-  rate_average: number;
+  rate_average?: number;
 }
 
-export interface ActivityApiItem {
+export interface ActivityApiItem extends CatalogSocialFields {
   id: number;
   slug: string;
   image: string;
@@ -57,10 +68,10 @@ export interface ActivityApiItem {
   overview: string;
   age_group: string;
   participant_type: string;
-  rate_average: number;
+  rate_average?: number;
 }
 
-export interface EvidenceApiItem {
+export interface EvidenceApiItem extends CatalogSocialFields {
   id: number;
   slug: string;
   title: string;
@@ -87,7 +98,7 @@ export type CatalogApiItem =
   | ActivityApiItem
   | EvidenceApiItem;
 
-export interface BookDetailsApi {
+export interface BookDetailsApi extends CatalogSocialFields {
   id: number;
   slug: string;
   title: string;
@@ -105,7 +116,7 @@ export interface BookDetailsApi {
   contents: unknown[];
 }
 
-export interface CourseDetailsApi {
+export interface CourseDetailsApi extends CatalogSocialFields {
   title: string;
   overview: string;
   image: string;
@@ -123,7 +134,7 @@ export interface CourseDetailsApi {
   features: unknown[];
 }
 
-export interface ServiceDetailsApi {
+export interface ServiceDetailsApi extends CatalogSocialFields {
   id: number;
   slug: string;
   image: string;
@@ -138,10 +149,10 @@ export interface ServiceDetailsApi {
   target: string;
   description: string;
   contributor: ServiceContributor;
-  rate_average: number;
+  rate_average?: number;
 }
 
-export interface ActivityDetailsApi {
+export interface ActivityDetailsApi extends CatalogSocialFields {
   id: number;
   slug: string;
   image: string;
@@ -155,11 +166,11 @@ export interface ActivityDetailsApi {
   session_type: string;
   target: string;
   description: string;
-  rate_average: number;
+  rate_average?: number;
   contributor: ServiceContributor;
 }
 
-export interface EvidenceDetailsApi {
+export interface EvidenceDetailsApi extends CatalogSocialFields {
   id: number;
   slug: string;
   title: string;
@@ -172,7 +183,7 @@ export interface EvidenceDetailsApi {
   price_label: string;
   is_free: boolean;
   description: string;
-  rate_average: number;
+  rate_average?: number;
   contributor: ProductContributor;
 }
 

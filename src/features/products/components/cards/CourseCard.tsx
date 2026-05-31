@@ -36,7 +36,9 @@ export default function CourseCard({
   sessions,
   free = true,
   online = true,
-  rating = 4.8,
+  rating,
+  ratingCount,
+  isFavourite = false,
 }: CourseCardProps) {
   const href =
     category != null
@@ -45,10 +47,17 @@ export default function CourseCard({
 
   return (
     <ProductCard href={href} title={title}>
-      <CardMedia imageSrc={imageSrc} href={href} cartLabel="عرض الدورة" />
+      <CardMedia
+        imageSrc={imageSrc}
+        href={href}
+        cartLabel="عرض الدورة"
+        category={category}
+        slug={slug}
+        isFavourite={isFavourite}
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <RatingBadge rating={rating} />
+          <RatingBadge rating={rating} count={ratingCount} />
           <div className="flex flex-wrap items-center gap-2">
             {free ? (
               <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">

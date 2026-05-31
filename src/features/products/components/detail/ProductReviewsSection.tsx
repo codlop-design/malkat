@@ -95,8 +95,11 @@ export default function ProductReviewsSection({
             })}
           </div>
 
-          <Button className="w-full bg-primary text-white hover:bg-primary/90">
-            أضف تعليقاً
+          <Button
+            className="w-full bg-primary text-white hover:bg-primary/90"
+            disabled={detail.isRated}
+          >
+            {detail.isRated ? "تم التقييم" : "أضف تعليقاً"}
           </Button>
         </div>
       </div>

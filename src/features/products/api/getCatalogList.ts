@@ -1,4 +1,5 @@
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
+import { CATALOG_SECTION_KEYS } from "@/src/features/products/data/categoryMeta";
 import { mapCatalogItems } from "@/src/features/products/mapCatalogItems";
 import type { CatalogListItem } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
@@ -13,6 +14,16 @@ export type CatalogListResult = {
   items: CatalogListItem[];
   pagination: CatalogPagination;
 };
+
+export type CatalogSectionResult = {
+  items: CatalogListItem[];
+  total: number;
+};
+
+export type CatalogListsBySection = Record<
+  CatalogSectionKey,
+  CatalogSectionResult
+>;
 
 type CatalogListApiResponse = {
   success: boolean;
@@ -52,4 +63,21 @@ export async function getCatalogList(
     console.error("Fetch exception:", error);
     return null;
   }
+}
+
+export async function getAllCatalogLists(): Promise<CatalogListsBySection> {
+  const entries = await Promise.all(
+    CATALOG_SECTION_KEYS.map(async (category) => {
+      const result = await getCatalogList(category, 1);
+      return [
+        category,
+        {
+          items: result?.items ?? [],
+          total: result?.pagination.total ?? 0,
+        },
+      ] as const;
+    }),
+  );
+
+  return Object.fromEntries(entries) as CatalogListsBySection;
 }

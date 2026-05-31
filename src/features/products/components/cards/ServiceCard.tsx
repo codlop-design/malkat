@@ -25,7 +25,9 @@ export default function ServiceCard({
   imageSrc,
   href: hrefProp,
   tags = ["مجانية", "أونلاين", "للآباء"],
-  rating = 4.8,
+  rating,
+  ratingCount,
+  isFavourite = false,
 }: ServiceCardProps) {
   const href =
     category === "services"
@@ -36,7 +38,14 @@ export default function ServiceCard({
 
   return (
     <ProductCard href={href} title={title}>
-      <CardMedia imageSrc={imageSrc} href={href} cartLabel="طلب الخدمة" />
+      <CardMedia
+        imageSrc={imageSrc}
+        href={href}
+        cartLabel="طلب الخدمة"
+        category={category}
+        slug={slug}
+        isFavourite={isFavourite}
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
@@ -53,7 +62,7 @@ export default function ServiceCard({
           {description}
         </p>
         <div className="flex pt-1">
-          <RatingBadge rating={rating} />
+          <RatingBadge rating={rating} count={ratingCount} />
         </div>
       </div>
     </ProductCard>

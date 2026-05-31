@@ -7,10 +7,9 @@ import { toast } from "sonner";
 import { InputField } from "@/src/components/InputField";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
-import {
-  SERVICE_TYPE_OPTIONS,
-  TARGET_GROUP_OPTIONS,
-} from "@/src/features/services/data/serviceRequestOptions";
+import { mapLookupOptions } from "@/src/features/request-service/lib/mapLookupOptions";
+import { submitServiceRequestAction } from "@/src/features/request-service/api/submitServiceRequestAction";
+import type { ServiceRequestFormOptions } from "@/src/features/request-service/types";
 import {
   serviceRequestSchema,
   type ServiceRequestFormValues,
@@ -29,7 +28,16 @@ const defaultValues: ServiceRequestFormValues = {
   details: "",
 };
 
-export default function ServiceRequestForm() {
+type ServiceRequestFormProps = {
+  formOptions: ServiceRequestFormOptions;
+};
+
+export default function ServiceRequestForm({
+  formOptions,
+}: ServiceRequestFormProps) {
+  const serviceTypeOptions = mapLookupOptions(formOptions.serviceTypes);
+  const targetGroupOptions = mapLookupOptions(formOptions.targetGroups);
+
   const {
     register,
     control,
@@ -41,9 +49,15 @@ export default function ServiceRequestForm() {
     defaultValues,
   });
 
-  async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    toast.success("تم إرسال طلبك بنجاح");
+  async function onSubmit(values: ServiceRequestFormValues) {
+    const result = await submitServiceRequestAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
     reset(defaultValues);
   }
 
@@ -97,11 +111,11 @@ export default function ServiceRequestForm() {
               <SelectField
                 label="نوع الخدمة *"
                 placeholder="اختر نوع الخدمة"
-                options={SERVICE_TYPE_OPTIONS}
+                options={serviceTypeOptions}
                 value={field.value}
                 onValueChange={field.onChange}
                 error={errors.serviceType?.message}
-                disabled={isSubmitting}
+                disabled={isSubmitting || serviceTypeOptions.length === 0}
               />
             )}
           />
@@ -112,11 +126,11 @@ export default function ServiceRequestForm() {
               <SelectField
                 label="الفئة المستهدفة *"
                 placeholder="اختر الفئة"
-                options={TARGET_GROUP_OPTIONS}
+                options={targetGroupOptions}
                 value={field.value}
                 onValueChange={field.onChange}
                 error={errors.targetGroup?.message}
-                disabled={isSubmitting}
+                disabled={isSubmitting || targetGroupOptions.length === 0}
               />
             )}
           />

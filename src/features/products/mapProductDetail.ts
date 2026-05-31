@@ -4,6 +4,10 @@ import type {
   ProductChapter,
 } from "@/src/features/products/data/productDetail";
 import {
+  buildRatingMetaFromApi,
+  resolveDetailSocialFields,
+} from "@/src/features/products/utils/catalogSocial";
+import {
   mapActivityItem,
   mapBookItem,
   mapCourseItem,
@@ -64,16 +68,22 @@ function mapFeatures(items: unknown[]): string[] | undefined {
   );
 }
 
-function buildRatingMeta(rating: number | null | undefined): Pick<
+function buildRatingMeta(
+  rate?: { avg_rate: number; count: number } | null,
+  legacyRating?: number | null,
+): Pick<
   ProductDetailMeta,
   "reviewCount" | "averageRating" | "ratingLabel" | "ratingDistribution" | "reviews"
 > {
-  const averageRating = rating && rating > 0 ? rating : 0;
+  const { reviewCount, averageRating, ratingLabel } = buildRatingMetaFromApi(
+    rate,
+    legacyRating,
+  );
 
   return {
-    reviewCount: averageRating > 0 ? 1 : 0,
+    reviewCount,
     averageRating,
-    ratingLabel: averageRating > 0 ? "تقييم المستخدمين" : "",
+    ratingLabel,
     ratingDistribution: EMPTY_DISTRIBUTION,
     reviews: EMPTY_REVIEWS,
   };
@@ -92,6 +102,9 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
       difficulty: raw.difficulty,
       price: raw.price,
       contributor: raw.contributor,
+      is_favourite: raw.is_favourite,
+      is_rated: raw.is_rated,
+      rate: raw.rate,
     }),
   };
 
@@ -108,7 +121,8 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
       fileType: raw.file_type,
       language: languageLabel(raw.language),
     },
-    ...buildRatingMeta(null),
+    ...buildRatingMeta(raw.rate),
+    ...resolveDetailSocialFields(raw),
   };
 
   return { product, detail };
@@ -131,6 +145,9 @@ function mapCourseDetail(slug: string, raw: CourseDetailsApi): ProductDetailView
         name: raw.contributor.name,
         image: raw.contributor.image,
       },
+      is_favourite: raw.is_favourite,
+      is_rated: raw.is_rated,
+      rate: raw.rate,
     }),
   };
 
@@ -161,7 +178,8 @@ function mapCourseDetail(slug: string, raw: CourseDetailsApi): ProductDetailView
       instructorBio: raw.contributor.overview ?? "",
       jobTitle: raw.contributor.job_title ?? "",
     },
-    ...buildRatingMeta(raw.rating),
+    ...buildRatingMeta(raw.rate, raw.rating),
+    ...resolveDetailSocialFields(raw),
   };
 
   return { product, detail };
@@ -178,6 +196,9 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
     price: raw.price,
     is_free: raw.is_free,
     rate_average: raw.rate_average,
+    is_favourite: raw.is_favourite,
+    is_rated: raw.is_rated,
+    rate: raw.rate,
   });
 
   const product: CatalogProduct = {
@@ -210,7 +231,8 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
       target: raw.target,
       isFree: raw.is_free,
     },
-    ...buildRatingMeta(raw.rate_average),
+    ...buildRatingMeta(raw.rate, raw.rate_average),
+    ...resolveDetailSocialFields(raw),
   };
 
   return { product, detail };
@@ -228,6 +250,9 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
       age_group: raw.age_group,
       participant_type: raw.participant_type,
       rate_average: raw.rate_average,
+      is_favourite: raw.is_favourite,
+      is_rated: raw.is_rated,
+      rate: raw.rate,
     }),
   };
 
@@ -249,7 +274,8 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
       target: raw.target,
       isFree: raw.is_free,
     },
-    ...buildRatingMeta(raw.rate_average),
+    ...buildRatingMeta(raw.rate, raw.rate_average),
+    ...resolveDetailSocialFields(raw),
   };
 
   return { product, detail };
@@ -269,6 +295,9 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
       price: priceLabel,
       page_count: raw.page_count,
       contributor: raw.contributor,
+      is_favourite: raw.is_favourite,
+      is_rated: raw.is_rated,
+      rate: raw.rate,
     }),
   };
 
@@ -290,7 +319,8 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
       target: raw.target,
       pageCount: raw.page_count,
     },
-    ...buildRatingMeta(raw.rate_average),
+    ...buildRatingMeta(raw.rate, raw.rate_average),
+    ...resolveDetailSocialFields(raw),
   };
 
   return { product, detail };

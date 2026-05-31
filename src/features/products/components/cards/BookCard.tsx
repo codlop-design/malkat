@@ -33,8 +33,9 @@ export default function BookCard(props: BookCardProps) {
     free = true,
     ageRange = "6-9 سنوات",
     level = "متوسط",
-    rating = 4.8,
-    views = "18.3 k",
+    rating,
+    ratingCount,
+    isFavourite = false,
   } = props;
 
   const href =
@@ -44,7 +45,13 @@ export default function BookCard(props: BookCardProps) {
 
   return (
     <ProductCard href={href} title={title}>
-      <CardMedia imageSrc={imageSrc} href={href} />
+      <CardMedia
+        imageSrc={imageSrc}
+        href={href}
+        category={category}
+        slug={slug}
+        isFavourite={isFavourite}
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center gap-2">
           {free ? (
@@ -67,11 +74,7 @@ export default function BookCard(props: BookCardProps) {
           {description}
         </p>
         <div className="mt-auto flex items-center justify-between pt-1">
-          <RatingBadge rating={rating} />
-          <div className="flex items-center gap-1 text-sm text-[#454545]">
-            <Eye className="size-4" strokeWidth={1.5} aria-hidden />
-            <span>{views}</span>
-          </div>
+          <RatingBadge rating={rating} count={ratingCount} />
         </div>
       </div>
     </ProductCard>

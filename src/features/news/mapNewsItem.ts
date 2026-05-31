@@ -1,6 +1,10 @@
 import type { NewsApiItem, NewsArticle } from "@/src/features/news/types";
 
-function toExcerpt(content: string, maxLength = 180): string {
+function toExcerpt(content: string | null | undefined, maxLength = 180): string {
+  if (!content) {
+    return "";
+  }
+
   const plain = content
     .replace(/<[^>]+>/g, "")
     .replace(/\r\n/g, " ")
@@ -20,11 +24,11 @@ export function formatNewsDate(date: string, time: string): string {
 
 export function mapNewsItemToArticle(item: NewsApiItem): NewsArticle {
   return {
-    id: String(item.id),
-    slug: item.slug,
-    title: item.title,
+    id: String(item.id ?? ""),
+    slug: item.slug ?? "",
+    title: item.title ?? "",
     excerpt: toExcerpt(item.content),
-    date: formatNewsDate(item.date, item.time),
-    imageSrc: item.image,
+    date: formatNewsDate(item.date ?? "", item.time ?? ""),
+    imageSrc: item.image ?? "",
   };
 }

@@ -1,17 +1,25 @@
-import { Heart, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+import FavouriteButton from "@/src/features/products/components/FavouriteButton";
+import type { CatalogSectionKey } from "@/src/features/products/types";
 
 type CardMediaProps = {
   imageSrc: string;
   href?: string;
   cartLabel?: string;
+  category?: CatalogSectionKey;
+  slug?: string;
+  isFavourite?: boolean;
 };
 
 export default function CardMedia({
   imageSrc,
   href = "#",
   cartLabel = "إضافة للسلة",
+  category,
+  slug,
+  isFavourite = false,
 }: CardMediaProps) {
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
@@ -24,14 +32,14 @@ export default function CardMedia({
           sizes="260px"
         />
       </Link>
-      <button
-        type="button"
-        onClick={(e) => e.stopPropagation()}
-        className="absolute top-3 inset-s-3 z-10 flex size-9 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-sm transition-colors hover:bg-white"
-        aria-label="إضافة للمفضلة"
-      >
-        <Heart className="size-5" strokeWidth={1.5} />
-      </button>
+      {category && slug ? (
+        <FavouriteButton
+          category={category}
+          slug={slug}
+          isFavourite={isFavourite}
+          className="absolute top-3 inset-s-3 z-10 size-9"
+        />
+      ) : null}
       <Link
         href={href}
         onClick={(e) => e.stopPropagation()}
@@ -56,11 +64,24 @@ function StarIcon() {
   );
 }
 
-export function RatingBadge({ rating }: { rating: number }) {
+export function RatingBadge({
+  rating,
+  count,
+}: {
+  rating?: number;
+  count?: number;
+}) {
+  if (!rating || rating <= 0) {
+    return null;
+  }
+
   return (
     <span className="inline-flex items-center gap-1 rounded-lg bg-[#E8F4FC] px-2 py-1 text-sm font-medium text-[#1F1F1F]">
       <StarIcon />
       {rating}
+      {count != null && count > 0 ? (
+        <span className="text-xs text-[#717171]">({count})</span>
+      ) : null}
     </span>
   );
 }

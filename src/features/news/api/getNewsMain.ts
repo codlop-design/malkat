@@ -1,6 +1,6 @@
 import { fetcher } from "@/src/lib/fetch";
 import { mapNewsItemToArticle } from "@/src/features/news/mapNewsItem";
-import type { NewsApiItem, NewsArticle, NewsMainApiData } from "@/src/features/news/types";
+import type { NewsArticle, NewsMainApiData } from "@/src/features/news/types";
 
 export type NewsMainContent = {
   featured: NewsArticle | null;
@@ -14,12 +14,10 @@ export async function getNewsMain(): Promise<NewsMainContent | null> {
     return null;
   }
 
-  const { main_new, latest_news } = response.data;
+  const { main_new, latest_news } = response.data ?? {};
 
   return {
     featured: main_new ? mapNewsItemToArticle(main_new) : null,
-    latest: (latest_news ?? []).map((item: NewsApiItem) =>
-      mapNewsItemToArticle(item),
-    ),
+    latest: (latest_news ?? []).map(mapNewsItemToArticle),
   };
 }

@@ -26,7 +26,9 @@ export default function GuideCard({
   href: hrefProp,
   tags = ["للآباء", "مجاني"],
   pages = "42 صفحة",
-  rating = 4.8,
+  rating,
+  ratingCount,
+  isFavourite = false,
 }: GuideCardProps) {
   const href =
     category != null
@@ -35,7 +37,14 @@ export default function GuideCard({
 
   return (
     <ProductCard href={href} title={title}>
-      <CardMedia imageSrc={imageSrc} href={href} cartLabel="تحميل الدليل" />
+      <CardMedia
+        imageSrc={imageSrc}
+        href={href}
+        cartLabel="تحميل الدليل"
+        category={category}
+        slug={slug}
+        isFavourite={isFavourite}
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
@@ -56,7 +65,7 @@ export default function GuideCard({
           {description}
         </p>
         <div className="mt-auto flex items-center justify-between pt-1">
-          <RatingBadge rating={rating} />
+          <RatingBadge rating={rating} count={ratingCount} />
           <span className="text-sm text-[#717171]">{pages}</span>
         </div>
       </div>

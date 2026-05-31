@@ -13,6 +13,7 @@ import type {
   EvidenceApiItem,
   ServiceApiItem,
 } from "@/src/features/products/types/catalogApi";
+import { resolveCatalogSocialFields } from "@/src/features/products/utils/catalogSocial";
 
 function isFreePrice(price: string): boolean {
   return price === "مجاني" || price.includes("مجاني");
@@ -29,6 +30,7 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
     free: isFreePrice(item.price),
     ageRange: item.age_group,
     level: item.difficulty,
+    ...resolveCatalogSocialFields(item),
   };
 }
 
@@ -50,6 +52,7 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     sessions,
     free: isFreePrice(item.price),
     online: item.session_type.includes("أونلاين"),
+    ...resolveCatalogSocialFields(item),
   };
 }
 
@@ -66,7 +69,7 @@ export function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
     description: item.overview,
     imageSrc: item.image,
     tags,
-    rating: item.rate_average > 0 ? item.rate_average : undefined,
+    ...resolveCatalogSocialFields(item),
   };
 }
 
@@ -79,7 +82,7 @@ export function mapActivityItem(item: ActivityApiItem): ActivityCardProps {
     imageSrc: item.image,
     ageRange: item.age_group,
     activityType: item.participant_type,
-    rating: item.rate_average > 0 ? item.rate_average : undefined,
+    ...resolveCatalogSocialFields(item),
   };
 }
 
@@ -92,6 +95,7 @@ export function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
     imageSrc: item.image,
     pages: `${item.page_count} صفحة`,
     tags: [isFreePrice(item.price) ? "مجاني" : item.price],
+    ...resolveCatalogSocialFields(item),
   };
 }
 
