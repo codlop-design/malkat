@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
@@ -25,13 +25,15 @@ import type { SideCartProps } from "@/src/features/cart/types/cart-types";
 const SideCart = ({ isLoading = false }: SideCartProps) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const { itemCount, isHydrated } = useCart();
 
-  useEffect(() => {
-    if (pathname === "/cart") {
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    if (pathname === "/cart" && open) {
       setOpen(false);
     }
-  }, [pathname]);
+  }
 
   const showSkeleton = isLoading || !isHydrated;
 
@@ -39,7 +41,7 @@ const SideCart = ({ isLoading = false }: SideCartProps) => {
     <Drawer direction="left" open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button
-          className="relative size-11 rounded-full border-primary p-0 hover:bg-primary/10"
+          className="relative size-10 rounded-full border-primary p-0 hover:bg-primary/10"
           variant="outline"
         >
           <svg

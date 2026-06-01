@@ -19,6 +19,7 @@ import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
 
 type AuthContextValue = {
   user: AuthUser | null;
+  isAuthReady: boolean;
   isAuthenticated: boolean;
   setUser: (user: AuthUser | null) => void;
   refreshUser: () => Promise<AuthUser | null>;
@@ -34,6 +35,7 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser | null>(initialUser);
+  const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
 
   const refreshUser = useCallback(async () => {
     const current = await fetchCurrentUser();
@@ -48,6 +50,9 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   useEffect(() => {
     setUser(initialUser);
+    if (initialUser !== null) {
+      setIsAuthReady(true);
+    }
   }, [initialUser]);
 
   useEffect(() => onAuthUnauthorized(() => setUser(null)), []);
@@ -60,9 +65,11 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     let cancelled = false;
 
     void fetchCurrentUser().then((current) => {
-      if (!cancelled && current) {
-        setUser(current);
+      if (cancelled) {
+        return;
       }
+      setUser(current);
+      setIsAuthReady(true);
     });
 
     return () => {
@@ -73,12 +80,13 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const value = useMemo(
     () => ({
       user,
+      isAuthReady,
       isAuthenticated: user !== null,
       setUser,
       refreshUser,
       logout,
     }),
-    [user, refreshUser, logout],
+    [user, isAuthReady, refreshUser, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

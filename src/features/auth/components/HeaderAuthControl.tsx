@@ -26,8 +26,17 @@ export default function HeaderAuthControl({
   showName = true,
   nameClassName,
 }: HeaderAuthControlProps) {
-  const { user: clientUser } = useAuth();
+  const { user: clientUser, isAuthReady } = useAuth();
   const user = clientUser ?? serverUser;
+
+  if (!isAuthReady && !user) {
+    return (
+      <div
+        className={cn("size-10 animate-pulse rounded-full bg-[#E8F6F4]", className)}
+        aria-hidden
+      />
+    );
+  }
 
   if (user) {
     return (
