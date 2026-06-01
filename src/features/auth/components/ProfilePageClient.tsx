@@ -10,19 +10,18 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 export default function ProfilePageClient() {
   const router = useRouter();
   const { user, refreshUser } = useAuth();
-  const [profileUser, setProfileUser] = useState<AuthUser | null>(user);
+  const [fetchedUser, setFetchedUser] = useState<AuthUser | null>(null);
+
+  const profileUser = user ?? fetchedUser;
 
   useEffect(() => {
     if (user) {
-      setProfileUser(user);
       return;
     }
 
     let cancelled = false;
 
-    void (async () => {
-      const current = await refreshUser();
-
+    void refreshUser().then((current) => {
       if (cancelled) {
         return;
       }
@@ -32,8 +31,8 @@ export default function ProfilePageClient() {
         return;
       }
 
-      setProfileUser(current);
-    })();
+      setFetchedUser(current);
+    });
 
     return () => {
       cancelled = true;
