@@ -4,7 +4,7 @@ import { LogOut, Mail, Phone, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import type { AuthUser } from "@/src/features/auth/api/loginClient";
+import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 
 type ProfileViewProps = {

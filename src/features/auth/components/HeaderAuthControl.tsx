@@ -3,7 +3,7 @@
 import { UserRound } from "lucide-react";
 import Link from "next/link";
 
-import type { AuthUser } from "@/src/features/auth/api/loginClient";
+import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { cn } from "@/src/lib/utils";
 

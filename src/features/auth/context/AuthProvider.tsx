@@ -10,11 +10,11 @@ import {
   type ReactNode,
 } from "react";
 
-import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import {
   fetchCurrentUser,
-  logoutUser,
-} from "@/src/features/auth/api/sessionClient";
+  logout,
+} from "@/src/features/auth/session.client";
+import type { AuthUser } from "@/src/features/auth/types";
 import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
 
 type AuthContextValue = {
@@ -34,28 +34,32 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children, initialUser }: AuthProviderProps) {
-  const [user, setUser] = useState<AuthUser | null>(initialUser);
+  const [clientUser, setClientUser] = useState<AuthUser | null | undefined>(
+    undefined,
+  );
   const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
+
+  const user = initialUser ?? clientUser ?? null;
+
+  const setUser = useCallback((next: AuthUser | null) => {
+    setClientUser(next);
+    setIsAuthReady(true);
+  }, []);
 
   const refreshUser = useCallback(async () => {
     const current = await fetchCurrentUser();
-    setUser(current);
+    setClientUser(current);
+    setIsAuthReady(true);
     return current;
   }, []);
 
-  const logout = useCallback(async () => {
-    await logoutUser();
-    setUser(null);
+  const logoutUser = useCallback(async () => {
+    await logout();
+    setClientUser(null);
+    setIsAuthReady(true);
   }, []);
 
-  useEffect(() => {
-    setUser(initialUser);
-    if (initialUser !== null) {
-      setIsAuthReady(true);
-    }
-  }, [initialUser]);
-
-  useEffect(() => onAuthUnauthorized(() => setUser(null)), []);
+  useEffect(() => onAuthUnauthorized(() => setClientUser(null)), []);
 
   useEffect(() => {
     if (initialUser !== null) {
@@ -68,7 +72,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
       if (cancelled) {
         return;
       }
-      setUser(current);
+      setClientUser(current);
       setIsAuthReady(true);
     });
 
@@ -84,9 +88,9 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
       isAuthenticated: user !== null,
       setUser,
       refreshUser,
-      logout,
+      logout: logoutUser,
     }),
-    [user, isAuthReady, refreshUser, logout],
+    [user, isAuthReady, setUser, refreshUser, logoutUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

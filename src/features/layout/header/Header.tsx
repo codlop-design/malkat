@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import NavLinks from "./NavLinks";
 import SideMenu from "./SideMenu";
-import type { AuthUser } from "@/src/features/auth/api/loginClient";
+import type { AuthUser } from "@/src/features/auth/types";
 import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import SideCart from "../../cart/components/SideCart";
 

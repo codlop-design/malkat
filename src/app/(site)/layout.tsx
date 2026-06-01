@@ -1,4 +1,4 @@
-import { getServerUser } from "@/src/features/auth/api/getServerUser";
+import { getServerUser } from "@/src/features/auth/session.server";
 import Footer from "@/src/features/layout/Footer";
 import Header from "@/src/features/layout/header/Header";
 import { getSettings, SettingsProvider } from "@/src/features/settings";

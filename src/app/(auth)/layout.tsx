@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-import { getServerUser } from "@/src/features/auth/api/getServerUser";
+import { getServerUser } from "@/src/features/auth/session.server";
 import AuthGuestGuard from "@/src/features/auth/components/AuthGuestGuard";
 
 export default async function AuthLayout({

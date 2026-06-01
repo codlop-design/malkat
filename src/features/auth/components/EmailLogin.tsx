@@ -2,7 +2,7 @@
 
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
-import { loginWithEmail } from "@/src/features/auth/api/loginClient";
+import { loginWithEmail } from "@/src/features/auth/login";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import {
   loginSchema,
@@ -12,7 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { authDebug } from "@/src/lib/authDebug";
 import Image from "next/image";
 import Link from "next/link";
 import GoogleAuth from "@/src/components/GoogleAuth";
@@ -50,11 +49,6 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
     } else {
       await refreshUser();
     }
-
-    authDebug("client", "login success", {
-      hasUserFromLogin: Boolean(result.user),
-      readableCookies: document.cookie || "(empty)",
-    });
 
     toast.success(result.message);
     router.refresh();

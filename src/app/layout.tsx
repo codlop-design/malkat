@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2 } from "next/font/google";
 import { RootProviders } from "@/src/components/providers/RootProviders";
-import { getServerUser } from "@/src/features/auth/api/getServerUser";
+import { getServerUser } from "@/src/features/auth/session.server";
 import { getSettings } from "@/src/features/settings";
 
 import "./globals.css";

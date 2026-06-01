@@ -5,7 +5,7 @@ import PhoneInput from "@/src/components/PhoneInput";
 import GoogleAuth from "@/src/components/GoogleAuth";
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
-import { sendOtp, verifyOtp } from "@/src/features/auth/api/otpClient";
+import { sendOtp, verifyOtp } from "@/src/features/auth/login";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import {
   phoneOtpSchema,
@@ -24,7 +24,6 @@ import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { authDebug } from "@/src/lib/authDebug";
 
 type PhoneLoginProps = {
   onContinueWithEmail: () => void;
@@ -92,11 +91,6 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
     } else {
       await refreshUser();
     }
-
-    authDebug("client", "otp login success", {
-      hasUserFromLogin: Boolean(result.user),
-      readableCookies: document.cookie || "(empty)",
-    });
 
     toast.success(result.message);
     router.refresh();

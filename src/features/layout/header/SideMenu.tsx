@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import type { AuthUser } from "@/src/features/auth/api/loginClient";
+import type { AuthUser } from "@/src/features/auth/types";
 import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import NavLinks from "./NavLinks";
 
