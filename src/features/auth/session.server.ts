@@ -6,9 +6,8 @@ import { cache } from "react";
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { fetchSessionUser } from "@/src/features/auth/fetchSessionUser";
 import type { AuthUser } from "@/src/features/auth/types";
-import { authLog } from "@/src/lib/authLog";
-import { getLaravelApiBase } from "@/src/lib/serverApiUrl";
 import { getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
+import { authLog } from "@/src/lib/authLog";
 
 async function readCookieHeader(): Promise<string> {
   const headerList = await headers();
@@ -27,28 +26,26 @@ async function readCookieHeader(): Promise<string> {
 
 export const getServerUser = cache(async function getServerUser(): Promise<AuthUser | null> {
   const cookieHeader = await readCookieHeader();
-  const hasSession = cookieHeader.includes(SESSION_COOKIE_NAME);
+  const cookieNames = cookieHeader
+    ? cookieHeader.split(";").map((p) => p.trim().split("=")[0])
+    : [];
 
   authLog("getServerUser", "start", {
-    hasSession,
-    apiBase: hasSession ? getLaravelApiBase(await getRequestSiteUrl()) : null,
+    cookieNames,
+    hasMalkatSession: cookieNames.includes(SESSION_COOKIE_NAME),
+    apiBase: process.env.NEXT_PUBLIC_API_URL ?? null,
   });
 
-  if (!hasSession) {
+  if (!cookieHeader.includes(SESSION_COOKIE_NAME)) {
+    authLog("getServerUser", "no malkat-session cookie on this request");
     return null;
   }
 
-  const siteUrl = await getRequestSiteUrl();
-  const apiBase = getLaravelApiBase(siteUrl);
-  const user = await fetchSessionUser(cookieHeader, siteUrl, apiBase);
+  const user = await fetchSessionUser(cookieHeader, await getRequestSiteUrl());
 
-  authLog("getServerUser", "done", { user: user?.name ?? null });
+  authLog("getServerUser", "done", {
+    user: user?.name ?? null,
+  });
 
   return user;
-});
-
-/** Whether the browser sent a session cookie (may still be invalid). */
-export const hasSessionCookie = cache(async function hasSessionCookie(): Promise<boolean> {
-  const cookieHeader = await readCookieHeader();
-  return cookieHeader.includes(SESSION_COOKIE_NAME);
 });

@@ -24,31 +24,31 @@ function buildApiHeaders(cookieHeader: string, siteUrl: string): HeadersInit {
   return headers;
 }
 
-/** Server — GET /auth/user with cookies from the incoming request. */
+/** Server — GET /auth/user with cookies from the browser request. */
 export async function fetchSessionUser(
   cookieHeader: string,
   siteUrl: string,
-  apiBase: string,
 ): Promise<AuthUser | null> {
-  const baseURL = apiBase.replace(/\/$/, "");
+  const baseURL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
 
   if (!cookieHeader || !baseURL) {
-    authLog("server-fetch", "skip", {
+    authLog("server-fetch", "skip — no cookies or NEXT_PUBLIC_API_URL", {
       hasCookies: Boolean(cookieHeader),
-      apiBase: baseURL || null,
+      apiBase: baseURL ?? null,
     });
     return null;
   }
 
   const url = `${baseURL}${USER_PATH}`;
+  const cookieNames = cookieHeader
+    .split(";")
+    .map((part) => part.trim().split("=")[0])
+    .filter(Boolean);
 
   authLog("server-fetch", "GET /auth/user", {
     url,
     siteUrl,
-    cookieNames: cookieHeader
-      .split(";")
-      .map((part) => part.trim().split("=")[0])
-      .filter(Boolean),
+    cookieNames,
   });
 
   try {
@@ -64,7 +64,7 @@ export async function fetchSessionUser(
       status: response.status,
       ok: response.ok,
       user: user?.name ?? null,
-      preview: body ? JSON.stringify(body).slice(0, 160) : null,
+      preview: body ? JSON.stringify(body).slice(0, 120) : null,
     });
 
     return user;

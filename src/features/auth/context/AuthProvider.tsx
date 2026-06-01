@@ -48,19 +48,19 @@ export function AuthProvider({
 
   authLog("provider", "render", {
     initialUser: initialUser?.name ?? null,
-    hasSessionCookie,
-    clientUser:
-      clientUser === undefined ? "undefined" : (clientUser?.name ?? null),
+    clientUser: clientUser === undefined ? "undefined" : clientUser?.name ?? null,
     resolvedUser: user?.name ?? null,
     isAuthReady,
   });
 
   const setUser = useCallback((next: AuthUser | null) => {
+    authLog("provider", "setUser", { name: next?.name ?? null });
     setClientUser(next);
     setIsAuthReady(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
+    authLog("provider", "refreshUser");
     const current = await fetchCurrentUser();
     setClientUser(current);
     setIsAuthReady(true);
@@ -77,18 +77,12 @@ export function AuthProvider({
 
   useEffect(() => {
     if (initialUser !== null) {
-      authLog("provider", "skip client fetch — server user");
+      authLog("provider", "skip client fetch — have initialUser from server");
       setIsAuthReady(true);
       return;
     }
 
-    if (!hasSessionCookie) {
-      authLog("provider", "skip client fetch — no session cookie");
-      setIsAuthReady(true);
-      return;
-    }
-
-    authLog("provider", "client fetch — session cookie but no server user");
+    authLog("provider", "client fetch — no initialUser from server");
     let cancelled = false;
 
     void fetchCurrentUser().then((current) => {
