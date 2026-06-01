@@ -1,9 +1,10 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { isAuthGuestPath, isProtectedPath } from "@/src/features/auth/routes";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!isProtectedPath(pathname) && !isAuthGuestPath(pathname)) {

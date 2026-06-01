@@ -10,10 +10,7 @@ import {
   type ReactNode,
 } from "react";
 
-import {
-  fetchCurrentUser,
-  logout,
-} from "@/src/features/auth/session.client";
+import { fetchCurrentUser, logout } from "@/src/features/auth/session.client";
 import type { AuthUser } from "@/src/features/auth/types";
 import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
 
@@ -37,49 +34,27 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const [clientUser, setClientUser] = useState<AuthUser | null | undefined>(
     undefined,
   );
-  const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
 
   const user = initialUser ?? clientUser ?? null;
+  // User is resolved on the server in root layout (getServerUser).
+  const isAuthReady = true;
 
   const setUser = useCallback((next: AuthUser | null) => {
     setClientUser(next);
-    setIsAuthReady(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
     const current = await fetchCurrentUser();
     setClientUser(current);
-    setIsAuthReady(true);
     return current;
   }, []);
 
   const logoutUser = useCallback(async () => {
     await logout();
     setClientUser(null);
-    setIsAuthReady(true);
   }, []);
 
   useEffect(() => onAuthUnauthorized(() => setClientUser(null)), []);
-
-  useEffect(() => {
-    if (initialUser !== null) {
-      return;
-    }
-
-    let cancelled = false;
-
-    void fetchCurrentUser().then((current) => {
-      if (cancelled) {
-        return;
-      }
-      setClientUser(current);
-      setIsAuthReady(true);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [initialUser]);
 
   const value = useMemo(
     () => ({

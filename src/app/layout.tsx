@@ -6,6 +6,8 @@ import { getSettings } from "@/src/features/settings";
 
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 const balooBhaijaan2 = Baloo_Bhaijaan_2({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700", "800"],

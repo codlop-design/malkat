@@ -1,14 +1,19 @@
 import Image from "next/image";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getServerUser } from "@/src/features/auth/session.server";
+import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
+
+export const dynamic = "force-dynamic";
 
 export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (await getServerUser()) {
+  const cookieStore = await cookies();
+
+  if (cookieStore.has(SESSION_COOKIE_NAME)) {
     redirect("/");
   }
 
