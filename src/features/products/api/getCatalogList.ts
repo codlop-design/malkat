@@ -37,11 +37,21 @@ type CatalogListApiResponse = {
 export async function getCatalogList(
   category: CatalogSectionKey,
   page = 1,
+  search?: string,
 ): Promise<CatalogListResult | null> {
   const endpoint = CATALOG_API_ENDPOINTS[category];
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: "8",
+  });
+  const trimmedSearch = search?.trim();
+
+  if (trimmedSearch) {
+    params.set("search", trimmedSearch);
+  }
 
   try {
-    const response = await fetch(`${API_URL}${endpoint}?page=${page}`, {
+    const response = await fetch(`${API_URL}${endpoint}?${params}`, {
       headers: { "Content-Type": "application/json" },
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });

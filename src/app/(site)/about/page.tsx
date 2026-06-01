@@ -8,8 +8,6 @@ import VisionSection from "@/src/features/about/components/VisionSection";
 export default async function AboutPage() {
   const aboutContent = await getAboutContent();
 
-  console.log(aboutContent);
-
   return (
     <>
       <PageHeader

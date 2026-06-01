@@ -34,7 +34,8 @@ export default async function ProductCategoryPage({
 
   const category = slug as CatalogSectionKey;
   const page = Math.max(1, Number(pageParam) || 1);
-  const catalog = await getCatalogList(category, page);
+  const search = q?.trim() ?? "";
+  const catalog = await getCatalogList(category, page, search);
 
   const { label } = CATEGORY_META[category];
   const items = catalog?.items ?? [];
