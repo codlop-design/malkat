@@ -26,3 +26,20 @@ export type VerifyOtpResult = {
   message: string;
   user?: AuthUser;
 };
+
+export type PasswordResetSendResult = {
+  success: boolean;
+  message: string;
+  verificationToken?: string;
+};
+
+export type PasswordResetVerifyResult = {
+  success: boolean;
+  message: string;
+  resetToken?: string;
+};
+
+export type PasswordResetResetResult = {
+  success: boolean;
+  message: string;
+};

@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const forgotPasswordOtpSchema = z.object({
-  code: z
+  otp: z
     .string()
     .min(1, "رمز التحقق مطلوب")
-    .regex(/^\d{6}$/, "يرجى إدخال رمز مكوّن من 6 أرقام"),
+    .regex(/^\d{4,6}$/, "يرجى إدخال رمز التحقق الصحيح"),
 });
 
 export type ForgotPasswordOtpValues = z.infer<typeof forgotPasswordOtpSchema>;
