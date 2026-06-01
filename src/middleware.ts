@@ -1,12 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import {
-  isAuthGuestPath,
-  isProtectedPath,
-  needsAuthMiddleware,
-} from "@/src/features/auth/routes";
 import { fetchSessionUser } from "@/src/features/auth/fetchSessionUser";
+import { isAuthGuestPath } from "@/src/features/auth/routes";
 import { getSiteUrl } from "@/src/lib/siteUrl";
 
 function getSiteUrlFromRequest(request: NextRequest): string {
@@ -35,22 +31,20 @@ function getCookieHeader(request: NextRequest): string {
     .join("; ");
 }
 
+/**
+ * Guest auth routes only (/login, …).
+ * /profile is guarded on the client — session cookies live on the API host
+ * (Sanctum), so server/middleware cannot read them on the Next.js host.
+ */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!needsAuthMiddleware(pathname)) {
+  if (!isAuthGuestPath(pathname)) {
     return NextResponse.next();
   }
 
   const cookieHeader = getCookieHeader(request);
-  const isProtected = isProtectedPath(pathname);
-  const isAuthGuest = isAuthGuestPath(pathname);
-
-  if (isProtected && !cookieHeader) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (isAuthGuest && !cookieHeader) {
+  if (!cookieHeader) {
     return NextResponse.next();
   }
 
@@ -59,11 +53,7 @@ export async function middleware(request: NextRequest) {
     getSiteUrlFromRequest(request),
   );
 
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (isAuthGuest && user) {
+  if (user) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -71,5 +61,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  matcher: [
+    "/login/:path*",
+    "/register/:path*",
+    "/forgot-password/:path*",
+    "/reset-password/:path*",
+  ],
 };
