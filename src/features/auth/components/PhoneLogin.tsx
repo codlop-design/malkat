@@ -24,6 +24,7 @@ import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { authDebug } from "@/src/lib/authDebug";
 
 type PhoneLoginProps = {
   onContinueWithEmail: () => void;
@@ -91,6 +92,11 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
     } else {
       await refreshUser();
     }
+
+    authDebug("client", "otp login success", {
+      hasUserFromLogin: Boolean(result.user),
+      readableCookies: document.cookie || "(empty)",
+    });
 
     toast.success(result.message);
     router.refresh();

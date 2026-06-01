@@ -1,10 +1,5 @@
-import axios from "axios";
-
 import type { AuthUser } from "@/src/features/auth/api/loginClient";
-import {
-  AUTH_USER_PATH,
-  parseAuthUser,
-} from "@/src/features/auth/api/sessionClient";
+import { probeAuthUser } from "@/src/features/auth/api/probeAuthUser";
 
 type ResolveAuthUserOptions = {
   cookieHeader: string;
@@ -20,31 +15,6 @@ export async function resolveAuthUser({
     return null;
   }
 
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
-  if (!baseURL) {
-    return null;
-  }
-
-  try {
-    const { data, status } = await axios.get<unknown>(AUTH_USER_PATH, {
-      baseURL,
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        "Accept-Language": "ar",
-        Cookie: cookieHeader,
-        Origin: siteUrl,
-        Referer: `${siteUrl}/`,
-      },
-      validateStatus: () => true,
-    });
-
-    if (status >= 400) {
-      return null;
-    }
-
-    return parseAuthUser(data);
-  } catch {
-    return null;
-  }
+  const { user } = await probeAuthUser({ cookieHeader, siteUrl });
+  return user;
 }
