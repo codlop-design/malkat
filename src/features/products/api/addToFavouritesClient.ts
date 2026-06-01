@@ -1,5 +1,5 @@
+import { toOrderType } from "@/src/features/cart/lib/mapOrderType";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
-import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
 export type FavouriteActionResult = {
@@ -11,7 +11,9 @@ export async function addToFavourites(
   category: CatalogSectionKey,
   slug: string,
 ): Promise<FavouriteActionResult> {
-  const type = CATALOG_API_ENDPOINTS[category].replace(/^\//, "");
+  const formData = new FormData();
+  formData.append("type", toOrderType(category));
+  formData.append("slug", slug);
 
   try {
     await ensureCsrfCookie();
@@ -19,7 +21,7 @@ export async function addToFavourites(
     const { data, status } = await apiClient.post<{
       success?: boolean;
       message?: string;
-    }>(`/api/${type}/${slug}/favourites`);
+    }>("/api/favourites/toggle", formData);
 
     if (status === 401 || status === 403) {
       return {
