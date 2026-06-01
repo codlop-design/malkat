@@ -27,7 +27,7 @@ export default function CardMedia({
 }: CardMediaProps) {
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
-      <Link href={href} className="absolute inset-0 z-[1] block" tabIndex={-1}>
+      <Link href={href} className="absolute inset-0 z-1 block" tabIndex={-1}>
         <Image
           src={imageSrc}
           alt=""

@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { useState, useTransition, type MouseEvent } from "react";
 import { toast } from "sonner";
 
-import { addToFavouritesAction } from "@/src/features/products/api/addToFavouritesAction";
+import { addToFavourites } from "@/src/features/products/api/addToFavouritesClient";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { cn } from "@/src/lib/utils";
 
@@ -33,7 +33,7 @@ export default function FavouriteButton({
     }
 
     startTransition(async () => {
-      const result = await addToFavouritesAction(category, slug);
+      const result = await addToFavourites(category, slug);
 
       if (result.success) {
         setIsFavourite(true);
