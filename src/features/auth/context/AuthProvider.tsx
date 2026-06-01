@@ -13,6 +13,7 @@ import {
 import { fetchCurrentUser, logout } from "@/src/features/auth/session.client";
 import type { AuthUser } from "@/src/features/auth/types";
 import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
+import { authLog } from "@/src/lib/authLog";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -28,15 +29,31 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 type AuthProviderProps = {
   children: ReactNode;
   initialUser: AuthUser | null;
+  hasSessionCookie: boolean;
 };
 
-export function AuthProvider({ children, initialUser }: AuthProviderProps) {
+export function AuthProvider({
+  children,
+  initialUser,
+  hasSessionCookie,
+}: AuthProviderProps) {
   const [clientUser, setClientUser] = useState<AuthUser | null | undefined>(
     undefined,
   );
-  const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
+  const [isAuthReady, setIsAuthReady] = useState(
+    initialUser !== null || !hasSessionCookie,
+  );
 
   const user = initialUser ?? clientUser ?? null;
+
+  authLog("provider", "render", {
+    initialUser: initialUser?.name ?? null,
+    hasSessionCookie,
+    clientUser:
+      clientUser === undefined ? "undefined" : (clientUser?.name ?? null),
+    resolvedUser: user?.name ?? null,
+    isAuthReady,
+  });
 
   const setUser = useCallback((next: AuthUser | null) => {
     setClientUser(next);
@@ -58,19 +75,27 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   useEffect(() => onAuthUnauthorized(() => setClientUser(null)), []);
 
-  // Server first (initialUser). After reload, if server missed session, sync from browser.
   useEffect(() => {
     if (initialUser !== null) {
+      authLog("provider", "skip client fetch — server user");
       setIsAuthReady(true);
       return;
     }
 
+    if (!hasSessionCookie) {
+      authLog("provider", "skip client fetch — no session cookie");
+      setIsAuthReady(true);
+      return;
+    }
+
+    authLog("provider", "client fetch — session cookie but no server user");
     let cancelled = false;
 
     void fetchCurrentUser().then((current) => {
       if (cancelled) {
         return;
       }
+      authLog("provider", "client fetch done", { user: current?.name ?? null });
       setClientUser(current);
       setIsAuthReady(true);
     });
@@ -78,7 +103,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     return () => {
       cancelled = true;
     };
-  }, [initialUser]);
+  }, [initialUser, hasSessionCookie]);
 
   const value = useMemo(
     () => ({

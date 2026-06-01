@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import GoogleAuth from "@/src/components/GoogleAuth";
+import { authLog } from "@/src/lib/authLog";
 
 type EmailLoginProps = {
   onContinueWithPhone: () => void;
@@ -49,6 +50,8 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
     } else {
       await refreshUser();
     }
+
+    authLog("login", "success", { user: result.user?.name ?? "from refresh" });
 
     toast.success(result.message);
     router.refresh();

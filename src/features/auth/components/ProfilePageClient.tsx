@@ -1,45 +1,23 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import ProfileView from "@/src/features/auth/components/ProfileView";
-import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 
+/** Client fallback when server profile page is not used. */
 export default function ProfilePageClient() {
   const router = useRouter();
-  const { user, refreshUser } = useAuth();
-  const [fetchedUser, setFetchedUser] = useState<AuthUser | null>(null);
-
-  const profileUser = user ?? fetchedUser;
+  const { user, isAuthReady } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      return;
+    if (isAuthReady && !user) {
+      router.replace("/login");
     }
+  }, [isAuthReady, user, router]);
 
-    let cancelled = false;
-
-    void refreshUser().then((current) => {
-      if (cancelled) {
-        return;
-      }
-
-      if (!current) {
-        router.replace("/login");
-        return;
-      }
-
-      setFetchedUser(current);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, refreshUser, router]);
-
-  if (!profileUser) {
+  if (!isAuthReady || !user) {
     return (
       <div className="container flex min-h-[50vh] items-center justify-center py-16">
         <div
@@ -50,5 +28,5 @@ export default function ProfilePageClient() {
     );
   }
 
-  return <ProfileView user={profileUser} />;
+  return <ProfileView user={user} />;
 }

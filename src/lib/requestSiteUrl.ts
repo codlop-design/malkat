@@ -3,7 +3,7 @@ import { cache } from "react";
 
 import { getSiteUrl } from "@/src/lib/siteUrl";
 
-/** Origin for Laravel Sanctum — must match the browser host serving the frontend. */
+/** Browser-facing origin (Sanctum Origin / Referer). */
 export const getRequestSiteUrl = cache(async (): Promise<string> => {
   const headerList = await headers();
 
@@ -23,4 +23,10 @@ export const getRequestSiteUrl = cache(async (): Promise<string> => {
   }
 
   return getSiteUrl();
+});
+
+/** Same-origin API base for server fetches (hits Next rewrite → Laravel). */
+export const getRequestApiUrl = cache(async (): Promise<string> => {
+  const site = await getRequestSiteUrl();
+  return `${site.replace(/\/$/, "")}/api`;
 });
