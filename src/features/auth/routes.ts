@@ -19,7 +19,6 @@ export function isAuthGuestPath(pathname: string): boolean {
   );
 }
 
-/** Middleware only handles guest auth routes; profile uses client session. */
-export function needsAuthMiddleware(pathname: string): boolean {
-  return isAuthGuestPath(pathname);
+export function isAuthRoute(pathname: string): boolean {
+  return isProtectedPath(pathname) || isAuthGuestPath(pathname);
 }
