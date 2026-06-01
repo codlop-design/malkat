@@ -49,3 +49,8 @@ export const getServerUser = cache(async function getServerUser(): Promise<AuthU
 
   return user;
 });
+
+export const hasSessionCookie = cache(async function hasSessionCookie(): Promise<boolean> {
+  const cookieHeader = await readCookieHeader();
+  return cookieHeader.includes(SESSION_COOKIE_NAME);
+});

@@ -10,7 +10,10 @@ export function proxy(request: NextRequest) {
   const cookieNames = request.cookies.getAll().map((c) => c.name);
   const hasSession = request.cookies
     .getAll()
-    .some((cookie) => cookie.name === SESSION_COOKIE_NAME && cookie.value.length > 0);
+    .some(
+      (cookie) =>
+        cookie.name === SESSION_COOKIE_NAME && cookie.value.length > 0,
+    );
 
   authLog("proxy", "request", {
     pathname,
@@ -40,10 +43,15 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/login",
     "/login/:path*",
+    "/register",
     "/register/:path*",
+    "/forgot-password",
     "/forgot-password/:path*",
+    "/reset-password",
     "/reset-password/:path*",
+    "/profile",
     "/profile/:path*",
   ],
 };
