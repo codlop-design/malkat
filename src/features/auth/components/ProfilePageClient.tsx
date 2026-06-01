@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ProfileView from "@/src/features/auth/components/ProfileView";
 import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { authLog } from "@/src/lib/authLog";
 
 export default function ProfilePageClient() {
   const router = useRouter();
@@ -15,6 +16,11 @@ export default function ProfilePageClient() {
   const profileUser = user ?? fetchedUser;
 
   useEffect(() => {
+    authLog("profile", "mount", {
+      contextUser: user?.name ?? null,
+      profileUser: profileUser?.name ?? null,
+    });
+
     if (user) {
       return;
     }
@@ -26,7 +32,10 @@ export default function ProfilePageClient() {
         return;
       }
 
+      authLog("profile", "after refreshUser", { user: current?.name ?? null });
+
       if (!current) {
+        authLog("profile", "→ redirect /login");
         router.replace("/login");
         return;
       }

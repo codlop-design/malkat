@@ -4,14 +4,17 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { authLog } from "@/src/lib/authLog";
 
-/** On guest auth pages — send logged-in users to home. */
 export default function RedirectIfAuthenticated() {
   const router = useRouter();
   const { user, refreshUser } = useAuth();
 
   useEffect(() => {
+    authLog("guest-redirect", "check", { user: user?.name ?? null });
+
     if (user) {
+      authLog("guest-redirect", "→ redirect / (context user)");
       router.replace("/");
       return;
     }
@@ -20,6 +23,9 @@ export default function RedirectIfAuthenticated() {
 
     void refreshUser().then((current) => {
       if (!cancelled && current) {
+        authLog("guest-redirect", "→ redirect / (after refresh)", {
+          user: current.name,
+        });
         router.replace("/");
       }
     });

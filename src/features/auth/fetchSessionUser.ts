@@ -1,5 +1,6 @@
 import { parseAuthUser, USER_PATH } from "@/src/features/auth/parseUser";
 import type { AuthUser } from "@/src/features/auth/types";
+import { authLog } from "@/src/lib/authLog";
 
 function buildApiHeaders(cookieHeader: string, siteUrl: string): HeadersInit {
   const headers: Record<string, string> = {
@@ -29,11 +30,26 @@ export async function fetchSessionUser(
   siteUrl: string,
 ): Promise<AuthUser | null> {
   const baseURL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+
   if (!cookieHeader || !baseURL) {
+    authLog("server-fetch", "skip — no cookies or NEXT_PUBLIC_API_URL", {
+      hasCookies: Boolean(cookieHeader),
+      apiBase: baseURL ?? null,
+    });
     return null;
   }
 
   const url = `${baseURL}${USER_PATH}`;
+  const cookieNames = cookieHeader
+    .split(";")
+    .map((part) => part.trim().split("=")[0])
+    .filter(Boolean);
+
+  authLog("server-fetch", "GET /auth/user", {
+    url,
+    siteUrl,
+    cookieNames,
+  });
 
   try {
     const response = await fetch(url, {
@@ -41,12 +57,21 @@ export async function fetchSessionUser(
       cache: "no-store",
     });
 
-    if (!response.ok) {
-      return null;
-    }
+    const body = await response.json().catch(() => null);
+    const user = response.ok ? parseAuthUser(body) : null;
 
-    return parseAuthUser(await response.json());
-  } catch {
+    authLog("server-fetch", "response", {
+      status: response.status,
+      ok: response.ok,
+      user: user?.name ?? null,
+      preview: body ? JSON.stringify(body).slice(0, 120) : null,
+    });
+
+    return user;
+  } catch (error) {
+    authLog("server-fetch", "failed", {
+      message: error instanceof Error ? error.message : "unknown",
+    });
     return null;
   }
 }
