@@ -1,14 +1,5 @@
-import { redirect } from "next/navigation";
+import ProfilePageClient from "@/src/features/auth/components/ProfilePageClient";
 
-import ProfileView from "@/src/features/auth/components/ProfileView";
-import { getServerUser } from "@/src/features/auth/session.server";
-
-export default async function ProfilePage() {
-  const user = await getServerUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  return <ProfileView user={user} />;
+export default function ProfilePage() {
+  return <ProfilePageClient />;
 }

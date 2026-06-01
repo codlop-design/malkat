@@ -13,13 +13,17 @@ function buildApiHeaders(cookieHeader: string, siteUrl: string): HeadersInit {
 
   const xsrfMatch = cookieHeader.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
   if (xsrfMatch?.[1]) {
-    headers["X-XSRF-TOKEN"] = decodeURIComponent(xsrfMatch[1]);
+    try {
+      headers["X-XSRF-TOKEN"] = decodeURIComponent(xsrfMatch[1]);
+    } catch {
+      headers["X-XSRF-TOKEN"] = xsrfMatch[1];
+    }
   }
 
   return headers;
 }
 
-/** Server / proxy — GET profile with cookies from the incoming request. */
+/** Server — GET /auth/user with cookies from the browser request. */
 export async function fetchSessionUser(
   cookieHeader: string,
   siteUrl: string,
@@ -29,8 +33,10 @@ export async function fetchSessionUser(
     return null;
   }
 
+  const url = `${baseURL}${USER_PATH}`;
+
   try {
-    const response = await fetch(`${baseURL}${USER_PATH}`, {
+    const response = await fetch(url, {
       headers: buildApiHeaders(cookieHeader, siteUrl),
       cache: "no-store",
     });
