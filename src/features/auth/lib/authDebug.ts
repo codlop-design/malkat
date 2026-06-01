@@ -1,5 +1,6 @@
 const ENABLED =
   process.env.NODE_ENV === "development" ||
+  process.env.AUTH_DEBUG === "true" ||
   process.env.NEXT_PUBLIC_AUTH_DEBUG === "true";
 
 export function authDebug(

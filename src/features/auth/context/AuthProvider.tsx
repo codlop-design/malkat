@@ -17,7 +17,6 @@ import {
 } from "@/src/features/auth/api/sessionClient";
 import { authDebug } from "@/src/features/auth/lib/authDebug";
 import { authEvents } from "@/src/features/auth/lib/authEvents";
-import { hasSessionCookie } from "@/src/features/auth/lib/sessionCookie";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -60,20 +59,16 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     });
   }, []);
 
-  // Server already resolved initialUser in root layout — only re-sync in background
-  // when the browser has a session cookie but the server missed the user.
+  // Session cookie is HttpOnly — cannot detect via document.cookie.
+  // If the server missed the user, always verify with the API (withCredentials).
   useEffect(() => {
     if (initialUser) {
       return;
     }
 
-    if (!hasSessionCookie()) {
-      return;
-    }
-
     let cancelled = false;
 
-    authDebug("client", "background sync — server had no user but cookie exists");
+    authDebug("client", "background sync — no server user, calling /api/auth/user");
 
     fetchCurrentUser().then((current) => {
       if (cancelled) return;
