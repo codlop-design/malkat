@@ -2,12 +2,16 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
-import { isAuthGuestPath, isProtectedPath } from "@/src/features/auth/routes";
+import { isAuthGuestPath } from "@/src/features/auth/routes";
 
+/**
+ * Guest auth routes only — if session cookie exists, go home.
+ * /profile is guarded in ProfilePageClient (API check), not here.
+ */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!isProtectedPath(pathname) && !isAuthGuestPath(pathname)) {
+  if (!isAuthGuestPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -15,11 +19,7 @@ export function proxy(request: NextRequest) {
     .getAll()
     .some((cookie) => cookie.name === SESSION_COOKIE_NAME && cookie.value.length > 0);
 
-  if (isProtectedPath(pathname) && !hasSession) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (isAuthGuestPath(pathname) && hasSession) {
+  if (hasSession) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -27,5 +27,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  matcher: [
+    "/login/:path*",
+    "/register/:path*",
+    "/forgot-password/:path*",
+    "/reset-password/:path*",
+  ],
 };
