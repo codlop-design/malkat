@@ -6,7 +6,9 @@ import { cache } from "react";
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { fetchSessionUser } from "@/src/features/auth/fetchSessionUser";
 import type { AuthUser } from "@/src/features/auth/types";
-import { getRequestApiUrl, getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
+import { authLog } from "@/src/lib/authLog";
+import { getLaravelApiBase } from "@/src/lib/serverApiUrl";
+import { getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
 
 async function readCookieHeader(): Promise<string> {
   const headerList = await headers();
@@ -23,18 +25,30 @@ async function readCookieHeader(): Promise<string> {
     .join("; ");
 }
 
-/** Server Components — cached per request. */
 export const getServerUser = cache(async function getServerUser(): Promise<AuthUser | null> {
   const cookieHeader = await readCookieHeader();
+  const hasSession = cookieHeader.includes(SESSION_COOKIE_NAME);
 
-  if (!cookieHeader.includes(SESSION_COOKIE_NAME)) {
+  authLog("getServerUser", "start", {
+    hasSession,
+    apiBase: hasSession ? getLaravelApiBase(await getRequestSiteUrl()) : null,
+  });
+
+  if (!hasSession) {
     return null;
   }
 
-  const [siteUrl, apiUrl] = await Promise.all([
-    getRequestSiteUrl(),
-    getRequestApiUrl(),
-  ]);
+  const siteUrl = await getRequestSiteUrl();
+  const apiBase = getLaravelApiBase(siteUrl);
+  const user = await fetchSessionUser(cookieHeader, siteUrl, apiBase);
 
-  return fetchSessionUser(cookieHeader, siteUrl, apiUrl);
+  authLog("getServerUser", "done", { user: user?.name ?? null });
+
+  return user;
+});
+
+/** Whether the browser sent a session cookie (may still be invalid). */
+export const hasSessionCookie = cache(async function hasSessionCookie(): Promise<boolean> {
+  const cookieHeader = await readCookieHeader();
+  return cookieHeader.includes(SESSION_COOKIE_NAME);
 });

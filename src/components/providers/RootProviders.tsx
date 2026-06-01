@@ -12,12 +12,20 @@ import { isAuthLogEnabled } from "@/src/lib/authLog";
 type RootProvidersProps = {
   children: React.ReactNode;
   initialUser: AuthUser | null;
+  hasSessionCookie: boolean;
 };
 
-export function RootProviders({ children, initialUser }: RootProvidersProps) {
+export function RootProviders({
+  children,
+  initialUser,
+  hasSessionCookie,
+}: RootProvidersProps) {
   return (
     <Direction.Provider dir="rtl">
-      <AuthProvider initialUser={initialUser}>
+      <AuthProvider
+        initialUser={initialUser}
+        hasSessionCookie={hasSessionCookie}
+      >
         <CartProvider>
           {isAuthLogEnabled() ? <AuthFlowLogger /> : null}
           <Toaster />

@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { getServerUser } from "@/src/features/auth/session.server";
 
 export const dynamic = "force-dynamic";
@@ -12,12 +10,6 @@ export default async function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-
-  if (cookieStore.has(SESSION_COOKIE_NAME)) {
-    redirect("/");
-  }
-
   const user = await getServerUser();
   if (user) {
     redirect("/");
@@ -30,7 +22,7 @@ export default async function AuthLayout({
       <div className="w-full md:w-1/2 relative md:h-full h-[500px]">
         <Image
           src="/auth.jpg"
-          alt="منصة التعلم"
+          alt="منصة التعليم"
           fill
           className="w-full h-full object-cover"
         />

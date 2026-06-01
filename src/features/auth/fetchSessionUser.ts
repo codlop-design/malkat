@@ -1,6 +1,6 @@
 import { parseAuthUser, USER_PATH } from "@/src/features/auth/parseUser";
 import type { AuthUser } from "@/src/features/auth/types";
-import { authLog, isAuthLogEnabled } from "@/src/lib/authLog";
+import { authLog } from "@/src/lib/authLog";
 
 function buildApiHeaders(cookieHeader: string, siteUrl: string): HeadersInit {
   const headers: Record<string, string> = {
@@ -33,13 +33,23 @@ export async function fetchSessionUser(
   const baseURL = apiBase.replace(/\/$/, "");
 
   if (!cookieHeader || !baseURL) {
-    if (isAuthLogEnabled()) {
-      authLog("server-fetch", "skip", { hasCookies: Boolean(cookieHeader), apiBase });
-    }
+    authLog("server-fetch", "skip", {
+      hasCookies: Boolean(cookieHeader),
+      apiBase: baseURL || null,
+    });
     return null;
   }
 
   const url = `${baseURL}${USER_PATH}`;
+
+  authLog("server-fetch", "GET /auth/user", {
+    url,
+    siteUrl,
+    cookieNames: cookieHeader
+      .split(";")
+      .map((part) => part.trim().split("=")[0])
+      .filter(Boolean),
+  });
 
   try {
     const response = await fetch(url, {
@@ -50,21 +60,18 @@ export async function fetchSessionUser(
     const body = await response.json().catch(() => null);
     const user = response.ok ? parseAuthUser(body) : null;
 
-    if (isAuthLogEnabled()) {
-      authLog("server-fetch", "GET /auth/user", {
-        url,
-        status: response.status,
-        user: user?.name ?? null,
-      });
-    }
+    authLog("server-fetch", "response", {
+      status: response.status,
+      ok: response.ok,
+      user: user?.name ?? null,
+      preview: body ? JSON.stringify(body).slice(0, 160) : null,
+    });
 
     return user;
   } catch (error) {
-    if (isAuthLogEnabled()) {
-      authLog("server-fetch", "failed", {
-        message: error instanceof Error ? error.message : "unknown",
-      });
-    }
+    authLog("server-fetch", "failed", {
+      message: error instanceof Error ? error.message : "unknown",
+    });
     return null;
   }
 }
