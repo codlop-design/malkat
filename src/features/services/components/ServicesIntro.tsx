@@ -45,13 +45,13 @@ export default function ServicesIntro({ section }: ServicesIntroProps) {
                 className="flex items-center gap-4 text-center"
               >
                 {item.image ? (
-                  <div className="relative hidden size-12 shrink-0 md:block md:size-14">
+                  <div className="relative size-7.5">
                     <Image
                       src={item.image}
                       alt=""
                       fill
                       className="object-contain"
-                      sizes="56px"
+                      sizes="30px"
                       unoptimized
                     />
                   </div>
