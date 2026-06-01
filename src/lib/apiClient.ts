@@ -4,14 +4,8 @@ const API_ORIGIN =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ??
   "https://malkat-dashboard.codlop.sa";
 
-function getBaseURL(): string {
-  if (typeof window !== "undefined") {
-    return window.location.origin;
-  }
-  return API_ORIGIN;
-}
-
 export const apiClient = axios.create({
+  baseURL: API_ORIGIN,
   withCredentials: true,
   headers: {
     Accept: "application/json",
@@ -20,11 +14,6 @@ export const apiClient = axios.create({
   },
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
-});
-
-apiClient.interceptors.request.use((config) => {
-  config.baseURL = getBaseURL();
-  return config;
 });
 
 export async function ensureCsrfCookie(): Promise<void> {
