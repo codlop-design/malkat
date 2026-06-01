@@ -18,7 +18,7 @@ export async function probeAuthUser(options: {
   siteUrl: string;
 }): Promise<AuthUserProbe> {
   const { cookieHeader, siteUrl } = options;
-  const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "";
+  const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
   if (!cookieHeader || !baseURL) {
     return { status: "network", user: null, responsePreview: null };

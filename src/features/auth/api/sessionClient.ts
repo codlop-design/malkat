@@ -28,13 +28,13 @@ export function parseAuthUser(data: unknown): AuthUser | null {
 
 export async function fetchCurrentUser(): Promise<AuthUser | null> {
   try {
-    const { data, status } = await apiClient.get<unknown>("/auth/user", {
+    const { data, status } = await apiClient.get<unknown>(AUTH_USER_PATH, {
       validateStatus: () => true,
     });
 
     authDebug("client", "fetchCurrentUser response", {
       status,
-      path: "/auth/user",
+      path: AUTH_USER_PATH,
     });
 
     if (status >= 400) {

@@ -30,7 +30,7 @@ export async function sendOtp(phone: string): Promise<SendOtpResult> {
     await ensureCsrfCookie();
 
     const { data, status } = await apiClient.post<ApiResponse<SendOtpData>>(
-      "/api/auth/otp/send",
+      "/auth/otp/send",
       { phone_code: PHONE_CODE, phone },
     );
 
@@ -72,7 +72,7 @@ export async function verifyOtp(
     await ensureCsrfCookie();
 
     const { data, status } = await apiClient.post<ApiResponse<AuthUser>>(
-      "/api/auth/otp/verify",
+      "/auth/otp/verify",
       {
         phone_code: PHONE_CODE,
         phone,

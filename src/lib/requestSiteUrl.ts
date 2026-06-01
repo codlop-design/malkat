@@ -3,14 +3,8 @@ import { cache } from "react";
 
 import { getSiteUrl } from "@/src/lib/siteUrl";
 
-/** Origin for Laravel Sanctum on server-side API calls. */
+/** Origin for Laravel Sanctum — must match the browser host serving the frontend. */
 export const getRequestSiteUrl = cache(async (): Promise<string> => {
-  const fromEnv = process.env.SITE_URL?.replace(/\/$/, "");
-
-  if (fromEnv && !fromEnv.includes("localhost")) {
-    return fromEnv;
-  }
-
   const headerList = await headers();
 
   const host =
@@ -21,6 +15,11 @@ export const getRequestSiteUrl = cache(async (): Promise<string> => {
 
   if (host) {
     return `${proto}://${host}`;
+  }
+
+  const fromEnv = process.env.SITE_URL?.replace(/\/$/, "");
+  if (fromEnv) {
+    return fromEnv;
   }
 
   return getSiteUrl();

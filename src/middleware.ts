@@ -6,12 +6,6 @@ import { isAuthGuestPath } from "@/src/features/auth/authRoutes";
 import { getSiteUrl } from "@/src/lib/siteUrl";
 
 function getSiteUrlFromRequest(request: NextRequest): string {
-  const fromEnv = process.env.SITE_URL?.replace(/\/$/, "");
-
-  if (fromEnv && !fromEnv.includes("localhost")) {
-    return fromEnv;
-  }
-
   const host =
     request.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ??
     request.headers.get("host");
@@ -20,6 +14,11 @@ function getSiteUrlFromRequest(request: NextRequest): string {
 
   if (host) {
     return `${proto}://${host}`;
+  }
+
+  const fromEnv = process.env.SITE_URL?.replace(/\/$/, "");
+  if (fromEnv) {
+    return fromEnv;
   }
 
   return getSiteUrl();
