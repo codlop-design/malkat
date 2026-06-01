@@ -3,10 +3,13 @@
 import { UserRound } from "lucide-react";
 import Link from "next/link";
 
+import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { cn } from "@/src/lib/utils";
 
 type HeaderAuthControlProps = {
+  /** Resolved on the server — used for the first paint (no client wait). */
+  serverUser: AuthUser | null;
   className?: string;
   loginClassName?: string;
   profileClassName?: string;
@@ -16,6 +19,7 @@ type HeaderAuthControlProps = {
 };
 
 export default function HeaderAuthControl({
+  serverUser,
   className,
   loginClassName,
   profileClassName,
@@ -23,7 +27,8 @@ export default function HeaderAuthControl({
   showName = true,
   nameClassName,
 }: HeaderAuthControlProps) {
-  const { user } = useAuth();
+  const { user: clientUser } = useAuth();
+  const user = clientUser ?? serverUser;
 
   if (user) {
     return (

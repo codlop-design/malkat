@@ -1,6 +1,7 @@
 "use client";
 
 import { Direction } from "radix-ui";
+
 import { Toaster } from "@/src/components/ui/sonner";
 import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import { AuthProvider } from "@/src/features/auth/context/AuthProvider";

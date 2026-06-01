@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import NavLinks from "./NavLinks";
 
@@ -12,12 +13,14 @@ type SideMenuProps = {
   menuOpen: boolean;
   closeMenu: () => void;
   pathname: string;
+  authUser: AuthUser | null;
 };
 
 export default function SideMenu({
   menuOpen,
   closeMenu,
   pathname,
+  authUser,
 }: SideMenuProps) {
   return (
     <AnimatePresence>
@@ -79,6 +82,7 @@ export default function SideMenu({
 
             <div className="border-t border-[#E5E5E5] p-5">
               <HeaderAuthControl
+                serverUser={authUser}
                 onNavigate={closeMenu}
                 loginClassName="flex w-full items-center justify-center py-3 text-base font-medium"
                 profileClassName="w-full justify-center gap-3 py-1"

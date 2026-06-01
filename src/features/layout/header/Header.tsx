@@ -7,10 +7,15 @@ import Image from "next/image";
 import Link from "next/link";
 import NavLinks from "./NavLinks";
 import SideMenu from "./SideMenu";
+import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import SideCart from "../../cart/components/SideCart";
 
-export default function Header() {
+type HeaderProps = {
+  authUser: AuthUser | null;
+};
+
+export default function Header({ authUser }: HeaderProps) {
   const settings = useSettings();
   const logoSrc = settings?.logo ?? "/logo.png";
   const logoAlt = settings?.title ?? "Logo";
@@ -88,13 +93,18 @@ export default function Header() {
 
             <div className="flex items-center gap-4">
               <SideCart />
-              <HeaderAuthControl />
+              <HeaderAuthControl serverUser={authUser} />
             </div>
           </div>
         </div>
       </header>
 
-      <SideMenu menuOpen={menuOpen} closeMenu={closeMenu} pathname={pathname} />
+      <SideMenu
+        menuOpen={menuOpen}
+        closeMenu={closeMenu}
+        pathname={pathname}
+        authUser={authUser}
+      />
     </>
   );
 }
