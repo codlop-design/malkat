@@ -2,7 +2,7 @@ import type { AuthUser } from "@/src/features/auth/api/loginClient";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import { authDebug } from "@/src/lib/authDebug";
 
-export const AUTH_USER_PATH = "/api/auth/user";
+export const AUTH_USER_PATH = "/auth/user";
 
 export function parseAuthUser(data: unknown): AuthUser | null {
   if (!data || typeof data !== "object") {
@@ -28,13 +28,13 @@ export function parseAuthUser(data: unknown): AuthUser | null {
 
 export async function fetchCurrentUser(): Promise<AuthUser | null> {
   try {
-    const { data, status } = await apiClient.get<unknown>(AUTH_USER_PATH, {
+    const { data, status } = await apiClient.get<unknown>("/auth/user", {
       validateStatus: () => true,
     });
 
     authDebug("client", "fetchCurrentUser response", {
       status,
-      path: AUTH_USER_PATH,
+      path: "/auth/user",
     });
 
     if (status >= 400) {

@@ -44,7 +44,7 @@ export async function probeAuthUser(options: {
         ? JSON.stringify(data).slice(0, 200)
         : String(data).slice(0, 200);
 
-    authDebug("probe", "GET /api/auth/user", {
+    authDebug("probe", "GET /auth/user", {
       status,
       siteUrl,
       baseURL,
@@ -54,7 +54,7 @@ export async function probeAuthUser(options: {
 
     return { status, user, responsePreview: preview };
   } catch (error) {
-    authDebug("probe", "GET /api/auth/user failed", {
+    authDebug("probe", "GET /auth/user failed", {
       message: error instanceof Error ? error.message : "unknown",
     });
 
