@@ -10,30 +10,6 @@ export type ServiceItem = {
   tags: string[];
 };
 
-export type ServiceStat = {
-  id: string;
-  value: string;
-  label: string;
-  icon: string;
-};
-
-export const SERVICE_STATS: ServiceStat[] = [
-  {
-    id: "consultations",
-    value: "+350",
-    label: "الاستشارات التعليمية",
-    icon: "📖",
-  },
-  { id: "programs", value: "+350", label: "البرامج التفاعلية", icon: "📖" },
-  { id: "workshops", value: "5", label: "ورش العمل", icon: "🗂️" },
-  {
-    id: "initiatives",
-    value: "3 - 12",
-    label: "المبادرات المجتمعية",
-    icon: "🧒",
-  },
-];
-
 const IMG =
   "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80";
 

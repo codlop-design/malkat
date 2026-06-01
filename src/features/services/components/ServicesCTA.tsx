@@ -4,21 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+import type { ServicePageSection } from "@/src/features/services/types/servicePage";
 import {
   fadeUp,
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
 
-export default function ServicesCTA() {
+type ServicesCTAProps = {
+  section: ServicePageSection;
+};
+
+export default function ServicesCTA({ section }: ServicesCTAProps) {
+  const backgroundSrc = section.image ?? "/services-bg.png";
+
   return (
     <section className="relative overflow-hidden py-14 md:py-16 lg:py-20">
       <Image
-        src="/services-bg.png"
+        src={backgroundSrc}
         alt=""
         fill
         className="h-full w-full object-cover object-center"
         priority={false}
+        unoptimized={backgroundSrc.startsWith("http")}
       />
 
       <div className="container relative z-10">
@@ -30,27 +38,36 @@ export default function ServicesCTA() {
           viewport={motionViewport}
           variants={staggerContainer(0.1, 0.05)}
         >
-          <motion.p
-            variants={fadeUp}
-            className="text-sm font-medium text-white/80 md:text-base"
-          >
-            خدمة مخصصة
-          </motion.p>
+          {section.icon ? (
+            <motion.div variants={fadeUp} className="relative size-16 md:size-20">
+              <Image
+                src={section.icon}
+                alt=""
+                fill
+                className="object-contain"
+                sizes="80px"
+                unoptimized
+              />
+            </motion.div>
+          ) : null}
 
-          <motion.h2
-            variants={fadeUp}
-            className="text-2xl font-bold leading-snug text-white md:text-3xl lg:text-[32px]"
-          >
-            هل تحتاج إلى خدمة تعليمية مخصصة؟
-          </motion.h2>
+          {section.title ? (
+            <motion.h2
+              variants={fadeUp}
+              className="text-2xl font-bold leading-snug text-white md:text-3xl lg:text-[32px]"
+            >
+              {section.title}
+            </motion.h2>
+          ) : null}
 
-          <motion.p
-            variants={fadeUp}
-            className="max-w-2xl text-sm leading-[1.9] text-white/85 md:text-base"
-          >
-            فريقنا المتخصص جاهز لتصميم حل تعليمي يناسب احتياجاتك تماماً، لا تتردد
-            في التواصل معنا الآن
-          </motion.p>
+          {section.content ? (
+            <motion.p
+              variants={fadeUp}
+              className="max-w-2xl text-sm leading-[1.9] text-white/85 md:text-base"
+            >
+              {section.content}
+            </motion.p>
+          ) : null}
 
           <motion.div
             variants={fadeUp}

@@ -1,60 +1,37 @@
-"use client";
-
-import { useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-
-import CategoryFilters from "@/src/components/CategoryFilters";
-import { SERVICE_CATEGORIES } from "@/src/features/services/data/categories";
-import ServiceListingCard from "@/src/features/services/components/ServiceListingCard";
-import { filterServicesByCategory } from "@/src/features/services/data/services";
+import { getServicesList } from "@/src/features/services/api/getServicesList";
+import ServicesGridClient from "@/src/features/services/components/ServicesGridClient";
 import {
   parseServiceCategory,
-  serviceCategoryHref,
+  parseServicePage,
 } from "@/src/features/services/types";
-import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
-export default function ServicesGrid() {
-  const searchParams = useSearchParams();
-  const category = parseServiceCategory(searchParams.get("category"));
+type ServicesGridProps = {
+  category?: string | null;
+  page?: string | null;
+};
 
-  // مؤقت: دائماً كل الخدمات — الفلتر يحدّث الرابط فقط
-  const displayItems = useMemo(
-    () => filterServicesByCategory(category),
-    [category],
-  );
+const EMPTY_PAGINATION = {
+  current_page: 1,
+  last_page: 1,
+  per_page: 4,
+  total: 0,
+  from: 0,
+  to: 0,
+};
+
+export default async function ServicesGrid({
+  category,
+  page: pageParam,
+}: ServicesGridProps) {
+  const active = parseServiceCategory(category);
+  const page = parseServicePage(pageParam);
+  const result = await getServicesList(active, page);
 
   return (
-    <section className="bg-[#FAFAFA] pb-14 md:pb-20">
-      <div className="container">
-        <motion.div
-          className="mt-10 overflow-hidden rounded-2xl bg-[#F5F5F5] p-4 md:mt-12 lg:mt-14"
-          initial="hidden"
-          whileInView="visible"
-          viewport={motionViewport}
-          variants={fadeUp}
-        >
-          <CategoryFilters
-            active={category}
-            categories={SERVICE_CATEGORIES}
-            getHref={serviceCategoryHref}
-            ariaLabel="تصفية الخدمات"
-          />
-        </motion.div>
-
-        <motion.ul
-          className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer(0.06, 0.04)}
-        >
-          {displayItems.map((service) => (
-            <motion.li key={service.id} variants={fadeUp} className="h-full">
-              <ServiceListingCard service={service} />
-            </motion.li>
-          ))}
-        </motion.ul>
-      </div>
-    </section>
+    <ServicesGridClient
+      items={result?.items ?? []}
+      pagination={result?.pagination ?? EMPTY_PAGINATION}
+      category={active}
+    />
   );
 }
