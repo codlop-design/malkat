@@ -16,6 +16,7 @@ export const apiClient = axios.create({
   headers: {
     Accept: "application/json",
     "X-Requested-With": "XMLHttpRequest",
+    "Accept-Language": "ar",
   },
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
