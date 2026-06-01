@@ -21,7 +21,7 @@ export async function addToFavourites(
     const { data, status } = await apiClient.post<{
       success?: boolean;
       message?: string;
-    }>("/api/favourites/toggle", formData);
+    }>("/favourites/toggle", formData);
 
     if (status === 401 || status === 403) {
       return {

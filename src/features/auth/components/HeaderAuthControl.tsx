@@ -13,8 +13,6 @@ type HeaderAuthControlProps = {
   loginClassName?: string;
   profileClassName?: string;
   onNavigate?: () => void;
-  showName?: boolean;
-  nameClassName?: string;
 };
 
 export default function HeaderAuthControl({
@@ -23,8 +21,6 @@ export default function HeaderAuthControl({
   loginClassName,
   profileClassName,
   onNavigate,
-  showName = true,
-  nameClassName,
 }: HeaderAuthControlProps) {
   const { user: authUser, isAuthReady } = useAuth();
   const user = authUser ?? serverUser;
@@ -32,7 +28,10 @@ export default function HeaderAuthControl({
   if (!isAuthReady && !user) {
     return (
       <div
-        className={cn("size-10 animate-pulse rounded-full bg-[#E8F6F4]", className)}
+        className={cn(
+          "size-10 animate-pulse rounded-full bg-[#E8F6F4]",
+          className,
+        )}
         aria-hidden
       />
     );
@@ -53,16 +52,6 @@ export default function HeaderAuthControl({
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#E8F6F4] text-primary ring-1 ring-primary/15">
           <UserRound className="size-5" strokeWidth={1.75} aria-hidden />
         </span>
-        {showName ? (
-          <span
-            className={cn(
-              "max-w-[140px] truncate text-sm font-medium text-[#454545]",
-              nameClassName ?? "hidden sm:inline",
-            )}
-          >
-            {user.name}
-          </span>
-        ) : null}
       </Link>
     );
   }
