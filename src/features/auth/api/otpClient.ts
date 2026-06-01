@@ -1,8 +1,5 @@
-import {
-  ensureCsrfCookie,
-  sanctumFetch,
-} from "@/src/features/auth/lib/sanctumClient";
 import type { AuthUser } from "@/src/features/auth/api/loginClient";
+import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 
 const PHONE_CODE = "966";
 
@@ -29,22 +26,15 @@ type SendOtpData = {
 };
 
 export async function sendOtp(phone: string): Promise<SendOtpResult> {
-  const payload = { phone_code: PHONE_CODE, phone };
-  console.log("[auth/otp] send", payload);
-
   try {
     await ensureCsrfCookie();
 
-    const response = await sanctumFetch("/api/auth/otp/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const { data, status } = await apiClient.post<ApiResponse<SendOtpData>>(
+      "/api/auth/otp/send",
+      { phone_code: PHONE_CODE, phone },
+    );
 
-    const data = (await response.json()) as ApiResponse<SendOtpData>;
-    console.log("[auth/otp] send response", data);
-
-    if (!response.ok || !data.success) {
+    if (status >= 400 || !data.success) {
       return {
         success: false,
         message: data.message ?? "تعذر إرسال رمز التحقق",
@@ -65,8 +55,7 @@ export async function sendOtp(phone: string): Promise<SendOtpResult> {
       message: data.message ?? "تم إرسال رمز التحقق",
       verificationToken,
     };
-  } catch (error) {
-    console.error("[auth/otp] send error", error);
+  } catch {
     return {
       success: false,
       message: "تعذر إرسال رمز التحقق، حاول مرة أخرى",
@@ -79,33 +68,20 @@ export async function verifyOtp(
   verificationToken: string,
   otp: string,
 ): Promise<VerifyOtpResult> {
-  const payload = {
-    phone_code: PHONE_CODE,
-    phone,
-    verification_token: verificationToken,
-    otp,
-  };
-
-  console.log("[auth/otp] verify", {
-    phone_code: PHONE_CODE,
-    phone,
-    verification_token: verificationToken,
-    otp,
-  });
-
   try {
     await ensureCsrfCookie();
 
-    const response = await sanctumFetch("/api/auth/otp/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const { data, status } = await apiClient.post<ApiResponse<AuthUser>>(
+      "/api/auth/otp/verify",
+      {
+        phone_code: PHONE_CODE,
+        phone,
+        verification_token: verificationToken,
+        otp,
+      },
+    );
 
-    const data = (await response.json()) as ApiResponse<AuthUser>;
-    console.log("[auth/otp] verify response", data);
-
-    if (!response.ok || !data.success) {
+    if (status >= 400 || !data.success) {
       return {
         success: false,
         message: data.message ?? "رمز التحقق غير صحيح",
@@ -117,8 +93,7 @@ export async function verifyOtp(
       message: data.message ?? "تم تسجيل الدخول بنجاح",
       user: data.data,
     };
-  } catch (error) {
-    console.error("[auth/otp] verify error", error);
+  } catch {
     return {
       success: false,
       message: "تعذر التحقق من الرمز، حاول مرة أخرى",

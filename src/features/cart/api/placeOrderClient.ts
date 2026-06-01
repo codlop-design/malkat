@@ -1,7 +1,4 @@
-import {
-  ensureCsrfCookie,
-  sanctumFetch,
-} from "@/src/features/auth/lib/sanctumClient";
+import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import { toOrderType } from "@/src/features/cart/lib/mapOrderType";
 import type {
   PlaceOrderResult,
@@ -38,21 +35,15 @@ export async function placeOrder(
     }),
   };
 
-  console.log("[cart/order] place", payload);
-
   try {
     await ensureCsrfCookie();
 
-    const response = await sanctumFetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const { data, status } = await apiClient.post<OrderApiResponse>(
+      "/api/orders",
+      payload,
+    );
 
-    const data = (await response.json()) as OrderApiResponse;
-    console.log("[cart/order] response", data);
-
-    if (!response.ok || !data.success) {
+    if (status >= 400 || !data.success) {
       return {
         success: false,
         message: data.message ?? "تعذر تأكيد الطلب",
@@ -63,8 +54,7 @@ export async function placeOrder(
       success: true,
       message: data.message ?? "تم تأكيد الطلب بنجاح",
     };
-  } catch (error) {
-    console.error("[cart/order] error", error);
+  } catch {
     return {
       success: false,
       message: "تعذر تأكيد الطلب، حاول مرة أخرى",

@@ -1,7 +1,4 @@
-import {
-  ensureCsrfCookie,
-  sanctumFetch,
-} from "@/src/features/auth/lib/sanctumClient";
+import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
@@ -19,32 +16,28 @@ export async function addToFavourites(
   try {
     await ensureCsrfCookie();
 
-    const response = await sanctumFetch(`/api/${type}/${slug}/favourites`, {
-      method: "POST",
-    });
-
-    const json = (await response.json()) as {
+    const { data, status } = await apiClient.post<{
       success?: boolean;
       message?: string;
-    };
+    }>(`/api/${type}/${slug}/favourites`);
 
-    if (response.status === 401 || response.status === 403) {
+    if (status === 401 || status === 403) {
       return {
         success: false,
         message: "يرجى تسجيل الدخول أولاً",
       };
     }
 
-    if (!response.ok || !json.success) {
+    if (status >= 400 || !data.success) {
       return {
         success: false,
-        message: json.message ?? "تعذر الإضافة للمفضلة",
+        message: data.message ?? "تعذر الإضافة للمفضلة",
       };
     }
 
     return {
       success: true,
-      message: json.message ?? "تمت الإضافة للمفضلة",
+      message: data.message ?? "تمت الإضافة للمفضلة",
     };
   } catch {
     return {
