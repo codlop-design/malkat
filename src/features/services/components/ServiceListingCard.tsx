@@ -1,22 +1,11 @@
-import ServiceCard from "@/src/features/products/components/cards/ServiceCard";
-import type { ServiceItem } from "@/src/features/services/data/services";
+import ServiceCard, {
+  type ServiceCardProps,
+} from "@/src/features/products/components/cards/ServiceCard";
 
 type ServiceListingCardProps = {
-  service: ServiceItem;
+  service: ServiceCardProps;
 };
 
 export default function ServiceListingCard({ service }: ServiceListingCardProps) {
-  const { id, slug, title, description, imageSrc, tags } = service;
-
-  return (
-    <ServiceCard
-      id={id}
-      category="services"
-      slug={slug}
-      title={title}
-      description={description}
-      imageSrc={imageSrc}
-      tags={tags}
-    />
-  );
+  return <ServiceCard category="services" {...service} />;
 }

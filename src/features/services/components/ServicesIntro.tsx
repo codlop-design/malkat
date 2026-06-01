@@ -1,10 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { SERVICE_STATS } from "@/src/features/services/data/services";
+
+import type { ServicePageSection } from "@/src/features/services/types/servicePage";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
-export default function ServicesIntro() {
+type ServicesIntroProps = {
+  section: ServicePageSection;
+};
+
+export default function ServicesIntro({ section }: ServicesIntroProps) {
   return (
     <section className="py-10 md:py-14">
       <motion.div
@@ -16,37 +22,53 @@ export default function ServicesIntro() {
         variants={staggerContainer()}
       >
         <motion.div variants={fadeUp} className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-black md:text-[28px]">
-            خدمات تعليمية تدعم رحلة التعلم
-          </h2>
-          <p className="mt-3 text-sm leading-[1.9] text-[#717171] md:text-base">
-            نقدّم مجموعة من الخدمات التعليمية التفاعلية للأطفال والأسر، مصممة
-            لتنمية المهارات وتعزيز التعلم بطريقة ممتعة وآمنة.
-          </p>
+          {section.title ? (
+            <h2 className="text-2xl font-bold text-black md:text-[28px]">
+              {section.title}
+            </h2>
+          ) : null}
+          {section.content ? (
+            <p className="mt-3 text-sm leading-[1.9] text-[#717171] md:text-base">
+              {section.content}
+            </p>
+          ) : null}
         </motion.div>
 
-        <motion.ul
-          variants={fadeUp}
-          className="flex items-center justify-center gap-12 flex-wrap"
-        >
-          {SERVICE_STATS.map((stat) => (
-            <li key={stat.id} className="flex  items-center gap-4 text-center">
-              <span className="text-3xl md:block hidden" aria-hidden>
-                {stat.icon}
-              </span>
+        {section.items.length > 0 ? (
+          <motion.ul
+            variants={fadeUp}
+            className="flex flex-wrap items-center justify-center gap-12"
+          >
+            {section.items.map((item) => (
+              <li
+                key={`${item.title}-${item.content}`}
+                className="flex items-center gap-4 text-center"
+              >
+                {item.image ? (
+                  <div className="relative hidden size-12 shrink-0 md:block md:size-14">
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      className="object-contain"
+                      sizes="56px"
+                      unoptimized
+                    />
+                  </div>
+                ) : null}
 
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-lg font-bold text-primary md:text-xl">
-                  {stat.value}
-                </span>
-
-                <span className="text-sm text-[#454545] md:text-base">
-                  {stat.label}
-                </span>
-              </div>
-            </li>
-          ))}
-        </motion.ul>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-lg font-bold text-primary md:text-xl">
+                    {item.title}
+                  </span>
+                  <span className="text-sm text-[#454545] md:text-base">
+                    {item.content}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </motion.ul>
+        ) : null}
       </motion.div>
     </section>
   );
