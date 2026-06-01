@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -18,7 +17,6 @@ import {
 
 type AuthContextValue = {
   user: AuthUser | null;
-  isLoading: boolean;
   isAuthenticated: boolean;
   setUser: (user: AuthUser | null) => void;
   refreshUser: () => Promise<void>;
@@ -27,27 +25,17 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+type AuthProviderProps = {
+  children: ReactNode;
+  initialUser: AuthUser | null;
+};
+
+export function AuthProvider({ children, initialUser }: AuthProviderProps) {
+  const [user, setUser] = useState<AuthUser | null>(initialUser);
 
   const refreshUser = useCallback(async () => {
     const current = await fetchCurrentUser();
     setUser(current);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchCurrentUser().then((current) => {
-      if (cancelled) return;
-      setUser(current);
-      setIsLoading(false);
-    });
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const logout = useCallback(async () => {
@@ -58,13 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user,
-      isLoading,
       isAuthenticated: user !== null,
       setUser,
       refreshUser,
       logout,
     }),
-    [user, isLoading, refreshUser, logout],
+    [user, refreshUser, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

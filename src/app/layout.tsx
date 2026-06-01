@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2 } from "next/font/google";
 import { RootProviders } from "@/src/components/providers/RootProviders";
+import { getServerUser } from "@/src/features/auth/api/getServerUser";
 import { getSettings } from "@/src/features/settings";
 
 import "./globals.css";
@@ -98,11 +99,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialUser = await getServerUser();
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -126,7 +129,7 @@ export default function RootLayout({
             __html: JSON.stringify(schema),
           }}
         />
-        <RootProviders>{children}</RootProviders>
+        <RootProviders initialUser={initialUser}>{children}</RootProviders>
       </body>
     </html>
   );
