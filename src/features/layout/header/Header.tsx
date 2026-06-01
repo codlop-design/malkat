@@ -93,7 +93,7 @@ export default function Header({ authUser }: HeaderProps) {
 
             <div className="flex items-center gap-4">
               <SideCart />
-              <HeaderAuthControl serverUser={authUser} />
+              <HeaderAuthControl serverUser={authUser} showName={false} />
             </div>
           </div>
         </div>
