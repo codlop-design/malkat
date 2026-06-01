@@ -29,7 +29,7 @@ async function login(payload: Record<string, string>): Promise<LoginResult> {
     await ensureCsrfCookie();
 
     const { data, status } = await apiClient.post<LoginApiResponse>(
-      "/api/auth/login",
+      "/auth/login",
       payload,
     );
 

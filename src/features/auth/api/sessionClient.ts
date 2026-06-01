@@ -40,7 +40,7 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
 export async function logoutUser(): Promise<boolean> {
   try {
     await ensureCsrfCookie();
-    const { status } = await apiClient.post("/api/auth/logout");
+    const { status } = await apiClient.post("/auth/logout");
     return status < 400;
   } catch {
     return false;
