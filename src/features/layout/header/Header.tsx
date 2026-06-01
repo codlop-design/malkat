@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import NavLinks from "./NavLinks";
 import SideMenu from "./SideMenu";
+import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import SideCart from "../../cart/components/SideCart";
 
 export default function Header() {
@@ -87,12 +88,7 @@ export default function Header() {
 
             <div className="flex items-center gap-4">
               <SideCart />
-              <Link
-                href="/login"
-                className="rounded-full bg-primary px-4 py-2.5 text-white"
-              >
-                تسجيل الدخول
-              </Link>
+              <HeaderAuthControl />
             </div>
           </div>
         </div>

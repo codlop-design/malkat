@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
 import NavLinks from "./NavLinks";
 
 type SideMenuProps = {
@@ -77,13 +78,12 @@ export default function SideMenu({
             />
 
             <div className="border-t border-[#E5E5E5] p-5">
-              <Link
-                href="/login"
-                onClick={closeMenu}
-                className="flex w-full items-center justify-center rounded-full bg-primary py-3 text-base font-medium text-white"
-              >
-                تسجيل الدخول
-              </Link>
+              <HeaderAuthControl
+                onNavigate={closeMenu}
+                loginClassName="flex w-full items-center justify-center py-3 text-base font-medium"
+                profileClassName="w-full justify-center gap-3 py-1"
+                nameClassName="inline text-base"
+              />
             </div>
           </motion.aside>
         </>

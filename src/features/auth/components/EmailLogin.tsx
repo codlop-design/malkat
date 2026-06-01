@@ -3,6 +3,7 @@
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { loginWithEmail } from "@/src/features/auth/api/loginClient";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import {
   loginSchema,
   type LoginFormValues,
@@ -21,6 +22,7 @@ type EmailLoginProps = {
 
 export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
   const router = useRouter();
+  const { setUser, refreshUser } = useAuth();
 
   const {
     register,
@@ -37,11 +39,15 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
   async function onSubmit(values: LoginFormValues) {
     const result = await loginWithEmail(values);
 
-    console.log(result);
-
     if (!result.success) {
       toast.error(result.message);
       return;
+    }
+
+    if (result.user) {
+      setUser(result.user);
+    } else {
+      await refreshUser();
     }
 
     toast.success(result.message);

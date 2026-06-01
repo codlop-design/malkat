@@ -6,6 +6,7 @@ import GoogleAuth from "@/src/components/GoogleAuth";
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { sendOtp, verifyOtp } from "@/src/features/auth/api/otpClient";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import {
   phoneOtpSchema,
   type PhoneOtpValues,
@@ -32,6 +33,7 @@ type Step = "phone" | "otp";
 
 export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
   const router = useRouter();
+  const { setUser, refreshUser } = useAuth();
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
@@ -82,6 +84,12 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
     if (!result.success) {
       toast.error(result.message);
       return;
+    }
+
+    if (result.user) {
+      setUser(result.user);
+    } else {
+      await refreshUser();
     }
 
     toast.success(result.message);

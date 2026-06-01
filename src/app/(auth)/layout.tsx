@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import AuthGuestGuard from "@/src/features/auth/components/AuthGuestGuard";
+
 export default function AuthLayout({
   children,
 }: Readonly<{
@@ -7,7 +9,9 @@ export default function AuthLayout({
 }>) {
   return (
     <main className="md:h-screen h-auto flex md:flex-row flex-col">
-      <div className="w-full md:w-1/2">{children}</div>
+      <div className="w-full md:w-1/2">
+        <AuthGuestGuard>{children}</AuthGuestGuard>
+      </div>
 
       <div className="w-full md:w-1/2 relative md:h-full h-[500px]">
         <Image
