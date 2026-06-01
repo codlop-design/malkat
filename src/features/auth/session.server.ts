@@ -24,7 +24,6 @@ async function readCookieHeader(): Promise<string> {
     .join("; ");
 }
 
-/** Server Components — cached per request. */
 export const getServerUser = cache(async function getServerUser(): Promise<AuthUser | null> {
   const cookieHeader = await readCookieHeader();
   const cookieNames = cookieHeader

@@ -29,13 +29,20 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 type AuthProviderProps = {
   children: ReactNode;
   initialUser: AuthUser | null;
+  hasSessionCookie: boolean;
 };
 
-export function AuthProvider({ children, initialUser }: AuthProviderProps) {
+export function AuthProvider({
+  children,
+  initialUser,
+  hasSessionCookie,
+}: AuthProviderProps) {
   const [clientUser, setClientUser] = useState<AuthUser | null | undefined>(
     undefined,
   );
-  const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
+  const [isAuthReady, setIsAuthReady] = useState(
+    initialUser !== null || !hasSessionCookie,
+  );
 
   const user = initialUser ?? clientUser ?? null;
 
@@ -90,7 +97,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     return () => {
       cancelled = true;
     };
-  }, [initialUser]);
+  }, [initialUser, hasSessionCookie]);
 
   const value = useMemo(
     () => ({

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2 } from "next/font/google";
 import { RootProviders } from "@/src/components/providers/RootProviders";
-import { getServerUser } from "@/src/features/auth/session.server";
+import {
+  getServerUser,
+  hasSessionCookie,
+} from "@/src/features/auth/session.server";
 import { getSettings } from "@/src/features/settings";
 
 import "./globals.css";
@@ -106,7 +109,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialUser = await getServerUser();
+  const [initialUser, sessionCookie] = await Promise.all([
+    getServerUser(),
+    hasSessionCookie(),
+  ]);
 
   const schema = {
     "@context": "https://schema.org",
@@ -131,7 +137,12 @@ export default async function RootLayout({
             __html: JSON.stringify(schema),
           }}
         />
-        <RootProviders initialUser={initialUser}>{children}</RootProviders>
+        <RootProviders
+          initialUser={initialUser}
+          hasSessionCookie={sessionCookie}
+        >
+          {children}
+        </RootProviders>
       </body>
     </html>
   );

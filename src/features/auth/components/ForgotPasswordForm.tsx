@@ -12,6 +12,12 @@ import { InputField } from "@/src/components/InputField";
 import PhoneInput from "@/src/components/PhoneInput";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import {
+  sendPasswordResetEmail,
+  sendPasswordResetPhone,
+  resetPasswordWithToken,
+  verifyPasswordResetOtp,
+} from "@/src/features/auth/passwordReset";
+import {
   forgotPasswordEmailSchema,
   forgotPasswordPhoneSchema,
   type ForgotPasswordEmailValues,
@@ -40,7 +46,7 @@ const STEP_COPY: Record<
 > = {
   method: {
     title: "نسيت كلمة المرور؟",
-    subtitle: "اختر طريقة استلام رمز التحقق أو رابط إعادة التعيين.",
+    subtitle: "اختر طريقة استلام رمز التحقق لإكمال عملية استعادة كلمة المرور.",
   },
   contact: {
     title: "أدخل بيانات التواصل",
@@ -48,7 +54,7 @@ const STEP_COPY: Record<
   },
   verify: {
     title: "التحقق من الرمز",
-    subtitle: "أدخل الرمز المرسل إليك، أو استخدم الرابط في بريدك إن اخترت البريد.",
+    subtitle: "أدخل الرمز المرسل إليك لإكمال التحقق.",
   },
   reset: {
     title: "إعادة تعيين كلمة المرور",
@@ -59,10 +65,6 @@ const STEP_COPY: Record<
     subtitle: "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
   },
 };
-
-function delay(ms = 600) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export function ForgotPasswordStepHeader({
   step,
@@ -77,7 +79,7 @@ export function ForgotPasswordStepHeader({
   let subtitle = copy.subtitle;
 
   if (step === "contact" && method === "email") {
-    subtitle = "سنرسل رمز التحقق ورابط إعادة التعيين إلى بريدك الإلكتروني.";
+    subtitle = "سنرسل رمز التحقق إلى بريدك الإلكتروني.";
   } else if (step === "contact" && method === "phone") {
     subtitle = "سنرسل رمز التحقق عبر رسالة SMS إلى رقم جوالك.";
   } else if (step === "verify" && method && contact) {
@@ -100,7 +102,10 @@ export default function ForgotPasswordForm() {
   const [step, setStep] = useState<Step>("method");
   const [method, setMethod] = useState<RecoveryMethod | null>(null);
   const [contact, setContact] = useState("");
+  const [verificationToken, setVerificationToken] = useState("");
+  const [resetToken, setResetToken] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
 
   const goBack = useCallback(() => {
     if (step === "contact") setStep("method");
@@ -111,6 +116,8 @@ export default function ForgotPasswordForm() {
   const selectMethod = (next: RecoveryMethod) => {
     setMethod(next);
     setContact("");
+    setVerificationToken("");
+    setResetToken("");
     setStep("contact");
   };
 
@@ -127,6 +134,33 @@ export default function ForgotPasswordForm() {
     }, 1000);
   };
 
+  const sendResetCode = useCallback(async () => {
+    if (!method) {
+      return { success: false, message: "يرجى اختيار طريقة الاستعادة" };
+    }
+
+    if (method === "email") {
+      return sendPasswordResetEmail(contact);
+    }
+
+    return sendPasswordResetPhone(contact);
+  }, [method, contact]);
+
+  const handleResend = useCallback(async () => {
+    setIsResending(true);
+    const result = await sendResetCode();
+    setIsResending(false);
+
+    if (!result.success || !result.verificationToken) {
+      toast.error(result.message);
+      return;
+    }
+
+    setVerificationToken(result.verificationToken);
+    startResendCooldown();
+    toast.success(result.message);
+  }, [sendResetCode]);
+
   let stepContent: ReactNode;
 
   if (step === "method") {
@@ -141,14 +175,10 @@ export default function ForgotPasswordForm() {
       <ContactStep
         method={method}
         onBack={goBack}
-        onSuccess={(value) => {
+        onSuccess={(value, token) => {
           setContact(value);
+          setVerificationToken(token);
           startResendCooldown();
-          toast.success(
-            method === "email"
-              ? "تم إرسال الرمز والرابط إلى بريدك الإلكتروني"
-              : "تم إرسال رمز التحقق إلى جوالك",
-          );
           setStep("verify");
         }}
       />
@@ -156,25 +186,23 @@ export default function ForgotPasswordForm() {
   } else if (step === "verify" && method) {
     stepContent = (
       <VerifyStep
-        method={method}
-        contact={contact}
+        verificationToken={verificationToken}
         resendCooldown={resendCooldown}
+        isResending={isResending}
         onBack={goBack}
-        onResend={() => {
-          startResendCooldown();
-          toast.success("تم إعادة إرسال الرمز");
+        onResend={handleResend}
+        onSuccess={(token) => {
+          setResetToken(token);
+          setStep("reset");
         }}
-        onSuccess={() => setStep("reset")}
       />
     );
   } else if (step === "reset") {
     stepContent = (
       <ResetStep
+        resetToken={resetToken}
         onBack={goBack}
-        onSuccess={() => {
-          toast.success("تم تغيير كلمة المرور بنجاح");
-          setStep("done");
-        }}
+        onSuccess={() => setStep("done")}
       />
     );
   } else {
@@ -212,7 +240,7 @@ function MethodStep({
         className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-black transition-colors hover:bg-[#E8F6F4]"
       >
         <Mail className="size-6" strokeWidth={1.75} aria-hidden />
-        <span>استلام الرمز والرابط عبر البريد</span>
+        <span>استلام الرمز عبر البريد</span>
       </button>
       <div className="flex items-center justify-center gap-2 pt-2">
         <span className="text-sm text-[#454545]">تذكرت كلمة المرور؟</span>
@@ -231,7 +259,7 @@ function ContactStep({
 }: {
   method: RecoveryMethod;
   onBack: () => void;
-  onSuccess: (contact: string) => void;
+  onSuccess: (contact: string, verificationToken: string) => void;
 }) {
   const emailForm = useForm<ForgotPasswordEmailValues>({
     resolver: zodResolver(forgotPasswordEmailSchema),
@@ -248,13 +276,27 @@ function ContactStep({
     : phoneForm.formState.isSubmitting;
 
   async function onSubmitEmail(values: ForgotPasswordEmailValues) {
-    await delay();
-    onSuccess(values.email);
+    const result = await sendPasswordResetEmail(values.email);
+
+    if (!result.success || !result.verificationToken) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    onSuccess(values.email, result.verificationToken);
   }
 
   async function onSubmitPhone(values: ForgotPasswordPhoneValues) {
-    await delay();
-    onSuccess(values.phone);
+    const result = await sendPasswordResetPhone(values.phone);
+
+    if (!result.success || !result.verificationToken) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    onSuccess(values.phone, result.verificationToken);
   }
 
   return (
@@ -282,7 +324,7 @@ function ContactStep({
             dir="ltr"
             {...emailForm.register("email")}
           />
-          <SubmitButton loading={isSubmitting}>إرسال الرمز والرابط</SubmitButton>
+          <SubmitButton loading={isSubmitting}>إرسال رمز التحقق</SubmitButton>
         </form>
       ) : (
         <form
@@ -304,19 +346,19 @@ function ContactStep({
 }
 
 function VerifyStep({
-  method,
-  contact,
+  verificationToken,
   resendCooldown,
+  isResending,
   onBack,
   onResend,
   onSuccess,
 }: {
-  method: RecoveryMethod;
-  contact: string;
+  verificationToken: string;
   resendCooldown: number;
+  isResending: boolean;
   onBack: () => void;
-  onResend: () => void;
-  onSuccess: () => void;
+  onResend: () => void | Promise<void>;
+  onSuccess: (resetToken: string) => void;
 }) {
   const {
     register,
@@ -324,13 +366,30 @@ function VerifyStep({
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordOtpValues>({
     resolver: zodResolver(forgotPasswordOtpSchema),
-    defaultValues: { code: "" },
+    defaultValues: { otp: "" },
   });
 
-  async function onSubmit() {
-    await delay();
-    onSuccess();
+  async function onSubmit(values: ForgotPasswordOtpValues) {
+    if (!verificationToken) {
+      toast.error("انتهت الجلسة، يرجى إعادة إرسال الرمز");
+      return;
+    }
+
+    const result = await verifyPasswordResetOtp(
+      verificationToken,
+      values.otp,
+    );
+
+    if (!result.success || !result.resetToken) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
+    onSuccess(result.resetToken);
   }
+
+  const resendDisabled = resendCooldown > 0 || isSubmitting || isResending;
 
   return (
     <div className="flex flex-col gap-4" dir="rtl">
@@ -342,19 +401,6 @@ function VerifyStep({
         رجوع
       </button>
 
-      {method === "email" ? (
-        <p className="rounded-xl bg-[#E8F6F4] px-4 py-3 text-center text-sm text-[#454545]">
-          تحقق أيضاً من بريدك — قد يصلك{" "}
-          <Link
-            href={`/reset-password?token=mock&email=${encodeURIComponent(contact)}`}
-            className="font-medium text-primary hover:underline"
-          >
-            رابط إعادة التعيين
-          </Link>{" "}
-          مباشرة.
-        </p>
-      ) : null}
-
       <form
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
@@ -365,34 +411,38 @@ function VerifyStep({
           type="text"
           inputMode="numeric"
           maxLength={6}
-          placeholder="000000"
-          error={errors.code?.message}
+          placeholder="0000"
+          error={errors.otp?.message}
           disabled={isSubmitting}
           dir="ltr"
           style={{ textAlign: "center", letterSpacing: "0.4em" }}
-          {...register("code")}
+          {...register("otp")}
         />
         <SubmitButton loading={isSubmitting}>تحقق من الرمز</SubmitButton>
       </form>
 
       <button
         type="button"
-        disabled={resendCooldown > 0 || isSubmitting}
-        onClick={onResend}
+        disabled={resendDisabled}
+        onClick={() => void onResend()}
         className="text-sm text-primary hover:underline disabled:cursor-not-allowed disabled:text-[#9CA3AF] disabled:no-underline"
       >
-        {resendCooldown > 0
-          ? `إعادة الإرسال خلال ${resendCooldown} ث`
-          : "إعادة إرسال الرمز"}
+        {isResending
+          ? "جاري الإرسال..."
+          : resendCooldown > 0
+            ? `إعادة الإرسال خلال ${resendCooldown} ث`
+            : "إعادة إرسال الرمز"}
       </button>
     </div>
   );
 }
 
 function ResetStep({
+  resetToken,
   onBack,
   onSuccess,
 }: {
+  resetToken: string;
   onBack: () => void;
   onSuccess: () => void;
 }) {
@@ -405,8 +455,24 @@ function ResetStep({
     defaultValues: { password: "", confirmPassword: "" },
   });
 
-  async function onSubmit() {
-    await delay();
+  async function onSubmit(values: ResetPasswordFormValues) {
+    if (!resetToken) {
+      toast.error("انتهت الجلسة، يرجى البدء من جديد");
+      return;
+    }
+
+    const result = await resetPasswordWithToken(
+      resetToken,
+      values.password,
+      values.confirmPassword,
+    );
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success(result.message);
     onSuccess();
   }
 
@@ -440,7 +506,9 @@ function ResetStep({
           disabled={isSubmitting}
           {...register("confirmPassword")}
         />
-        <SubmitButton loading={isSubmitting}>إعادة تعيين كلمة المرور</SubmitButton>
+        <SubmitButton loading={isSubmitting}>
+          إعادة تعيين كلمة المرور
+        </SubmitButton>
       </form>
     </div>
   );

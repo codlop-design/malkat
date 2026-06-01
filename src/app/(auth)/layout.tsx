@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
@@ -26,7 +25,7 @@ export default async function AuthLayout({
       <div className="w-full md:w-1/2 relative md:h-full h-[500px]">
         <Image
           src="/auth.jpg"
-          alt="منصة التعلم"
+          alt="منصة التعليم"
           fill
           className="w-full h-full object-cover"
         />
