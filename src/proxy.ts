@@ -11,7 +11,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hasSession = Boolean(request.cookies.get(SESSION_COOKIE_NAME)?.value);
+  const hasSession = request.cookies
+    .getAll()
+    .some((cookie) => cookie.name === SESSION_COOKIE_NAME && cookie.value.length > 0);
 
   if (isProtectedPath(pathname) && !hasSession) {
     return NextResponse.redirect(new URL("/login", request.url));

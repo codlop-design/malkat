@@ -1,22 +1,41 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import ProfileView from "@/src/features/auth/components/ProfileView";
+import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 
 export default function ProfilePageClient() {
   const router = useRouter();
-  const { user, isAuthReady } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
-    if (isAuthReady && !user) {
-      router.replace("/login");
-    }
-  }, [isAuthReady, user, router]);
+    let cancelled = false;
 
-  if (!isAuthReady || !user) {
+    void (async () => {
+      const current = user ?? (await refreshUser());
+
+      if (cancelled) {
+        return;
+      }
+
+      if (!current) {
+        router.replace("/login");
+        return;
+      }
+
+      setProfileUser(current);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, refreshUser, router]);
+
+  if (!profileUser) {
     return (
       <div className="container flex min-h-[50vh] items-center justify-center py-16">
         <div
@@ -27,5 +46,5 @@ export default function ProfilePageClient() {
     );
   }
 
-  return <ProfileView user={user} />;
+  return <ProfileView user={profileUser} />;
 }

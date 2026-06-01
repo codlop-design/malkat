@@ -26,8 +26,8 @@ export default function HeaderAuthControl({
   showName = true,
   nameClassName,
 }: HeaderAuthControlProps) {
-  const { user: clientUser, isAuthReady } = useAuth();
-  const user = clientUser ?? serverUser;
+  const { user: authUser, isAuthReady } = useAuth();
+  const user = authUser ?? serverUser;
 
   if (!isAuthReady && !user) {
     return (
