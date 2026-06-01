@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
-import RedirectIfAuthenticated from "@/src/features/auth/components/RedirectIfAuthenticated";
+import { getServerUser } from "@/src/features/auth/session.server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +18,13 @@ export default async function AuthLayout({
     redirect("/");
   }
 
+  const user = await getServerUser();
+  if (user) {
+    redirect("/");
+  }
+
   return (
     <main className="md:h-screen h-auto flex md:flex-row flex-col">
-      <RedirectIfAuthenticated />
       <div className="w-full md:w-1/2">{children}</div>
 
       <div className="w-full md:w-1/2 relative md:h-full h-[500px]">

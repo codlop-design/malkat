@@ -13,7 +13,6 @@ import {
 import { fetchCurrentUser, logout } from "@/src/features/auth/session.client";
 import type { AuthUser } from "@/src/features/auth/types";
 import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
-import { authLog } from "@/src/lib/authLog";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -39,21 +38,12 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   const user = initialUser ?? clientUser ?? null;
 
-  authLog("provider", "render", {
-    initialUser: initialUser?.name ?? null,
-    clientUser: clientUser === undefined ? "undefined" : clientUser?.name ?? null,
-    resolvedUser: user?.name ?? null,
-    isAuthReady,
-  });
-
   const setUser = useCallback((next: AuthUser | null) => {
-    authLog("provider", "setUser", { name: next?.name ?? null });
     setClientUser(next);
     setIsAuthReady(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
-    authLog("provider", "refreshUser");
     const current = await fetchCurrentUser();
     setClientUser(current);
     setIsAuthReady(true);
@@ -68,21 +58,18 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   useEffect(() => onAuthUnauthorized(() => setClientUser(null)), []);
 
+  // Fallback only when the server did not resolve the user (e.g. rare edge cases).
   useEffect(() => {
     if (initialUser !== null) {
-      authLog("provider", "skip client fetch — have initialUser from server");
-      setIsAuthReady(true);
       return;
     }
 
-    authLog("provider", "client fetch — no initialUser from server");
     let cancelled = false;
 
     void fetchCurrentUser().then((current) => {
       if (cancelled) {
         return;
       }
-      authLog("provider", "client fetch done", { user: current?.name ?? null });
       setClientUser(current);
       setIsAuthReady(true);
     });
