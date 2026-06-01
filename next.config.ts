@@ -1,8 +1,5 @@
 import type { NextConfig } from "next";
 
-const IMAGE_ORIGIN =
-  process.env.NEXT_PUBLIC_IMAGE_ORIGIN ?? "https://malkat-dashboard.codlop.sa";
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -11,8 +8,13 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
-      new URL(`${IMAGE_ORIGIN}/**`),
+      {
+        protocol: "https",
+        hostname: "malkat-dashboard.codlop.sa",
+        pathname: "/**",
+      },
     ],
   },
 };
+
 export default nextConfig;
