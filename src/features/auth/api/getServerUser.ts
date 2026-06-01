@@ -1,29 +1,23 @@
+import { cookies } from "next/headers";
 import { cache } from "react";
 
 import type { AuthUser } from "@/src/features/auth/api/loginClient";
-import { AUTH_USER_PATH } from "@/src/features/auth/lib/authApi";
-import { authDebug } from "@/src/features/auth/lib/authDebug";
-import { parseAuthUserPayload } from "@/src/features/auth/lib/parseAuthUser";
-import { getApiServer } from "@/src/lib/apiServer";
+import { resolveAuthUser } from "@/src/features/auth/api/resolveAuthUser";
+import { getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
 
-export const getServerUser = cache(async function getServerUser(): Promise<AuthUser | null> {
-  authDebug("server", "getServerUser via apiServer", { path: AUTH_USER_PATH });
+export const getServerUser = cache(
+  async function getServerUser(): Promise<AuthUser | null> {
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
 
-  try {
-    const api = await getApiServer();
-    const { data, status } = await api.get<unknown>(AUTH_USER_PATH);
-
-    authDebug("server", "getServerUser response", { status });
-
-    if (status >= 400) {
+    if (!cookieHeader) {
       return null;
     }
 
-    return parseAuthUserPayload(data);
-  } catch (error) {
-    authDebug("server", "getServerUser failed", {
-      error: error instanceof Error ? error.message : "unknown",
-    });
-    return null;
-  }
-});
+    const siteUrl = await getRequestSiteUrl();
+    return resolveAuthUser({ cookieHeader, siteUrl });
+  },
+);

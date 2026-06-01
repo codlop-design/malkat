@@ -15,8 +15,7 @@ import {
   fetchCurrentUser,
   logoutUser,
 } from "@/src/features/auth/api/sessionClient";
-import { authDebug } from "@/src/features/auth/lib/authDebug";
-import { authEvents } from "@/src/features/auth/lib/authEvents";
+import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -45,37 +44,25 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const logout = useCallback(async () => {
     await logoutUser();
     setUser(null);
-    authDebug("client", "user cleared after logout");
   }, []);
 
   useEffect(() => {
     setUser(initialUser);
   }, [initialUser]);
 
-  useEffect(() => {
-    return authEvents.onUnauthorized(() => {
-      authDebug("client", "401/419 — clearing user");
-      setUser(null);
-    });
-  }, []);
+  useEffect(() => onAuthUnauthorized(() => setUser(null)), []);
 
-  // Session cookie is HttpOnly — cannot detect via document.cookie.
-  // If the server missed the user, always verify with the API (withCredentials).
   useEffect(() => {
-    if (initialUser) {
+    if (initialUser !== null) {
       return;
     }
 
     let cancelled = false;
 
-    authDebug("client", "background sync — no server user, calling /api/auth/user");
-
-    fetchCurrentUser().then((current) => {
-      if (cancelled) return;
-      setUser(current);
-      authDebug("client", "background sync done", {
-        user: current?.name ?? null,
-      });
+    void fetchCurrentUser().then((current) => {
+      if (!cancelled && current) {
+        setUser(current);
+      }
     });
 
     return () => {

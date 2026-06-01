@@ -93,7 +93,8 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
     }
 
     toast.success(result.message);
-    router.push("/");
+    router.refresh();
+    router.replace("/");
   }
 
   async function onResendOtp() {

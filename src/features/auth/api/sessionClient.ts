@@ -1,27 +1,38 @@
 import type { AuthUser } from "@/src/features/auth/api/loginClient";
-import { AUTH_USER_PATH } from "@/src/features/auth/lib/authApi";
-import { authDebug } from "@/src/features/auth/lib/authDebug";
-import { parseAuthUserPayload } from "@/src/features/auth/lib/parseAuthUser";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 
-export async function fetchCurrentUser(): Promise<AuthUser | null> {
-  authDebug("client", "fetchCurrentUser via apiClient", {
-    path: AUTH_USER_PATH,
-    withCredentials: true,
-  });
+export const AUTH_USER_PATH = "/api/auth/user";
 
+export function parseAuthUser(data: unknown): AuthUser | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const record = data as Record<string, unknown>;
+
+  if (record.success === false) {
+    return null;
+  }
+
+  if (record.data && typeof record.data === "object") {
+    return record.data as AuthUser;
+  }
+
+  if (typeof record.id === "number" && typeof record.email === "string") {
+    return record as AuthUser;
+  }
+
+  return null;
+}
+
+export async function fetchCurrentUser(): Promise<AuthUser | null> {
   try {
     const { data, status } = await apiClient.get<unknown>(AUTH_USER_PATH);
-
     if (status >= 400) {
       return null;
     }
-
-    return parseAuthUserPayload(data);
-  } catch (error) {
-    authDebug("client", "fetchCurrentUser failed", {
-      error: error instanceof Error ? error.message : "unknown",
-    });
+    return parseAuthUser(data);
+  } catch {
     return null;
   }
 }

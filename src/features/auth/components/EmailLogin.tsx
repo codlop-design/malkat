@@ -51,7 +51,8 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
     }
 
     toast.success(result.message);
-    router.push("/");
+    router.refresh();
+    router.replace("/");
   }
 
   return (

@@ -8,7 +8,6 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { cn } from "@/src/lib/utils";
 
 type HeaderAuthControlProps = {
-  /** Resolved on the server — used for the first paint (no client wait). */
   serverUser: AuthUser | null;
   className?: string;
   loginClassName?: string;
