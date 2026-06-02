@@ -18,6 +18,8 @@ export async function getNewsMain(): Promise<NewsMainContent | null> {
 
   return {
     featured: main_new ? mapNewsItemToArticle(main_new) : null,
-    latest: (latest_news ?? []).map(mapNewsItemToArticle),
+    latest: (latest_news ?? [])
+      .map(mapNewsItemToArticle)
+      .filter((item) => item !== null),
   };
 }

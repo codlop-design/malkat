@@ -160,12 +160,14 @@ export default function ContactForm({
             isPage
               ? "min-h-[140px] text-[#717171] placeholder:text-[#717171]"
               : "bg-white text-black placeholder:text-[#9CA3AF]"
-          }`}
+          } ${errors.message ? " border-red-600" : ""}`}
           aria-invalid={errors.message ? true : undefined}
           {...register("message")}
         />
         {errors.message ? (
-          <p className="mt-1.5 text-sm text-red-600">{errors.message.message}</p>
+          <p className="mt-1.5 text-sm text-red-600">
+            {errors.message.message}
+          </p>
         ) : null}
       </div>
 
@@ -204,7 +206,9 @@ export default function ContactForm({
         className="rounded-2xl border border-[#E8E8E8] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:p-8"
         dir="rtl"
       >
-        <h2 className="text-xl font-bold text-black md:text-2xl">نموذج التواصل</h2>
+        <h2 className="text-xl font-bold text-black md:text-2xl">
+          نموذج التواصل
+        </h2>
         <p className="mt-2 text-sm leading-relaxed text-[#454545] md:text-base">
           أرسل لنا رسالتك وسنعاود التواصل معك في أقرب وقت.
         </p>
