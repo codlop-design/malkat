@@ -183,7 +183,7 @@ function OrderRow({ order }: { order: OrderListItem }) {
                         {section.label}
                       </span>
                     </AccordionTrigger>
-                    <AccordionContent className="space-y-2 pb-3 pt-0">
+                    <AccordionContent className="h-full! space-y-2 pb-3 pt-0">
                       {section.items.map((raw: unknown) => {
                         const item = toStoredCartItem(raw);
                         if (!item) return null;
