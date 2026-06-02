@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useState, useTransition, type MouseEvent } from "react";
+import { useEffect, useState, useTransition, type MouseEvent } from "react";
 import { toast } from "sonner";
 
 import { addToFavourites } from "@/src/features/products/api/addToFavouritesClient";
@@ -23,6 +23,10 @@ export default function FavouriteButton({
 }: FavouriteButtonProps) {
   const [isFavourite, setIsFavourite] = useState(initialIsFavourite);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setIsFavourite(initialIsFavourite);
+  }, [initialIsFavourite, slug, category]);
 
   function handleClick(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
