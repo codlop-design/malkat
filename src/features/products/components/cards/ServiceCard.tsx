@@ -1,4 +1,6 @@
-import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
+import CardMedia, {
+  RatingBadge,
+} from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
@@ -48,6 +50,8 @@ export default function ServiceCard({
           isOnline: tags.includes("أونلاين"),
         })
       : undefined;
+
+  console.log({ isFavourite });
 
   return (
     <ProductCard href={href} title={title}>
