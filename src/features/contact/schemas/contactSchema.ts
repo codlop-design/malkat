@@ -7,7 +7,10 @@ export const contactSchema = z.object({
   email: z.string().trim().email("يرجى إدخال بريد إلكتروني صحيح"),
   phone: phoneLoginSchema.shape.phone,
   contact_type: z.string().min(1, "يرجى اختيار نوع التواصل"),
-  message: z.string().trim().min(50, "يرجى كتابة رسالتك"),
+  message: z
+    .string("يرجى كتابة رسالتك")
+    .trim()
+    .min(50, " يرجى كتابة ما لا يقل عن 50 حرف"),
 });
 
 export type ContactFormValues = z.infer<typeof contactSchema>;

@@ -1,6 +1,9 @@
 import type { NewsApiItem, NewsArticle } from "@/src/features/news/types";
 
-function toExcerpt(content: string | null | undefined, maxLength = 180): string {
+function toExcerpt(
+  content: string | null | undefined,
+  maxLength = 180,
+): string {
   if (!content) {
     return "";
   }
@@ -22,7 +25,10 @@ export function formatNewsDate(date: string, time: string): string {
   return [date, time].filter(Boolean).join(" · ");
 }
 
-export function mapNewsItemToArticle(item: NewsApiItem): NewsArticle {
+export function mapNewsItemToArticle(item: NewsApiItem): NewsArticle | null {
+  if (!item?.id) {
+    return null;
+  }
   return {
     id: String(item.id ?? ""),
     slug: item.slug ?? "",
