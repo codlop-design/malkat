@@ -144,7 +144,7 @@ function OrderRow({ order }: { order: OrderListItem }) {
     <Accordion type="single" collapsible defaultValue={String(order.id)}>
       <AccordionItem
         value={String(order.id)}
-        className="mb-4 overflow-hidden rounded-xl border border-[#E5E7EB]"
+        className="mb-4 h-full! overflow-hidden rounded-xl border border-[#E5E7EB]"
       >
         <AccordionTrigger className="items-center gap-4 bg-white px-4 py-3 no-underline! hover:bg-[#FAFAFA]">
           {/* middle/right: order meta */}
