@@ -24,6 +24,7 @@ import {
   GUIDES_ITEMS,
   SERVICES_ITEMS,
 } from "@/src/features/products/data/catalog";
+import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { resolveProductHref } from "@/src/features/products/types";
 
@@ -32,7 +33,7 @@ export type CatalogListItem = {
   slug: string;
   title: string;
   description: string;
-};
+} & Pick<CatalogItemBase, "isFavourite" | "isRated" | "rating" | "ratingCount">;
 
 type CatalogRegistryEntry = {
   items: CatalogListItem[];

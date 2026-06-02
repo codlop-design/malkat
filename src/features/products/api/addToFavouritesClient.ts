@@ -1,4 +1,5 @@
 import { toOrderType } from "@/src/features/cart/lib/mapOrderType";
+import { catalogLog } from "@/src/lib/catalogLog";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
@@ -22,6 +23,13 @@ export async function addToFavourites(
       success?: boolean;
       message?: string;
     }>("/favourites/toggle", formData);
+
+    catalogLog("favourites", "toggle response", {
+      category,
+      slug,
+      status,
+      data,
+    });
 
     if (status === 401 || status === 403) {
       return {

@@ -10,6 +10,10 @@ import type { CatalogListItem } from "@/src/features/products/data/catalogRegist
 import { renderCatalogCard } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
+import {
+  catalogLog,
+  summarizeCatalogMappedItems,
+} from "@/src/lib/catalogLog";
 
 const SEARCH_DEBOUNCE_MS = 400;
 
@@ -41,6 +45,17 @@ export default function CategoryProductsSection({
   const totalPages = Math.max(1, pagination.last_page);
   const { searchPlaceholder } = CATEGORY_META[category];
   const basePath = `/products/${category}`;
+
+  useEffect(() => {
+    catalogLog("category-list", "props from server", {
+      category,
+      page: currentPage,
+      itemCount: items.length,
+      sample: summarizeCatalogMappedItems(items),
+      favouriteTrueCount: items.filter((item) => item.isFavourite === true)
+        .length,
+    });
+  }, [category, currentPage, items]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

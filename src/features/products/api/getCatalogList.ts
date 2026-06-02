@@ -7,6 +7,11 @@ import type {
   CatalogApiItem,
   CatalogPagination,
 } from "@/src/features/products/types/catalogApi";
+import {
+  catalogLog,
+  summarizeCatalogApiItems,
+  summarizeCatalogMappedItems,
+} from "@/src/lib/catalogLog";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -50,25 +55,56 @@ export async function getCatalogList(
     params.set("search", trimmedSearch);
   }
 
+  const url = `${API_URL}${endpoint}?${params}`;
+
   try {
-    const response = await fetch(`${API_URL}${endpoint}?${params}`, {
+    catalogLog("api", "request", { category, page, url });
+
+    const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
     if (!response.ok) {
+      catalogLog("api", "error status", {
+        category,
+        status: response.status,
+        statusText: response.statusText,
+        url,
+      });
       console.error(`Fetch error: ${response.status} ${response.statusText}`);
       return null;
     }
 
     const json = (await response.json()) as CatalogListApiResponse;
 
+    catalogLog("api", "response", {
+      category,
+      page,
+      url,
+      success: json.success,
+      message: json.message,
+      itemCount: json.data?.length ?? 0,
+      sample: summarizeCatalogApiItems(json.data ?? []),
+      favouriteTrueCount: (json.data ?? []).filter((i) => i.is_favourite === true)
+        .length,
+    });
+
     if (!json.success) {
       return null;
     }
 
+    const items = mapCatalogItems(category, json.data);
+
+    catalogLog("api", "mapped", {
+      category,
+      itemCount: items.length,
+      sample: summarizeCatalogMappedItems(items),
+      favouriteTrueCount: items.filter((i) => i.isFavourite === true).length,
+    });
+
     return {
-      items: mapCatalogItems(category, json.data),
+      items,
       pagination: json.pagination,
     };
   } catch (error) {
