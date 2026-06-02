@@ -14,6 +14,9 @@ import FavouritesTab, {
   type FavouritesTabHandle,
 } from "@/src/features/auth/components/profile/FavouritesTab";
 import ChangePasswordTab from "@/src/features/auth/components/profile/ChangePasswordTab";
+import OrdersTab, {
+  type OrdersTabHandle,
+} from "@/src/features/auth/components/profile/OrdersTab";
 
 export default function ProfilePageClient() {
   const router = useRouter();
@@ -23,6 +26,7 @@ export default function ProfilePageClient() {
     "profile" | "password" | "favourites" | "orders"
   >("profile");
   const favouritesRef = useRef<FavouritesTabHandle | null>(null);
+  const ordersRef = useRef<OrdersTabHandle | null>(null);
 
   const profileUser = user ?? fetchedUser;
 
@@ -96,10 +100,18 @@ export default function ProfilePageClient() {
             tabs={tabs}
             activeTab={activeTab}
             onTabClick={(id) => {
-              if (id === "profile" || id === "favourites" || id === "password") {
+              if (
+                id === "profile" ||
+                id === "favourites" ||
+                id === "password" ||
+                id === "orders"
+              ) {
                 setActiveTab(id);
                 if (id === "favourites") {
                   favouritesRef.current?.ensureLoaded();
+                }
+                if (id === "orders") {
+                  ordersRef.current?.ensureLoaded();
                 }
               } else {
                 handleNotReady();
@@ -124,6 +136,9 @@ export default function ProfilePageClient() {
             </div>
             <div className={activeTab === "password" ? "block" : "hidden"}>
               <ChangePasswordTab />
+            </div>
+            <div className={activeTab === "orders" ? "block" : "hidden"}>
+              <OrdersTab ref={ordersRef} />
             </div>
           </section>
         </div>

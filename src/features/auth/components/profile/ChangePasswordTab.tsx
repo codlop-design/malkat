@@ -86,7 +86,7 @@ export default function ChangePasswordTab() {
           {...register("passwordConfirmation")}
         />
 
-        <SubmitButton loading={isSubmitting}>حفظ كلمة المرور</SubmitButton>
+        <SubmitButton loading={isSubmitting} className="min-w-[200px]">حفظ كلمة المرور</SubmitButton>
       </form>
     </>
   );
