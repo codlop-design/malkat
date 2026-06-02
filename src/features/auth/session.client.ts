@@ -1,4 +1,4 @@
-import { parseAuthUser, USER_PATH } from "@/src/features/auth/parseUser";
+import { parseAuthUser } from "@/src/features/auth/parseUser";
 import type { AuthUser } from "@/src/features/auth/types";
 import { authLog } from "@/src/lib/authLog";
 
