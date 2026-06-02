@@ -144,7 +144,7 @@ function OrderRow({ order }: { order: OrderListItem }) {
     <Accordion type="single" collapsible defaultValue={String(order.id)}>
       <AccordionItem
         value={String(order.id)}
-        className="mb-4 h-full! overflow-hidden rounded-xl border border-[#E5E7EB]"
+        className="mb-4 overflow-hidden rounded-xl border border-[#E5E7EB]"
       >
         <AccordionTrigger className="items-center gap-4 bg-white px-4 py-3 no-underline! hover:bg-[#FAFAFA]">
           {/* middle/right: order meta */}
@@ -163,7 +163,7 @@ function OrderRow({ order }: { order: OrderListItem }) {
           <Package className="size-5 shrink-0 text-[#9CA3AF]" aria-hidden />
         </AccordionTrigger>
 
-        <AccordionContent className="bg-white px-4 pb-4 pt-2">
+        <AccordionContent className="h-full! bg-white px-4 pb-4 pt-2">
           {sections.length === 0 ? (
             <div className="rounded-xl bg-[#F9FAFB] p-4 text-sm text-[#454545]">
               تفاصيل الطلب غير متاحة حالياً
