@@ -82,8 +82,8 @@ export default function ProfilePageClient() {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F3F4F6]">
-      <div className="container py-8 md:py-10">
+    <div className="min-h-[calc(100vh-80px)] bg-[#F3F4F6] py-8 md:py-10">
+      <div className="container">
         <p className="mb-6 text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
 
         <div className="grid items-start gap-6 lg:grid-cols-[320px_1fr]">
