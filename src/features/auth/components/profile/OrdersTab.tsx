@@ -11,7 +11,10 @@ import {
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { getOrders, type OrderListItem } from "@/src/features/orders/api/getOrdersClient";
+import {
+  getOrders,
+  type OrderListItem,
+} from "@/src/features/orders/api/getOrdersClient";
 import {
   Accordion,
   AccordionContent,
@@ -80,12 +83,15 @@ function toStoredCartItem(raw: unknown): StoredCartItem | null {
   const ageGroup =
     typeof product.age_group === "string" ? product.age_group : undefined;
   const price = typeof product.price === "string" ? product.price : "";
-  const contributor = product.contributor as Record<string, unknown> | undefined;
+  const contributor = product.contributor as
+    | Record<string, unknown>
+    | undefined;
 
   return {
     id: String(record.id ?? `${slug}-${Math.random()}`),
-    category:
-      (typeof record.type === "string" ? record.type : "books") as CatalogSectionKey,
+    category: (typeof record.type === "string"
+      ? record.type
+      : "books") as CatalogSectionKey,
     slug,
     title,
     description: overview,
@@ -106,7 +112,8 @@ function toStoredCartItem(raw: unknown): StoredCartItem | null {
 }
 
 function OrderRow({ order }: { order: OrderListItem }) {
-  const createdAt = typeof order.created_at === "string" ? order.created_at : undefined;
+  const createdAt =
+    typeof order.created_at === "string" ? order.created_at : undefined;
 
   const itemsRecord = (order.items ?? null) as Record<string, unknown> | null;
   const books: unknown[] = Array.isArray(itemsRecord?.books)
@@ -134,24 +141,21 @@ function OrderRow({ order }: { order: OrderListItem }) {
   ].filter((s) => s.items.length > 0);
 
   return (
-    <Accordion
-      type="single"
-      collapsible
-      defaultValue={String(order.id)}
-    >
+    <Accordion type="single" collapsible defaultValue={String(order.id)}>
       <AccordionItem
         value={String(order.id)}
         className="mb-4 overflow-hidden rounded-xl border border-[#E5E7EB]"
       >
         <AccordionTrigger className="items-center gap-4 bg-white px-4 py-3 no-underline! hover:bg-[#FAFAFA]">
-
           {/* middle/right: order meta */}
           <span className="ms-auto flex min-w-0 flex-col items-end gap-1 text-right">
             <span className="text-sm font-bold text-black">
               طلب <span dir="ltr">#{String(order.id)}</span>
             </span>
             {createdAt ? (
-              <span className="text-xs text-[#6B7280]">{formatDate(createdAt)}</span>
+              <span className="text-xs text-[#6B7280]">
+                {formatDate(createdAt)}
+              </span>
             ) : null}
           </span>
 
@@ -248,7 +252,9 @@ const OrdersTab = forwardRef<OrdersTabHandle>(function OrdersTab(_, ref) {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-black md:text-xl">طلباتي</h1>
-        <p className="text-sm text-[#6B7280]">الرئيسية / الملف الشخصي / طلباتي</p>
+        <p className="text-sm text-[#6B7280]">
+          الرئيسية / الملف الشخصي / طلباتي
+        </p>
       </div>
 
       <div className="mb-6 rounded-2xl bg-[#F3F4F6] p-3">
@@ -307,4 +313,3 @@ const OrdersTab = forwardRef<OrdersTabHandle>(function OrdersTab(_, ref) {
 OrdersTab.displayName = "OrdersTab";
 
 export default OrdersTab;
-
