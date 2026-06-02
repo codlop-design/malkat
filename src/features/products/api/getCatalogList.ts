@@ -1,3 +1,5 @@
+import "server-only";
+
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import { CATALOG_SECTION_KEYS } from "@/src/features/products/data/categoryMeta";
 import { mapCatalogItems } from "@/src/features/products/mapCatalogItems";
@@ -7,6 +9,7 @@ import type {
   CatalogApiItem,
   CatalogPagination,
 } from "@/src/features/products/types/catalogApi";
+import { getServerApiFetchOptions } from "@/src/lib/serverApiHeaders";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -53,11 +56,9 @@ export async function getCatalogList(
   const url = `${API_URL}${endpoint}?${params}`;
 
   try {
-    const response = await fetch(url, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
-    });
+    const fetchOptions = await getServerApiFetchOptions(CATALOG_REVALIDATE_SECONDS);
+
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);

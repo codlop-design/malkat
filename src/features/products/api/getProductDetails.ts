@@ -1,7 +1,8 @@
-import {
-  CATALOG_API_ENDPOINTS,
-} from "@/src/features/products/api/catalogEndpoints";
+import "server-only";
+
+import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/getCatalogList";
+import { getServerApiFetchOptions } from "@/src/lib/serverApiHeaders";
 import {
   mapProductDetailResponse,
   type ProductDetailView,
@@ -24,10 +25,12 @@ export async function getProductDetails(
   const endpoint = CATALOG_API_ENDPOINTS[category];
 
   try {
-    const response = await fetch(`${API_URL}${endpoint}/${slug}/details`, {
-      headers: { "Content-Type": "application/json" },
-      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
-    });
+    const fetchOptions = await getServerApiFetchOptions(CATALOG_REVALIDATE_SECONDS);
+
+    const response = await fetch(
+      `${API_URL}${endpoint}/${slug}/details`,
+      fetchOptions,
+    );
 
     if (!response.ok) {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);

@@ -1,28 +1,7 @@
 import { parseAuthUser, USER_PATH } from "@/src/features/auth/parseUser";
 import type { AuthUser } from "@/src/features/auth/types";
 import { authLog } from "@/src/lib/authLog";
-
-function buildApiHeaders(cookieHeader: string, siteUrl: string): HeadersInit {
-  const headers: Record<string, string> = {
-    Accept: "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    "Accept-Language": "ar",
-    Cookie: cookieHeader,
-    Origin: siteUrl,
-    Referer: `${siteUrl}/`,
-  };
-
-  const xsrfMatch = cookieHeader.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
-  if (xsrfMatch?.[1]) {
-    try {
-      headers["X-XSRF-TOKEN"] = decodeURIComponent(xsrfMatch[1]);
-    } catch {
-      headers["X-XSRF-TOKEN"] = xsrfMatch[1];
-    }
-  }
-
-  return headers;
-}
+import { buildServerApiHeaders } from "@/src/lib/serverApiHeaders";
 
 /** Server — GET /auth/user with cookies from the browser request. */
 export async function fetchSessionUser(
@@ -53,7 +32,7 @@ export async function fetchSessionUser(
 
   try {
     const response = await fetch(url, {
-      headers: buildApiHeaders(cookieHeader, siteUrl),
+      headers: buildServerApiHeaders(cookieHeader, siteUrl),
       cache: "no-store",
     });
 
