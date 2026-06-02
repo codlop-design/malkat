@@ -13,10 +13,11 @@ import ProfileDetailsTab from "@/src/features/auth/components/profile/ProfileDet
 import FavouritesTab, {
   type FavouritesTabHandle,
 } from "@/src/features/auth/components/profile/FavouritesTab";
+import ChangePasswordTab from "@/src/features/auth/components/profile/ChangePasswordTab";
 
 export default function ProfilePageClient() {
   const router = useRouter();
-  const { user, refreshUser, logout } = useAuth();
+  const { user, refreshUser, logout, setUser } = useAuth();
   const [fetchedUser, setFetchedUser] = useState<AuthUser | null>(null);
   const [activeTab, setActiveTab] = useState<
     "profile" | "password" | "favourites" | "orders"
@@ -95,7 +96,7 @@ export default function ProfilePageClient() {
             tabs={tabs}
             activeTab={activeTab}
             onTabClick={(id) => {
-              if (id === "profile" || id === "favourites") {
+              if (id === "profile" || id === "favourites" || id === "password") {
                 setActiveTab(id);
                 if (id === "favourites") {
                   favouritesRef.current?.ensureLoaded();
@@ -110,10 +111,19 @@ export default function ProfilePageClient() {
           {/* Right content */}
           <section className="rounded-2xl bg-white p-6 md:p-8">
             <div className={activeTab === "profile" ? "block" : "hidden"}>
-              <ProfileDetailsTab user={profileUser} />
+              <ProfileDetailsTab
+                user={profileUser}
+                onUserUpdated={(next) => {
+                  setUser(next);
+                  setFetchedUser(next);
+                }}
+              />
             </div>
             <div className={activeTab === "favourites" ? "block" : "hidden"}>
               <FavouritesTab ref={favouritesRef} />
+            </div>
+            <div className={activeTab === "password" ? "block" : "hidden"}>
+              <ChangePasswordTab />
             </div>
           </section>
         </div>
