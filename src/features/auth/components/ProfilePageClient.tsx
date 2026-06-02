@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Heart, Lock, ShoppingBag, UserRound } from "lucide-react";
 import { toast } from "sonner";
@@ -18,15 +18,30 @@ import OrdersTab, {
   type OrdersTabHandle,
 } from "@/src/features/auth/components/profile/OrdersTab";
 
+type ProfileTabId = "profile" | "password" | "favourites" | "orders";
+
+function parseProfileTab(value: string | null): ProfileTabId {
+  switch (value) {
+    case "profile":
+    case "password":
+    case "favourites":
+    case "orders":
+      return value;
+    default:
+      return "profile";
+  }
+}
+
 export default function ProfilePageClient() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, refreshUser, logout, setUser } = useAuth();
   const [fetchedUser, setFetchedUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<
-    "profile" | "password" | "favourites" | "orders"
-  >("profile");
   const favouritesRef = useRef<FavouritesTabHandle | null>(null);
   const ordersRef = useRef<OrdersTabHandle | null>(null);
+
+  const activeTab = parseProfileTab(searchParams.get("tab"));
 
   const profileUser = user ?? fetchedUser;
 
@@ -83,6 +98,12 @@ export default function ProfilePageClient() {
     toast.message("قريباً", { description: "سيتم توفير هذا القسم قريباً" });
   }
 
+  function setSearchParam(key: string, value: string) {
+    const next = new URLSearchParams(searchParams.toString());
+    next.set(key, value);
+    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+  }
+
   const tabs = [
     { id: "profile" as const, label: "الملف الشخصي", icon: UserRound },
     { id: "password" as const, label: "تغيير كلمة المرور", icon: Lock },
@@ -106,7 +127,7 @@ export default function ProfilePageClient() {
                 id === "password" ||
                 id === "orders"
               ) {
-                setActiveTab(id);
+                setSearchParam("tab", id);
                 if (id === "favourites") {
                   favouritesRef.current?.ensureLoaded();
                 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   forwardRef,
   useImperativeHandle,
@@ -33,9 +34,29 @@ export type FavouritesTabHandle = {
   ensureLoaded: () => void;
 };
 
+function parseFavCategory(
+  value: string | null,
+  fallback: CatalogSectionKey,
+): CatalogSectionKey {
+  switch (value) {
+    case "books":
+    case "courses":
+    case "services":
+    case "activities":
+    case "guides":
+      return value;
+    default:
+      return fallback;
+  }
+}
+
 const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
   function FavouritesTab({ initialCategory = "books" }, ref) {
-  const [category, setCategory] = useState<CatalogSectionKey>(initialCategory);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const category = parseFavCategory(searchParams.get("fav"), initialCategory);
   const [items, setItems] = useState<CatalogListItem[]>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -63,6 +84,13 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
     [category, isPending, items.length],
   );
 
+  function setFavParam(nextCategory: CatalogSectionKey) {
+    const next = new URLSearchParams(searchParams.toString());
+    next.set("fav", nextCategory);
+    // keep current tab param as-is
+    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+  }
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -79,7 +107,7 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
                 key={id}
                 type="button"
                 onClick={() => {
-                  setCategory(id);
+                  setFavParam(id);
                   load(id);
                 }}
                 className={`h-10 rounded-xl px-4 text-sm font-medium transition-colors ${

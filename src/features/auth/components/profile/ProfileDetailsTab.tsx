@@ -112,7 +112,7 @@ export default function ProfileDetailsTab({
           {...register("email")}
         />
 
-        <SubmitButton loading={isSubmitting} disabled={!isDirty}>
+        <SubmitButton loading={isSubmitting} disabled={!isDirty} className="min-w-[200px]">
           حفظ البيانات
         </SubmitButton>
       </form>
