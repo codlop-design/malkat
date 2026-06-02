@@ -1,16 +1,19 @@
-import { getServiceTypes } from "@/src/features/services/api/getServiceTypes";
 import ServicesCategoryFiltersClient from "@/src/features/services/components/ServicesCategoryFiltersClient";
 import { mapServiceTypesToFilterCategories } from "@/src/features/services/lib/mapServiceTypeCategories";
-import { parseServiceCategory } from "@/src/features/services/types";
+import {
+  parseServiceCategory,
+  ServiceTypeApiItem,
+} from "@/src/features/services/types";
 
 type ServicesCategoryFiltersProps = {
   category?: string | null;
+  types: ServiceTypeApiItem[];
 };
 
-export default async function ServicesCategoryFilters({
+export default function ServicesCategoryFilters({
   category,
+  types,
 }: ServicesCategoryFiltersProps) {
-  const types = await getServiceTypes();
   const categories = mapServiceTypesToFilterCategories(types);
   const active = parseServiceCategory(category);
 

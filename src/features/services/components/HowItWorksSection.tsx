@@ -1,13 +1,12 @@
-import { getServicePageContent } from "@/src/features/services/api/getServicePageContent";
 import HowItWorks from "@/src/features/services/components/HowItWorks";
-import { EMPTY_SERVICE_PAGE_CONTENT } from "@/src/features/services/data/servicePageFallback";
+import { ServicePageContent } from "../types/servicePage";
 
-export default async function HowItWorksSection() {
-  const pageContent = await getServicePageContent();
+type HowItWorksSectionProps = {
+  pageContent: ServicePageContent;
+};
 
-  return (
-    <HowItWorks
-      section={pageContent?.steps ?? EMPTY_SERVICE_PAGE_CONTENT.steps}
-    />
-  );
+export default function HowItWorksSection({
+  pageContent,
+}: HowItWorksSectionProps) {
+  return <HowItWorks section={pageContent.steps} />;
 }

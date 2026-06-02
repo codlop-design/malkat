@@ -1,13 +1,11 @@
-import { getServicesList } from "@/src/features/services/api/getServicesList";
+import { ServicesListResult } from "@/src/features/services/api/getServicesList";
 import ServicesGridClient from "@/src/features/services/components/ServicesGridClient";
-import {
-  parseServiceCategory,
-  parseServicePage,
-} from "@/src/features/services/types";
+import { parseServiceCategory } from "@/src/features/services/types";
 
 type ServicesGridProps = {
   category?: string | null;
   page?: string | null;
+  result: ServicesListResult;
 };
 
 const EMPTY_PAGINATION = {
@@ -19,13 +17,8 @@ const EMPTY_PAGINATION = {
   to: 0,
 };
 
-export default async function ServicesGrid({
-  category,
-  page: pageParam,
-}: ServicesGridProps) {
+export default function ServicesGrid({ category, result }: ServicesGridProps) {
   const active = parseServiceCategory(category);
-  const page = parseServicePage(pageParam);
-  const result = await getServicesList(active, page);
 
   return (
     <ServicesGridClient
