@@ -1,7 +1,7 @@
 import "server-only";
 
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
-import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/getCatalogList";
+import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/catalogList.types";
 import { getServerApiFetchOptions } from "@/src/lib/serverApiHeaders";
 import {
   mapProductDetailResponse,

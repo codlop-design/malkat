@@ -3,8 +3,6 @@ import DiscoverSectionClient from "@/src/features/products/components/DiscoverSe
 import PageHeader from "@/src/components/PageHeader";
 import StartJourney from "@/src/features/products/components/StartJourney";
 
-export const revalidate = 60;
-
 type PageProps = {
   searchParams: Promise<{ category?: string }>;
 };

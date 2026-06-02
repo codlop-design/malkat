@@ -14,12 +14,8 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
-    // Keep these rewrites limited to local development only.
-    if (process.env.NODE_ENV !== "development") {
-      return [];
-    }
-
-    const API_PROXY_TARGET = "https://malkat-dashboard.codlop.sa";
+    const API_PROXY_TARGET =
+      process.env.API_PROXY_TARGET ?? "https://malkat-dashboard.codlop.sa";
 
     return [
       // Proxy Sanctum endpoints so csrf-cookie stays same-origin on localhost.

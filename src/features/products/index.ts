@@ -12,4 +12,4 @@ export type {
   CatalogListResult,
   CatalogListsBySection,
   CatalogSectionResult,
-} from "./api/getCatalogList";
+} from "./api/catalogList.types";

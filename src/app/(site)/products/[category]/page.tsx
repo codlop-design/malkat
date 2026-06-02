@@ -10,8 +10,6 @@ import { getCatalogList } from "@/src/features/products/api/getCatalogList";
 import PageHeader from "@/src/components/PageHeader";
 import CategoryProductsSection from "@/src/features/products/components/CategoryProductsSection";
 
-export const revalidate = 60;
-
 type PageProps = {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ page?: string; q?: string }>;

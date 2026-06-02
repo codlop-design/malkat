@@ -11,8 +11,7 @@ import {
   renderCatalogCard,
   type CatalogListItem,
 } from "@/src/features/products/data/catalogRegistry";
-import type { CatalogListsBySection } from "@/src/features/products/api/getCatalogList";
-import { useCatalogListsWithFavourites } from "@/src/features/products/hooks/useCatalogListsWithFavourites";
+import type { CatalogListsBySection } from "@/src/features/products/api/catalogList.types";
 import {
   categoryFilterHref,
   categoryListingHref,
@@ -64,8 +63,6 @@ export default function DiscoverSectionClient({
   initialCategory = null,
 }: DiscoverSectionClientProps) {
   const category = parseProductCategory(initialCategory);
-  const catalogItemsWithFavourites =
-    useCatalogListsWithFavourites(catalogItems);
 
   const visibleSections = useMemo(
     () => VISIBLE_BY_CATEGORY[category],
@@ -76,12 +73,13 @@ export default function DiscoverSectionClient({
     () =>
       buildProductCategories(
         Object.fromEntries(
-          (Object.keys(catalogItemsWithFavourites) as CatalogSectionKey[]).map(
-            (key) => [key, catalogItemsWithFavourites[key].total],
-          ),
+          (Object.keys(catalogItems) as CatalogSectionKey[]).map((key) => [
+            key,
+            catalogItems[key].total,
+          ]),
         ) as Record<CatalogSectionKey, number>,
       ),
-    [catalogItemsWithFavourites],
+    [catalogItems],
   );
 
   const catalogSections = useMemo(
@@ -91,13 +89,13 @@ export default function DiscoverSectionClient({
           key,
           {
             ...SECTION_META[key],
-            items: catalogItemsWithFavourites[key].items,
+            items: catalogItems[key].items,
             renderSlide: (item: CatalogListItem) =>
               renderCatalogCard(key, item),
           },
         ]),
       ) as Record<CatalogSectionKey, SectionConfig>,
-    [catalogItemsWithFavourites],
+    [catalogItems],
   );
 
   return (

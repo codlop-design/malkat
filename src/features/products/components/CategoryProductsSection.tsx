@@ -10,8 +10,6 @@ import type { CatalogListItem } from "@/src/features/products/data/catalogRegist
 import { renderCatalogCard } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
-import { useCatalogItemsWithFavourites } from "@/src/features/products/hooks/useCatalogItemsWithFavourites";
-
 const SEARCH_DEBOUNCE_MS = 400;
 
 type CategoryProductsSectionProps = {
@@ -42,7 +40,6 @@ export default function CategoryProductsSection({
   const totalPages = Math.max(1, pagination.last_page);
   const { searchPlaceholder } = CATEGORY_META[category];
   const basePath = `/products/${category}`;
-  const displayItems = useCatalogItemsWithFavourites(category, items);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -100,14 +97,14 @@ export default function CategoryProductsSection({
           className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           dir="rtl"
         >
-          {displayItems.map((item) => (
+          {items.map((item) => (
             <li key={item.slug} className="h-full">
               {renderCatalogCard(category, item)}
             </li>
           ))}
         </ul>
 
-        {displayItems.length === 0 ? (
+        {items.length === 0 ? (
           <p className="mt-10 text-center text-[#717171]">
             لا توجد نتائج مطابقة.
           </p>

@@ -1,9 +1,13 @@
 import "server-only";
 
-import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import { CATALOG_SECTION_KEYS } from "@/src/features/products/data/categoryMeta";
 import { mapCatalogItems } from "@/src/features/products/mapCatalogItems";
-import type { CatalogListItem } from "@/src/features/products/data/catalogRegistry";
+import type {
+  CatalogListResult,
+  CatalogListsBySection,
+} from "@/src/features/products/api/catalogList.types";
+import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/catalogList.types";
+import { resolveCatalogApiUrl } from "@/src/features/products/api/resolveCatalogApiUrl";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type {
   CatalogApiItem,
@@ -11,24 +15,12 @@ import type {
 } from "@/src/features/products/types/catalogApi";
 import { getServerApiFetchOptions } from "@/src/lib/serverApiHeaders";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export const CATALOG_REVALIDATE_SECONDS = 60;
-
-export type CatalogListResult = {
-  items: CatalogListItem[];
-  pagination: CatalogPagination;
-};
-
-export type CatalogSectionResult = {
-  items: CatalogListItem[];
-  total: number;
-};
-
-export type CatalogListsBySection = Record<
-  CatalogSectionKey,
-  CatalogSectionResult
->;
+export type {
+  CatalogListResult,
+  CatalogListsBySection,
+  CatalogSectionResult,
+} from "@/src/features/products/api/catalogList.types";
+export { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/catalogList.types";
 
 type CatalogListApiResponse = {
   success: boolean;
@@ -42,22 +34,10 @@ export async function getCatalogList(
   page = 1,
   search?: string,
 ): Promise<CatalogListResult | null> {
-  const endpoint = CATALOG_API_ENDPOINTS[category];
-  const params = new URLSearchParams({
-    page: String(page),
-    per_page: "8",
-  });
-  const trimmedSearch = search?.trim();
-
-  if (trimmedSearch) {
-    params.set("search", trimmedSearch);
-  }
-
-  const url = `${API_URL}${endpoint}?${params}`;
+  const url = await resolveCatalogApiUrl(category, page, search);
 
   try {
     const fetchOptions = await getServerApiFetchOptions(CATALOG_REVALIDATE_SECONDS);
-
     const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {

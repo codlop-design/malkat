@@ -2,6 +2,7 @@ import "server-only";
 
 import { cookies, headers } from "next/headers";
 
+import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
 
 /** Cookie header from the incoming browser request (for server → Laravel API). */
@@ -60,8 +61,9 @@ export async function getServerApiFetchOptions(revalidateSeconds: number): Promi
   next?: { revalidate: number };
 }> {
   const cookieHeader = await readRequestCookieHeader();
+  const hasSession = cookieHeader.includes(SESSION_COOKIE_NAME);
 
-  if (!cookieHeader) {
+  if (!hasSession) {
     return {
       headers: GUEST_HEADERS,
       next: { revalidate: revalidateSeconds },
