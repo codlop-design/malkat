@@ -3,7 +3,7 @@ import axios from "axios";
 import { emitAuthUnauthorized } from "@/src/lib/authUnauthorized";
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_AUTH_API_URL ?? process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
     Accept: "application/json",

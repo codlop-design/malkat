@@ -2,10 +2,6 @@ import type { NextConfig } from "next";
 
 const IMAGE_ORIGIN = process.env.NEXT_PUBLIC_IMAGE_ORIGIN ?? "";
 
-/** Laravel origin for local dev proxy (no trailing slash). */
-const API_PROXY_TARGET =
-  process.env.API_PROXY_TARGET ?? "https://malkat-dashboard.codlop.sa";
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -18,9 +14,22 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
+    // Keep these rewrites limited to local development only.
+    if (process.env.NODE_ENV !== "development") {
+      return [];
+    }
+
+    const API_PROXY_TARGET = "https://malkat-dashboard.codlop.sa";
+
     return [
+      // Proxy Sanctum endpoints so csrf-cookie stays same-origin on localhost.
       {
-        source: "/api/:path*",
+        source: "/sanctum/:path*",
+        destination: `${API_PROXY_TARGET}/sanctum/:path*`,
+      },
+      // Proxy auth API only; keep non-auth endpoints using their original API URL.
+      {
+        source: "/auth-api/:path*",
         destination: `${API_PROXY_TARGET}/api/:path*`,
       },
     ];
