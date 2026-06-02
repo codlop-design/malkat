@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
@@ -19,10 +19,6 @@ import {
   VISIBLE_BY_CATEGORY,
   type CatalogSectionKey,
 } from "@/src/features/products/types";
-import {
-  catalogLog,
-  summarizeCatalogMappedItems,
-} from "@/src/lib/catalogLog";
 
 type SectionConfig = {
   title: string;
@@ -101,22 +97,6 @@ export default function DiscoverSectionClient({
       ) as Record<CatalogSectionKey, SectionConfig>,
     [catalogItems],
   );
-
-  useEffect(() => {
-    const sections = (Object.keys(catalogItems) as CatalogSectionKey[]).map(
-      (key) => ({
-        category: key,
-        total: catalogItems[key].total,
-        itemCount: catalogItems[key].items.length,
-        sample: summarizeCatalogMappedItems(catalogItems[key].items, 5),
-        favouriteTrueCount: catalogItems[key].items.filter(
-          (item) => item.isFavourite === true,
-        ).length,
-      }),
-    );
-
-    catalogLog("discover", "props from server", { sections });
-  }, [catalogItems]);
 
   return (
     <div>

@@ -8,6 +8,7 @@ export async function fetcher<T>(
 ): Promise<ApiResponse<T> | null> {
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
+      credentials: "include",
       ...options,
       headers: {
         "Content-Type": "application/json",
