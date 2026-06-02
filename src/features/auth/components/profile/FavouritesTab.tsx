@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useTransition,
+} from "react";
 
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { getFavourites } from "@/src/features/products/api/getFavouritesClient";
@@ -24,9 +29,12 @@ type FavouritesTabProps = {
   initialCategory?: CatalogSectionKey;
 };
 
-export default function FavouritesTab({
-  initialCategory = "books",
-}: FavouritesTabProps) {
+export type FavouritesTabHandle = {
+  ensureLoaded: () => void;
+};
+
+const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
+  function FavouritesTab({ initialCategory = "books" }, ref) {
   const [category, setCategory] = useState<CatalogSectionKey>(initialCategory);
   const [items, setItems] = useState<CatalogListItem[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -41,6 +49,19 @@ export default function FavouritesTab({
       }
     });
   }
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      ensureLoaded() {
+        if (isPending || items.length > 0) {
+          return;
+        }
+        load(category);
+      },
+    }),
+    [category, isPending, items.length],
+  );
 
   return (
     <>
@@ -96,5 +117,10 @@ export default function FavouritesTab({
       )}
     </>
   );
-}
+  },
+);
+
+FavouritesTab.displayName = "FavouritesTab";
+
+export default FavouritesTab;
 

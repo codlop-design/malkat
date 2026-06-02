@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Heart, Lock, ShoppingBag, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
@@ -10,7 +10,9 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { authLog } from "@/src/lib/authLog";
 import ProfileSidebar from "@/src/features/auth/components/profile/ProfileSidebar";
 import ProfileDetailsTab from "@/src/features/auth/components/profile/ProfileDetailsTab";
-import FavouritesTab from "@/src/features/auth/components/profile/FavouritesTab";
+import FavouritesTab, {
+  type FavouritesTabHandle,
+} from "@/src/features/auth/components/profile/FavouritesTab";
 
 export default function ProfilePageClient() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function ProfilePageClient() {
   const [activeTab, setActiveTab] = useState<
     "profile" | "password" | "favourites" | "orders"
   >("profile");
+  const favouritesRef = useRef<FavouritesTabHandle | null>(null);
 
   const profileUser = user ?? fetchedUser;
 
@@ -94,6 +97,9 @@ export default function ProfilePageClient() {
             onTabClick={(id) => {
               if (id === "profile" || id === "favourites") {
                 setActiveTab(id);
+                if (id === "favourites") {
+                  favouritesRef.current?.ensureLoaded();
+                }
               } else {
                 handleNotReady();
               }
@@ -103,11 +109,12 @@ export default function ProfilePageClient() {
 
           {/* Right content */}
           <section className="rounded-2xl bg-white p-6 md:p-8">
-            {activeTab === "profile" ? (
+            <div className={activeTab === "profile" ? "block" : "hidden"}>
               <ProfileDetailsTab user={profileUser} />
-            ) : activeTab === "favourites" ? (
-              <FavouritesTab />
-            ) : null}
+            </div>
+            <div className={activeTab === "favourites" ? "block" : "hidden"}>
+              <FavouritesTab ref={favouritesRef} />
+            </div>
           </section>
         </div>
       </div>
