@@ -51,9 +51,31 @@ export async function getCatalogList(
   }
 
   try {
+    // If the user is logged in, the API may return user-specific fields
+    // like `is_favourite`. In that case we must forward cookies and disable
+    // caching to avoid leaking personalized responses across users.
+    let cookieHeader = "";
+    if (typeof window === "undefined") {
+      try {
+        const { cookies } = await import("next/headers");
+        const store = await cookies();
+        cookieHeader = store
+          .getAll()
+          .map((c: { name: string; value: string }) => `${c.name}=${c.value}`)
+          .join("; ");
+      } catch {
+        cookieHeader = "";
+      }
+    }
+
     const response = await fetch(`${API_URL}${endpoint}?${params}`, {
-      headers: { "Content-Type": "application/json" },
-      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookieHeader ? { cookie: cookieHeader } : null),
+      },
+      ...(cookieHeader
+        ? { cache: "no-store" as const }
+        : { next: { revalidate: CATALOG_REVALIDATE_SECONDS } }),
     });
 
     if (!response.ok) {
