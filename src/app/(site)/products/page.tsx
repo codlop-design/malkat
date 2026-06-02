@@ -12,6 +12,7 @@ type PageProps = {
 export default async function ProductsPage({ searchParams }: PageProps) {
   const { category } = await searchParams;
   const catalogItems = await getAllCatalogLists();
+  console.log({ catalogItems });
 
   return (
     <>

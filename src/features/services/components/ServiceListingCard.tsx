@@ -9,6 +9,5 @@ type ServiceListingCardProps = {
 export default function ServiceListingCard({
   service,
 }: ServiceListingCardProps) {
-  console.log({ service });
   return <ServiceCard category="services" {...service} />;
 }

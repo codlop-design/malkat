@@ -51,8 +51,6 @@ export default function ServiceCard({
         })
       : undefined;
 
-  console.log({ isFavourite });
-
   return (
     <ProductCard href={href} title={title}>
       <CardMedia
