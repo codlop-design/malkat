@@ -55,13 +55,8 @@ function groupCartItems(items: StoredCartItem[]): CartItemCategory[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<StoredCartItem[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    setItems(readCartFromSession());
-    setIsHydrated(true);
-  }, []);
+  const [items, setItems] = useState<StoredCartItem[]>(() => readCartFromSession());
+  const [isHydrated] = useState(true);
 
   useEffect(() => {
     if (!isHydrated) return;

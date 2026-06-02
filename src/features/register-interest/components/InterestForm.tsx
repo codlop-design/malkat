@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import PhoneInput from "@/src/components/PhoneInput";
@@ -60,7 +60,6 @@ export default function InterestForm({
     control,
     handleSubmit,
     reset,
-    watch,
     getValues,
     formState: { errors, isSubmitting },
   } = useForm<InterestFormValues>({
@@ -68,7 +67,10 @@ export default function InterestForm({
     defaultValues,
   });
 
-  const interestedApplicantType = watch("interested_applicant_types");
+  const interestedApplicantType = useWatch({
+    control,
+    name: "interested_applicant_types",
+  });
   const isOrganization = interestedApplicantType === "organization";
 
   const organizationTypeOptions = mapLookupOptions(organizationTypes);

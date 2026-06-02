@@ -78,7 +78,6 @@ export function AuthProvider({
   useEffect(() => {
     if (initialUser !== null) {
       authLog("provider", "skip client fetch — have initialUser from server");
-      setIsAuthReady(true);
       return;
     }
 
