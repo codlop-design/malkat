@@ -7,6 +7,7 @@ import type {
   CatalogApiItem,
   CatalogPagination,
 } from "@/src/features/products/types/catalogApi";
+import { cookies } from "next/headers";
 import {
   catalogLog,
   summarizeCatalogApiItems,
@@ -58,10 +59,29 @@ export async function getCatalogList(
   const url = `${API_URL}${endpoint}?${params}`;
 
   try {
-    catalogLog("api", "request", { category, page, url });
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((cookie: { name: string; value: string }) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
+
+    const hasSessionCookie = cookieStore.has("malkat-session");
+
+    catalogLog("api", "request", {
+      category,
+      page,
+      url,
+      hasSessionCookie,
+      cookieNames: cookieStore
+        .getAll()
+        .map((c: { name: string }) => c.name),
+    });
 
     const response = await fetch(url, {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookieHeader ? { Cookie: cookieHeader } : null),
+      },
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
