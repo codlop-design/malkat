@@ -84,7 +84,10 @@ export default function CategoryFilters<T extends string>({
                   whileTap={{ scale: 0.96 }}
                   transition={tapSpring}
                 >
-                  <span className="text-base leading-none md:text-lg" aria-hidden>
+                  <span
+                    className="text-base leading-none md:text-lg"
+                    aria-hidden
+                  >
                     {icon}
                   </span>
                   <span>{label}</span>

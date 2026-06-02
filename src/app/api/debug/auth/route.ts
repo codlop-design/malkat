@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
-import { fetchSessionUser } from "@/src/features/auth/fetchSessionUser";
 import { getServerUser } from "@/src/features/auth/session.server";
 import { USER_PATH } from "@/src/features/auth/parseUser";
 import { isAuthLogEnabled } from "@/src/lib/authLog";
@@ -15,7 +14,6 @@ export async function GET() {
 
   const cookieStore = await cookies();
   const all = cookieStore.getAll();
-  const cookieHeader = all.map((c) => `${c.name}=${c.value}`).join("; ");
   const siteUrl = await getRequestSiteUrl();
 
   const user = await getServerUser();

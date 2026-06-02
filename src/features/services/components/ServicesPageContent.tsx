@@ -1,46 +1,42 @@
-import { Suspense } from "react";
+// import { Suspense } from "react";
 
-import CategoryFiltersSkeleton from "@/src/features/services/components/CategoryFiltersSkeleton";
 import HowItWorksSection from "@/src/features/services/components/HowItWorksSection";
-import HowItWorksSkeleton from "@/src/features/services/components/HowItWorksSkeleton";
 import ServicesCategoryFilters from "@/src/features/services/components/ServicesCategoryFilters";
 import ServicesCTASection from "@/src/features/services/components/ServicesCTASection";
-import ServicesCTASkeleton from "@/src/features/services/components/ServicesCTASkeleton";
 import ServicesGrid from "@/src/features/services/components/ServicesGrid";
-import ServicesGridSkeleton from "@/src/features/services/components/ServicesGridSkeleton";
 import ServicesIntroSection from "@/src/features/services/components/ServicesIntroSection";
-import ServicesIntroSkeleton from "@/src/features/services/components/ServicesIntroSkeleton";
+// import CategoryFiltersSkeleton from "@/src/features/services/components/CategoryFiltersSkeleton";
+// import HowItWorksSkeleton from "@/src/features/services/components/HowItWorksSkeleton";
+// import ServicesCTASkeleton from "@/src/features/services/components/ServicesCTASkeleton";
+// import ServicesGridSkeleton from "@/src/features/services/components/ServicesGridSkeleton";
+// import ServicesIntroSkeleton from "@/src/features/services/components/ServicesIntroSkeleton";
+import { ServiceTypeApiItem } from "@/src/features/services/types";
+import { ServicePageContent } from "../types/servicePage";
 
 type ServicesPageContentProps = {
   category?: string | null;
   page?: string | null;
+  types: ServiceTypeApiItem[];
+  pageContent: ServicePageContent;
 };
 
 export default function ServicesPageContent({
   category,
   page,
+  types,
+  pageContent,
 }: ServicesPageContentProps) {
   return (
     <>
-      <Suspense fallback={<ServicesIntroSkeleton />}>
-        <ServicesIntroSection />
-      </Suspense>
+      <ServicesIntroSection pageContent={pageContent} />
 
-      <Suspense fallback={<CategoryFiltersSkeleton />}>
-        <ServicesCategoryFilters category={category} />
-      </Suspense>
+      <ServicesCategoryFilters category={category} types={types} />
 
-      <Suspense fallback={<ServicesGridSkeleton />}>
-        <ServicesGrid category={category} page={page} />
-      </Suspense>
+      <ServicesGrid category={category} page={page} />
 
-      <Suspense fallback={<HowItWorksSkeleton />}>
-        <HowItWorksSection />
-      </Suspense>
+      <HowItWorksSection pageContent={pageContent} />
 
-      <Suspense fallback={<ServicesCTASkeleton />}>
-        <ServicesCTASection />
-      </Suspense>
+      <ServicesCTASection pageContent={pageContent} />
     </>
   );
 }

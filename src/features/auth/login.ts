@@ -5,7 +5,6 @@ import type {
   VerifyOtpResult,
 } from "@/src/features/auth/types";
 import type { LoginFormValues } from "@/src/features/auth/schemas/loginSchema";
-import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 
 const PHONE_CODE = "966";
 
@@ -17,17 +16,17 @@ type ApiResponse<T = unknown> = {
 
 async function login(payload: Record<string, string>): Promise<LoginResult> {
   try {
-    await ensureCsrfCookie();
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = (await res.json().catch(() => null)) as ApiResponse<AuthUser> | null;
 
-    const { data, status } = await apiClient.post<ApiResponse<AuthUser>>(
-      "/auth/login",
-      payload,
-    );
-
-    if (status >= 400 || !data.success) {
+    if (!res.ok || !data?.success) {
       return {
         success: false,
-        message: data.message ?? "تعذر تسجيل الدخول، تحقق من البيانات",
+        message: data?.message ?? "تعذر تسجيل الدخول، تحقق من البيانات",
       };
     }
 
@@ -54,16 +53,19 @@ export function loginWithEmail(values: LoginFormValues): Promise<LoginResult> {
 
 export async function sendOtp(phone: string): Promise<SendOtpResult> {
   try {
-    await ensureCsrfCookie();
+    const res = await fetch("/api/auth/otp/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone_code: PHONE_CODE, phone }),
+    });
+    const data = (await res
+      .json()
+      .catch(() => null)) as ApiResponse<{ verification_token?: string }> | null;
 
-    const { data, status } = await apiClient.post<
-      ApiResponse<{ verification_token?: string }>
-    >("/auth/otp/send", { phone_code: PHONE_CODE, phone });
-
-    if (status >= 400 || !data.success) {
+    if (!res.ok || !data?.success) {
       return {
         success: false,
-        message: data.message ?? "تعذر إرسال رمز التحقق",
+        message: data?.message ?? "تعذر إرسال رمز التحقق",
       };
     }
 
@@ -88,22 +90,22 @@ export async function verifyOtp(
   otp: string,
 ): Promise<VerifyOtpResult> {
   try {
-    await ensureCsrfCookie();
-
-    const { data, status } = await apiClient.post<ApiResponse<AuthUser>>(
-      "/auth/otp/verify",
-      {
+    const res = await fetch("/api/auth/otp/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         phone_code: PHONE_CODE,
         phone,
         verification_token: verificationToken,
         otp,
-      },
-    );
+      }),
+    });
+    const data = (await res.json().catch(() => null)) as ApiResponse<AuthUser> | null;
 
-    if (status >= 400 || !data.success) {
+    if (!res.ok || !data?.success) {
       return {
         success: false,
-        message: data.message ?? "رمز التحقق غير صحيح",
+        message: data?.message ?? "رمز التحقق غير صحيح",
       };
     }
 

@@ -1,23 +1,20 @@
-import { parseAuthUser, USER_PATH } from "@/src/features/auth/parseUser";
+import { parseAuthUser } from "@/src/features/auth/parseUser";
 import type { AuthUser } from "@/src/features/auth/types";
-import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import { authLog } from "@/src/lib/authLog";
 
 /** Browser — GET profile (withCredentials). */
 export async function fetchCurrentUser(): Promise<AuthUser | null> {
-  const url = `${apiClient.defaults.baseURL ?? ""}${USER_PATH}`;
+  const url = "/api/auth/user";
 
   authLog("client-fetch", "GET /auth/user", { url });
 
   try {
-    const { data, status } = await apiClient.get<unknown>(USER_PATH, {
-      validateStatus: () => true,
-    });
-
-    const user = status < 400 ? parseAuthUser(data) : null;
+    const response = await fetch(url, { cache: "no-store" });
+    const data = await response.json().catch(() => null);
+    const user = response.status < 400 ? parseAuthUser(data) : null;
 
     authLog("client-fetch", "response", {
-      status,
+      status: response.status,
       user: user?.name ?? null,
       preview: data ? JSON.stringify(data).slice(0, 120) : null,
     });
@@ -32,7 +29,6 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
 }
 
 export async function logout(): Promise<void> {
-  await ensureCsrfCookie();
-  await apiClient.post("/auth/logout");
+  await fetch("/api/auth/logout", { method: "POST" });
   authLog("client", "logout");
 }

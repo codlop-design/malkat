@@ -1,10 +1,14 @@
-import { getServicePageContent } from "@/src/features/services/api/getServicePageContent";
 import ServicesIntro from "@/src/features/services/components/ServicesIntro";
 import { EMPTY_SERVICE_PAGE_CONTENT } from "@/src/features/services/data/servicePageFallback";
+import { ServicePageContent } from "../types/servicePage";
 
-export default async function ServicesIntroSection() {
-  const pageContent = await getServicePageContent();
+type ServicesIntroSectionProps = {
+  pageContent: ServicePageContent;
+};
 
+export default function ServicesIntroSection({
+  pageContent,
+}: ServicesIntroSectionProps) {
   return (
     <ServicesIntro
       section={pageContent?.statistics ?? EMPTY_SERVICE_PAGE_CONTENT.statistics}

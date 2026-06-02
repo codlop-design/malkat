@@ -5,11 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import type { ServicePageSection } from "@/src/features/services/types/servicePage";
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
+import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 type ServicesCTAProps = {
   section: ServicePageSection;
@@ -39,7 +35,10 @@ export default function ServicesCTA({ section }: ServicesCTAProps) {
           variants={staggerContainer(0.1, 0.05)}
         >
           {section.icon ? (
-            <motion.div variants={fadeUp} className="relative size-16 md:size-20">
+            <motion.div
+              variants={fadeUp}
+              className="relative size-16 md:size-20"
+            >
               <Image
                 src={section.icon}
                 alt=""
