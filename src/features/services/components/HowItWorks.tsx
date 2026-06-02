@@ -1,14 +1,6 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 import type { ServicePageSection } from "@/src/features/services/types/servicePage";
-import {
-  fadeUp,
-  motionViewport,
-  staggerContainer,
-} from "@/src/lib/motion";
 
 type HowItWorksProps = {
   section: ServicePageSection;
@@ -17,15 +9,8 @@ type HowItWorksProps = {
 export default function HowItWorks({ section }: HowItWorksProps) {
   return (
     <section className="bg-[#F5F0E8] py-14 md:py-20">
-      <motion.div
-        className="container"
-        dir="rtl"
-        initial="hidden"
-        whileInView="visible"
-        viewport={motionViewport}
-        variants={staggerContainer(0.08, 0.05)}
-      >
-        <motion.div variants={fadeUp} className="mx-auto max-w-2xl text-center">
+      <div className="container" dir="rtl">
+        <div className="mx-auto max-w-2xl text-center">
           {section.title ? (
             <h2 className="text-2xl font-bold text-black md:text-[28px]">
               {section.title}
@@ -36,14 +21,13 @@ export default function HowItWorks({ section }: HowItWorksProps) {
               {section.content}
             </p>
           ) : null}
-        </motion.div>
+        </div>
 
         {section.items.length > 0 ? (
           <ol className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {section.items.map((step, index) => (
-              <motion.li
+              <li
                 key={`${step.title}-${index}`}
-                variants={fadeUp}
                 className="flex flex-col items-center text-center"
               >
                 {step.image ? (
@@ -65,11 +49,11 @@ export default function HowItWorks({ section }: HowItWorksProps) {
                 <p className="mt-2 max-w-[240px] text-sm leading-relaxed text-[#717171] md:text-[15px]">
                   {step.content}
                 </p>
-              </motion.li>
+              </li>
             ))}
           </ol>
         ) : null}
-      </motion.div>
+      </div>
     </section>
   );
 }

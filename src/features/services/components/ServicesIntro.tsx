@@ -1,10 +1,6 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 import type { ServicePageSection } from "@/src/features/services/types/servicePage";
-import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 type ServicesIntroProps = {
   section: ServicePageSection;
@@ -13,15 +9,8 @@ type ServicesIntroProps = {
 export default function ServicesIntro({ section }: ServicesIntroProps) {
   return (
     <section className="py-10 md:py-14">
-      <motion.div
-        className="container flex flex-col items-center gap-6"
-        dir="rtl"
-        initial="hidden"
-        whileInView="visible"
-        viewport={motionViewport}
-        variants={staggerContainer()}
-      >
-        <motion.div variants={fadeUp} className="mx-auto max-w-3xl text-center">
+      <div className="container flex flex-col items-center gap-6" dir="rtl">
+        <div className="mx-auto max-w-3xl text-center">
           {section.title ? (
             <h2 className="text-2xl font-bold text-black md:text-[28px]">
               {section.title}
@@ -32,13 +21,10 @@ export default function ServicesIntro({ section }: ServicesIntroProps) {
               {section.content}
             </p>
           ) : null}
-        </motion.div>
+        </div>
 
         {section.items.length > 0 ? (
-          <motion.ul
-            variants={fadeUp}
-            className="flex flex-wrap items-center justify-center gap-12"
-          >
+          <ul className="flex flex-wrap items-center justify-center gap-12">
             {section.items.map((item) => (
               <li
                 key={`${item.title}-${item.content}`}
@@ -67,9 +53,9 @@ export default function ServicesIntro({ section }: ServicesIntroProps) {
                 </div>
               </li>
             ))}
-          </motion.ul>
+          </ul>
         ) : null}
-      </motion.div>
+      </div>
     </section>
   );
 }

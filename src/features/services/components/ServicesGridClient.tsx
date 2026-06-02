@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-
 import Pagination from "@/src/components/Pagination";
 import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
@@ -10,7 +6,6 @@ import {
   servicesPaginationSearchParams,
   type ServiceCategoryId,
 } from "@/src/features/services/types";
-import { fadeUp, staggerContainer } from "@/src/lib/motion";
 
 type ServicesGridClientProps = {
   items: ServiceCardProps[];
@@ -33,18 +28,13 @@ export default function ServicesGridClient({
             لا توجد خدمات في هذا التصنيف.
           </p>
         ) : (
-          <motion.ul
-            className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer(0.06, 0.04)}
-          >
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {items.map((service) => (
-              <motion.li key={service.id} variants={fadeUp} className="h-full">
+              <li key={service.id} className="h-full">
                 <ServiceListingCard service={service} />
-              </motion.li>
+              </li>
             ))}
-          </motion.ul>
+          </ul>
         )}
 
         <div className="mt-10">
