@@ -34,41 +34,6 @@ type CatalogListApiResponse = {
   pagination: CatalogPagination;
 };
 
-/**
- * Why the current implementation doesn't send HTTP-only cookies:
- * - **Client Components**: `fetch()` does NOT include cookies for cross-origin requests by default.
- *   You must opt in with `credentials: "include"` (and the backend must allow credentials via CORS).
- * - **Server Components / Route Handlers / Server Actions**: Next.js runs `fetch()` on the server,
- *   which has **no browser cookie jar**. The user's cookies exist only on the incoming request to
- *   Next.js, so you must explicitly forward them to your backend API.
- *
- * We detect runtime by checking `typeof window`:
- * - `undefined` => Server runtime (Server Component, Route Handler, Server Action)
- * - defined => Browser runtime (Client Component)
- *
- * This keeps the function usable from both server and client without forcing server-only imports
- * into client bundles.
- */
-function isServerRuntime() {
-  return typeof window === "undefined";
-}
-
-/**
- * Convert Next.js `cookies()` store into a standard `Cookie` header string.
- * We keep this isolated so `next/headers` is only imported dynamically on the server.
- */
-async function getForwardedCookieHeader(): Promise<string | undefined> {
-  // `next/headers` cannot be imported in client bundles; keep it server-only via dynamic import.
-  const { cookies } = await import("next/headers");
-  const cookieStore = await cookies();
-  const all = cookieStore.getAll();
-
-  if (!all.length) return undefined;
-
-  // Minimal cookie serialization for forwarding; values are already encoded by the browser.
-  return all.map(({ name, value }) => `${name}=${value}`).join("; ");
-}
-
 export async function getCatalogList(
   category: CatalogSectionKey,
   page = 1,
@@ -86,19 +51,8 @@ export async function getCatalogList(
   }
 
   try {
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-
-    if (isServerRuntime()) {
-      // Server Component / Route Handler / Server Action path:
-      // forward incoming request cookies to the backend API.
-      const cookieHeader = await getForwardedCookieHeader();
-      if (cookieHeader) headers.Cookie = cookieHeader;
-    }
-
     const response = await fetch(`${API_URL}${endpoint}?${params}`, {
-      headers,
-      // Client Component path: include cookies in cross-origin requests (requires CORS credentials).
-      ...(isServerRuntime() ? {} : { credentials: "include" as const }),
+      headers: { "Content-Type": "application/json" },
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
 
