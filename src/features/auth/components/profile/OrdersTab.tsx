@@ -5,7 +5,6 @@ import {
   forwardRef,
   useCallback,
   useImperativeHandle,
-  useMemo,
   useState,
   useTransition,
 } from "react";
@@ -22,14 +21,6 @@ export type OrdersTabHandle = {
   ensureLoaded: () => void;
 };
 
-const STATUS_OPTIONS = [
-  { id: "cancelled", label: "ملغي" },
-  { id: "pending", label: "قيد الانتظار" },
-  { id: "processing", label: "قيد المعالجة" },
-  { id: "paid", label: "مدفوع" },
-  { id: "completed", label: "مكتمل" },
-] as const;
-
 function formatDate(value?: string): string | null {
   if (!value) return null;
   const date = new Date(value);
@@ -44,11 +35,9 @@ function formatDate(value?: string): string | null {
 function statusLabel(status?: string): string {
   if (!status) return "—";
   const mapped: Record<string, string> = {
+    new: "جديد",
+    completed: "تم التأكيد",
     cancelled: "ملغي",
-    pending: "قيد الانتظار",
-    processing: "قيد المعالجة",
-    paid: "مدفوع",
-    completed: "مكتمل",
   };
   return mapped[status] ?? status;
 }
@@ -56,7 +45,9 @@ function statusLabel(status?: string): string {
 function OrderRow({ order }: { order: OrderListItem }) {
   const createdAt = typeof order.created_at === "string" ? order.created_at : undefined;
   const status = typeof order.status === "string" ? order.status : undefined;
-  const label = statusLabel(status);
+  const labelFromApi =
+    typeof order.status_label === "string" ? order.status_label : undefined;
+  const label = labelFromApi ?? statusLabel(status);
 
   return (
     <Accordion
@@ -101,23 +92,15 @@ function OrderRow({ order }: { order: OrderListItem }) {
 }
 
 const OrdersTab = forwardRef<OrdersTabHandle>(function OrdersTab(_, ref) {
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(["cancelled"]);
   const [items, setItems] = useState<OrderListItem[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  const activeCount = selectedStatuses.length;
-
-  const queryStatuses = useMemo(
-    () => (selectedStatuses.length ? selectedStatuses : undefined),
-    [selectedStatuses],
-  );
-
   const load = useCallback(() => {
     startTransition(async () => {
-      const result = await getOrders({ per_page: 10, statuses: queryStatuses });
+      const result = await getOrders({ per_page: 10 });
       setItems(result.items);
     });
-  }, [queryStatuses]);
+  }, []);
 
   useImperativeHandle(
     ref,
@@ -135,45 +118,6 @@ const OrdersTab = forwardRef<OrdersTabHandle>(function OrdersTab(_, ref) {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-black md:text-xl">طلباتي</h1>
         <p className="text-sm text-[#6B7280]">الرئيسية / الملف الشخصي / طلباتي</p>
-      </div>
-
-      <div className="mb-6 rounded-2xl bg-[#F3F4F6] p-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {STATUS_OPTIONS.map(({ id, label }) => {
-            const isActive = selectedStatuses.includes(id);
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => {
-                  setSelectedStatuses((current) => {
-                    const next = current.includes(id)
-                      ? current.filter((x) => x !== id)
-                      : [...current, id];
-                    return next;
-                  });
-                }}
-                className={`h-10 rounded-xl px-4 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-primary text-white"
-                    : "bg-white text-[#111827] hover:bg-[#F9FAFB]"
-                }`}
-                aria-pressed={isActive}
-              >
-                {label}
-              </button>
-            );
-          })}
-
-          <button
-            type="button"
-            onClick={load}
-            className="ms-auto h-10 rounded-xl bg-primary px-4 text-sm font-bold text-white hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={isPending}
-          >
-            تحديث{activeCount ? ` (${activeCount})` : ""}
-          </button>
-        </div>
       </div>
 
       {isPending ? (

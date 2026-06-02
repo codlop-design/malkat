@@ -11,6 +11,7 @@ export type OrderStatus =
 export type OrderListItem = {
   id: number | string;
   status?: OrderStatus;
+  status_label?: string;
   total?: number | string;
   total_label?: string;
   created_at?: string;
@@ -22,10 +23,8 @@ export type OrderListItem = {
 type OrdersApiResponse = {
   success?: boolean;
   message?: string;
-  data?: {
-    items?: unknown[];
-    pagination?: unknown;
-  } | unknown[];
+  data?: unknown[] | { items?: unknown[]; pagination?: unknown };
+  pagination?: unknown;
 };
 
 export type GetOrdersResult = {
@@ -40,13 +39,23 @@ function toOrderListItem(raw: unknown): OrderListItem | null {
 
   return {
     id,
-    status: typeof record.status === "string" ? record.status : undefined,
+    status:
+      typeof record.status === "string"
+        ? record.status
+        : undefined,
+    status_label:
+      typeof record.status_label === "string" ? record.status_label : undefined,
     total:
       typeof record.total === "number" || typeof record.total === "string"
         ? record.total
         : undefined,
     total_label: typeof record.total_label === "string" ? record.total_label : undefined,
-    created_at: typeof record.created_at === "string" ? record.created_at : undefined,
+    created_at:
+      typeof record.created_at_label === "string"
+        ? record.created_at_label
+        : typeof record.created_at === "string"
+          ? record.created_at
+          : undefined,
     items_count: typeof record.items_count === "number" ? record.items_count : undefined,
     ...record,
   };
