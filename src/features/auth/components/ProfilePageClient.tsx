@@ -1,23 +1,47 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Heart, Lock, LogOut, ShoppingBag, UserRound } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { Heart, Lock, ShoppingBag, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
 import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { authLog } from "@/src/lib/authLog";
-import { InputField } from "@/src/components/InputField";
-import PhoneInput from "@/src/components/PhoneInput";
+import ProfileSidebar from "@/src/features/auth/components/profile/ProfileSidebar";
+import ProfileDetailsTab from "@/src/features/auth/components/profile/ProfileDetailsTab";
+import FavouritesTab, {
+  type FavouritesTabHandle,
+} from "@/src/features/auth/components/profile/FavouritesTab";
+import ChangePasswordTab from "@/src/features/auth/components/profile/ChangePasswordTab";
+import OrdersTab, {
+  type OrdersTabHandle,
+} from "@/src/features/auth/components/profile/OrdersTab";
+
+type ProfileTabId = "profile" | "password" | "favourites" | "orders";
+
+function parseProfileTab(value: string | null): ProfileTabId {
+  switch (value) {
+    case "profile":
+    case "password":
+    case "favourites":
+    case "orders":
+      return value;
+    default:
+      return "profile";
+  }
+}
 
 export default function ProfilePageClient() {
   const router = useRouter();
-  const { user, refreshUser, logout } = useAuth();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { user, refreshUser, logout, setUser } = useAuth();
   const [fetchedUser, setFetchedUser] = useState<AuthUser | null>(null);
-  const [activeTab, setActiveTab] = useState<
-    "profile" | "password" | "favourites" | "orders"
-  >("profile");
+  const favouritesRef = useRef<FavouritesTabHandle | null>(null);
+  const ordersRef = useRef<OrdersTabHandle | null>(null);
+
+  const activeTab = parseProfileTab(searchParams.get("tab"));
 
   const profileUser = user ?? fetchedUser;
 
@@ -74,6 +98,23 @@ export default function ProfilePageClient() {
     toast.message("قريباً", { description: "سيتم توفير هذا القسم قريباً" });
   }
 
+  function setSearchParam(key: string, value: string) {
+    const next = new URLSearchParams(searchParams.toString());
+    next.set(key, value);
+
+    // Clean up tab-specific params when leaving their tabs.
+    if (key === "tab") {
+      if (value !== "favourites") {
+        next.delete("fav");
+      }
+      if (value !== "orders") {
+        next.delete("statuses");
+      }
+    }
+
+    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+  }
+
   const tabs = [
     { id: "profile" as const, label: "الملف الشخصي", icon: UserRound },
     { id: "password" as const, label: "تغيير كلمة المرور", icon: Lock },
@@ -87,92 +128,50 @@ export default function ProfilePageClient() {
         <p className="mb-6 text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
 
         <div className="grid items-start gap-6 lg:grid-cols-[320px_1fr]">
-          {/* Left sidebar (as in design) */}
-          <aside className="rounded-2xl bg-white p-4 md:p-5">
-            <nav className="space-y-3">
-              {tabs.map(({ id, label, icon: Icon }) => {
-                const isActive = id === activeTab;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => {
-                      if (id === "profile") {
-                        setActiveTab("profile");
-                      } else {
-                        handleNotReady();
-                      }
-                    }}
-                    className={`flex h-12 w-full items-center justify-between rounded-xl border px-4 text-sm font-medium transition-colors ${
-                      isActive
-                        ? "border-primary bg-primary text-white"
-                        : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
-                    }`}
-                  >
-                    {/* RTL: keep icon at far right like the screenshot */}
-                    <span className="flex items-center gap-2.5">
-                      {label}
-                    </span>
-                    <Icon className="size-4" aria-hidden />
-                  </button>
-                );
-              })}
-            </nav>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#EF4444] text-sm font-bold text-white hover:bg-[#DC2626]"
-            >
-              <LogOut className="size-4" aria-hidden />
-              تسجيل الخروج
-            </button>
-          </aside>
+          <ProfileSidebar
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabClick={(id) => {
+              if (
+                id === "profile" ||
+                id === "favourites" ||
+                id === "password" ||
+                id === "orders"
+              ) {
+                setSearchParam("tab", id);
+                if (id === "favourites") {
+                  favouritesRef.current?.ensureLoaded();
+                }
+                if (id === "orders") {
+                  ordersRef.current?.ensureLoaded();
+                }
+              } else {
+                handleNotReady();
+              }
+            }}
+            onLogout={handleLogout}
+          />
 
           {/* Right content */}
           <section className="rounded-2xl bg-white p-6 md:p-8">
-            <div className="mb-6 flex items-center justify-between">
-              <h1 className="text-lg font-bold text-black md:text-xl">
-                المعلومات الشخصية
-              </h1>
-              <p className="text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                toast.success("تم حفظ البيانات");
-              }}
-              className="space-y-5"
-              noValidate
-            >
-              <div className="grid gap-5 md:grid-cols-2">
-                <InputField
-                  label="الاسم الكامل"
-                  defaultValue={profileUser.name}
-                  disabled
-                />
-                <PhoneInput
-                  label="رقم الجوال"
-                  defaultValue={profileUser.phone}
-                  disabled
-                />
-              </div>
-
-              <InputField
-                label="البريد الإلكتروني"
-                type="email"
-                defaultValue={profileUser.email}
-                disabled
+            <div className={activeTab === "profile" ? "block" : "hidden"}>
+              <ProfileDetailsTab
+                user={profileUser}
+                onUserUpdated={(next) => {
+                  setUser(next);
+                  setFetchedUser(next);
+                }}
               />
-
-              <button
-                type="submit"
-                className="h-12 w-full rounded-xl bg-primary text-base font-bold text-white hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                حفظ البيانات
-              </button>
-            </form>
+            </div>
+            <div className={activeTab === "favourites" ? "block" : "hidden"}>
+              <FavouritesTab ref={favouritesRef} />
+            </div>
+            <div className={activeTab === "password" ? "block" : "hidden"}>
+              <ChangePasswordTab />
+            </div>
+            <div className={activeTab === "orders" ? "block" : "hidden"}>
+              <OrdersTab ref={ordersRef} />
+            </div>
           </section>
         </div>
       </div>
