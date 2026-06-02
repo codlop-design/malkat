@@ -112,7 +112,7 @@ export default function RegisterForm() {
               بالتسجيل، فإنك توافق على{" "}
             </label>
             <Link
-              href="/terms"
+              href="/terms-conditions"
               className="text-black underline underline-offset-2 hover:opacity-80"
             >
               الشروط والأحكام

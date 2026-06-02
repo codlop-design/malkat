@@ -39,7 +39,7 @@ export async function placeOrder(
     await ensureCsrfCookie();
 
     const { data, status } = await apiClient.post<OrderApiResponse>(
-      "/api/orders",
+      "/orders",
       payload,
     );
 

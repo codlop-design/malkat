@@ -35,8 +35,8 @@ const supportLinks: FooterLink[] = [
   { label: "اطلب خدمة", href: "/request-service" },
   { label: "اطلب شراكة", href: "/request-partnership" },
   { label: "تواصل معنا", href: "/contact" },
-  { label: "سياسة الخصوصية", href: "/privacy" },
-  { label: "الشروط والأحكام", href: "/terms" },
+  { label: "سياسة الخصوصية", href: "/privacy-policy" },
+  { label: "الشروط والأحكام", href: "/terms-conditions" },
 ];
 
 const columns: FooterColumn[] = [
@@ -67,8 +67,8 @@ function buildSocialLinks(social?: SiteSettingsSocialMedia): SocialLink[] {
 }
 
 const legalLinks: FooterLink[] = [
-  { label: "الشروط والأحكام", href: "/terms" },
-  { label: "سياسة الخصوصية", href: "/privacy" },
+  { label: "الشروط والأحكام", href: "/terms-conditions" },
+  { label: "سياسة الخصوصية", href: "/privacy-policy" },
   { label: "خريطة الموقع", href: "/sitemap" },
 ];
 
