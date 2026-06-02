@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
@@ -12,7 +12,6 @@ import {
   type CatalogListItem,
 } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogListsBySection } from "@/src/features/products/api/getCatalogList";
-import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import {
   categoryFilterHref,
   categoryListingHref,
@@ -64,29 +63,6 @@ export default function DiscoverSectionClient({
   initialCategory = null,
 }: DiscoverSectionClientProps) {
   const category = parseProductCategory(initialCategory);
-
-  useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_URL) return;
-
-    const endpoint = CATALOG_API_ENDPOINTS.books;
-    const url = new URL(`${API_URL}${endpoint}`);
-    url.searchParams.set("page", "1");
-    url.searchParams.set("per_page", "8");
-
-    void (async () => {
-      try {
-        const res = await fetch(url.toString(), {
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-        const json = await res.json();
-        console.log("catalog api response", { url: url.toString(), json });
-      } catch (error) {
-        console.log("catalog api response error", error);
-      }
-    })();
-  }, []);
 
   const visibleSections = useMemo(
     () => VISIBLE_BY_CATEGORY[category],

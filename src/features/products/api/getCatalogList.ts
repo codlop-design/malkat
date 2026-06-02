@@ -51,9 +51,38 @@ export async function getCatalogList(
   }
 
   try {
+    // `is_favourite` is user-specific. When a user is logged in, we must forward
+    // cookies to the API and disable caching to avoid leaking personalized data.
+    let cookieHeader = "";
+    let hasAuthCookies = false;
+    if (typeof window === "undefined") {
+      try {
+        const { cookies } = await import("next/headers");
+        const store = await cookies();
+        const all = store.getAll();
+        cookieHeader = all
+          .map((c: { name: string; value: string }) => `${c.name}=${c.value}`)
+          .join("; ");
+        hasAuthCookies = all.some(
+          (c: { name: string }) =>
+            c.name === "XSRF-TOKEN" ||
+            c.name === "laravel_session" ||
+            c.name.toLowerCase().includes("session"),
+        );
+      } catch {
+        cookieHeader = "";
+        hasAuthCookies = false;
+      }
+    }
+
     const response = await fetch(`${API_URL}${endpoint}?${params}`, {
-      headers: { "Content-Type": "application/json" },
-      next: { revalidate: CATALOG_REVALIDATE_SECONDS },
+      headers: {
+        "Content-Type": "application/json",
+        ...(hasAuthCookies && cookieHeader ? { cookie: cookieHeader } : null),
+      },
+      ...(hasAuthCookies
+        ? { cache: "no-store" as const }
+        : { next: { revalidate: CATALOG_REVALIDATE_SECONDS } }),
     });
 
     if (!response.ok) {
