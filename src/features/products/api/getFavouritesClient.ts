@@ -7,7 +7,12 @@ import type { CatalogListItem } from "@/src/features/products/data/catalogRegist
 type FavouritesApiResponse = {
   success?: boolean;
   message?: string;
-  data?: CatalogApiItem[];
+  data?:
+    | CatalogApiItem[]
+    | {
+        favourites_count?: number;
+        items?: CatalogApiItem[];
+      };
 };
 
 const FAVOURITES_ENDPOINT: Record<CatalogSectionKey, string> = {
@@ -31,7 +36,12 @@ export async function getFavourites(
     return [];
   }
 
-  const items = Array.isArray(data?.data) ? data.data : [];
+  const payload = data?.data;
+  const items = Array.isArray(payload)
+    ? payload
+    : payload && typeof payload === "object" && Array.isArray(payload.items)
+      ? payload.items
+      : [];
   return mapCatalogItems(category, items);
 }
 
