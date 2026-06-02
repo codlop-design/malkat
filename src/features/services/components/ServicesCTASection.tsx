@@ -1,13 +1,12 @@
-import { getServicePageContent } from "@/src/features/services/api/getServicePageContent";
 import ServicesCTA from "@/src/features/services/components/ServicesCTA";
-import { EMPTY_SERVICE_PAGE_CONTENT } from "@/src/features/services/data/servicePageFallback";
+import { ServicePageContent } from "../types/servicePage";
 
-export default async function ServicesCTASection() {
-  const pageContent = await getServicePageContent();
+type ServicesCTASectionProps = {
+  pageContent: ServicePageContent;
+};
 
-  return (
-    <ServicesCTA
-      section={pageContent?.special ?? EMPTY_SERVICE_PAGE_CONTENT.special}
-    />
-  );
+export default function ServicesCTASection({
+  pageContent,
+}: ServicesCTASectionProps) {
+  return <ServicesCTA section={pageContent.special} />;
 }
