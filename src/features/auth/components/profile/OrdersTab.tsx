@@ -147,8 +147,11 @@ function OrderRow({ order }: { order: OrderListItem }) {
         className="mb-4 overflow-hidden rounded-xl border border-[#E5E7EB]"
       >
         <AccordionTrigger className="items-center gap-4 bg-white px-4 py-3 no-underline! hover:bg-[#FAFAFA]">
+          {/* far right icon */}
+          <Package className="size-5 shrink-0 text-[#9CA3AF]" aria-hidden />
+
           {/* middle/right: order meta */}
-          <span className="ms-auto flex min-w-0 flex-col items-end gap-1 text-right">
+          <span className="flex min-w-0 flex-col gap-1 text-right">
             <span className="text-sm font-bold text-black">
               طلب <span dir="ltr">#{String(order.id)}</span>
             </span>
@@ -158,9 +161,6 @@ function OrderRow({ order }: { order: OrderListItem }) {
               </span>
             ) : null}
           </span>
-
-          {/* far right icon */}
-          <Package className="size-5 shrink-0 text-[#9CA3AF]" aria-hidden />
         </AccordionTrigger>
 
         <AccordionContent className="h-full! bg-white px-4 pb-4 pt-2">
