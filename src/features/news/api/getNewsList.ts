@@ -34,7 +34,9 @@ export async function getNewsList(page = 1): Promise<NewsListResult | null> {
       return null;
     }
 
-    const items: NewsArticle[] = (json.data ?? []).map(mapNewsItemToArticle);
+    const items: NewsArticle[] = (json.data ?? [])
+      .map((item) => (item ? mapNewsItemToArticle(item) : null))
+      .filter((article): article is NewsArticle => article !== null);
 
     return { items, pagination: json.pagination };
   } catch (error) {
