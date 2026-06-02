@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
@@ -62,10 +62,6 @@ export default function DiscoverSectionClient({
   catalogItems,
   initialCategory = null,
 }: DiscoverSectionClientProps) {
-  useEffect(() => {
-    console.log({ catalogItems });
-  }, [catalogItems]);
-
   const category = parseProductCategory(initialCategory);
 
   const visibleSections = useMemo(
