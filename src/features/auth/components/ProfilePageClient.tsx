@@ -101,6 +101,17 @@ export default function ProfilePageClient() {
   function setSearchParam(key: string, value: string) {
     const next = new URLSearchParams(searchParams.toString());
     next.set(key, value);
+
+    // Clean up tab-specific params when leaving their tabs.
+    if (key === "tab") {
+      if (value !== "favourites") {
+        next.delete("fav");
+      }
+      if (value !== "orders") {
+        next.delete("statuses");
+      }
+    }
+
     router.replace(`${pathname}?${next.toString()}`, { scroll: false });
   }
 

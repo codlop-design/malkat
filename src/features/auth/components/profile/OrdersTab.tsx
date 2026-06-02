@@ -21,6 +21,7 @@ import {
 import CartLineItem from "@/src/features/cart/components/CartLineItem";
 import type { StoredCartItem } from "@/src/features/cart/types/cart-types";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import { getCategoryIcon } from "@/src/features/cart/data/categoryIcons";
 
 export type OrdersTabHandle = {
   ensureLoaded: () => void;
@@ -55,16 +56,6 @@ function formatDate(value?: string): string | null {
     month: "2-digit",
     day: "2-digit",
   });
-}
-
-function statusLabel(status?: string): string {
-  if (!status) return "—";
-  const mapped: Record<string, string> = {
-    new: "جديد",
-    completed: "تم التأكيد",
-    cancelled: "ملغي",
-  };
-  return mapped[status] ?? status;
 }
 
 function toStoredCartItem(raw: unknown): StoredCartItem | null {
@@ -116,22 +107,30 @@ function toStoredCartItem(raw: unknown): StoredCartItem | null {
 
 function OrderRow({ order }: { order: OrderListItem }) {
   const createdAt = typeof order.created_at === "string" ? order.created_at : undefined;
-  const status = typeof order.status === "string" ? order.status : undefined;
-  const labelFromApi =
-    typeof order.status_label === "string" ? order.status_label : undefined;
-  const label = labelFromApi ?? statusLabel(status);
 
   const itemsRecord = (order.items ?? null) as Record<string, unknown> | null;
-  const books = Array.isArray(itemsRecord?.books) ? itemsRecord?.books : [];
-  const courses = Array.isArray(itemsRecord?.courses) ? itemsRecord?.courses : [];
-  const services = Array.isArray(itemsRecord?.services) ? itemsRecord?.services : [];
-  const activities = Array.isArray(itemsRecord?.activities) ? itemsRecord?.activities : [];
+  const books: unknown[] = Array.isArray(itemsRecord?.books)
+    ? (itemsRecord?.books as unknown[])
+    : [];
+  const courses: unknown[] = Array.isArray(itemsRecord?.courses)
+    ? (itemsRecord?.courses as unknown[])
+    : [];
+  const services: unknown[] = Array.isArray(itemsRecord?.services)
+    ? (itemsRecord?.services as unknown[])
+    : [];
+  const activities: unknown[] = Array.isArray(itemsRecord?.activities)
+    ? (itemsRecord?.activities as unknown[])
+    : [];
 
-  const sections = [
-    { key: "books", label: "الكتب", items: books },
-    { key: "courses", label: "الدورات", items: courses },
-    { key: "services", label: "الخدمات", items: services },
-    { key: "activities", label: "الأنشطة", items: activities },
+  const sections: Array<{
+    key: CatalogSectionKey;
+    label: string;
+    items: unknown[];
+  }> = [
+    { key: "books" as const, label: "الكتب", items: books },
+    { key: "courses" as const, label: "الدورات", items: courses },
+    { key: "services" as const, label: "الخدمات", items: services },
+    { key: "activities" as const, label: "الأنشطة", items: activities },
   ].filter((s) => s.items.length > 0);
 
   return (
@@ -145,12 +144,6 @@ function OrderRow({ order }: { order: OrderListItem }) {
         className="mb-4 overflow-hidden rounded-xl border border-[#E5E7EB]"
       >
         <AccordionTrigger className="items-center gap-4 bg-white px-4 py-3 no-underline! hover:bg-[#FAFAFA]">
-          {/* left: status dropdown look (not interactive yet) */}
-          <span className="flex items-center gap-2">
-            <span className="flex h-9 items-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm text-[#111827]">
-              {label}
-            </span>
-          </span>
 
           {/* middle/right: order meta */}
           <span className="ms-auto flex min-w-0 flex-col items-end gap-1 text-right">
@@ -173,24 +166,35 @@ function OrderRow({ order }: { order: OrderListItem }) {
             </div>
           ) : (
             <div className="rounded-xl bg-[#F9FAFB] p-4">
-              {sections.map((section) => (
-                <div key={section.key} className="mb-4 last:mb-0">
-                  <p className="mb-2 text-sm font-bold text-black">
-                    {section.label}
-                  </p>
-                  {section.items.map((raw: unknown) => {
-                    const item = toStoredCartItem(raw);
-                    if (!item) return null;
-                    return (
-                      <CartLineItem
-                        key={item.id}
-                        item={item}
-                        showActions={false}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
+              <Accordion type="single" collapsible>
+                {sections.map((section) => (
+                  <AccordionItem
+                    key={section.key}
+                    value={section.key}
+                    className="mb-3 rounded-xl border border-[#E5E7EB] bg-white px-3 last:mb-0"
+                  >
+                    <AccordionTrigger className="items-center gap-2 py-3 no-underline! hover:bg-transparent">
+                      {getCategoryIcon(section.key as CatalogSectionKey)}
+                      <span className="text-sm font-medium text-[#454545]">
+                        {section.label}
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2 pb-3 pt-0">
+                      {section.items.map((raw: unknown) => {
+                        const item = toStoredCartItem(raw);
+                        if (!item) return null;
+                        return (
+                          <CartLineItem
+                            key={item.id}
+                            item={item}
+                            showActions={false}
+                          />
+                        );
+                      })}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           )}
         </AccordionContent>
