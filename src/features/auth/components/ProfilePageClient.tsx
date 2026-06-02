@@ -84,19 +84,58 @@ export default function ProfilePageClient() {
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#F3F4F6]">
       <div className="container py-8 md:py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
-        </div>
+        <p className="mb-6 text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="grid items-start gap-6 lg:grid-cols-[320px_1fr]">
+          {/* Left sidebar (as in design) */}
+          <aside className="rounded-2xl bg-white p-4 md:p-5">
+            <nav className="space-y-3">
+              {tabs.map(({ id, label, icon: Icon }) => {
+                const isActive = id === activeTab;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => {
+                      if (id === "profile") {
+                        setActiveTab("profile");
+                      } else {
+                        handleNotReady();
+                      }
+                    }}
+                    className={`flex h-12 w-full items-center justify-between rounded-xl border px-4 text-sm font-medium transition-colors ${
+                      isActive
+                        ? "border-primary bg-primary text-white"
+                        : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
+                    }`}
+                  >
+                    {/* RTL: keep icon at far right like the screenshot */}
+                    <span className="flex items-center gap-2.5">
+                      {label}
+                    </span>
+                    <Icon className="size-4" aria-hidden />
+                  </button>
+                );
+              })}
+            </nav>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#EF4444] text-sm font-bold text-white hover:bg-[#DC2626]"
+            >
+              <LogOut className="size-4" aria-hidden />
+              تسجيل الخروج
+            </button>
+          </aside>
+
+          {/* Right content */}
           <section className="rounded-2xl bg-white p-6 md:p-8">
             <div className="mb-6 flex items-center justify-between">
               <h1 className="text-lg font-bold text-black md:text-xl">
                 المعلومات الشخصية
               </h1>
-              <p className="text-sm text-[#6B7280]">
-                الرئيسية / الملف الشخصي
-              </p>
+              <p className="text-sm text-[#6B7280]">الرئيسية / الملف الشخصي</p>
             </div>
 
             <form
@@ -135,58 +174,6 @@ export default function ProfilePageClient() {
               </button>
             </form>
           </section>
-
-          <aside className="rounded-2xl bg-white p-4 md:p-5">
-            <nav className="space-y-3">
-              {tabs.map(({ id, label, icon: Icon }) => {
-                const isActive = id === activeTab;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => {
-                      if (id === "profile") {
-                        setActiveTab("profile");
-                      } else {
-                        handleNotReady();
-                      }
-                    }}
-                    className={`flex h-12 w-full items-center justify-between rounded-xl border px-4 text-sm font-medium transition-colors ${
-                      isActive
-                        ? "border-primary bg-primary text-white"
-                        : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
-                    }`}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <Icon
-                        className="size-4"
-                        aria-hidden
-                        color={isActive ? "white" : "currentColor"}
-                      />
-                      {label}
-                    </span>
-                    <span
-                      className={`text-xs ${
-                        isActive ? "text-white/80" : "text-[#9CA3AF]"
-                      }`}
-                      aria-hidden
-                    >
-                      ‹
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#EF4444] text-sm font-bold text-white hover:bg-[#DC2626]"
-            >
-              <LogOut className="size-4" aria-hidden />
-              تسجيل الخروج
-            </button>
-          </aside>
         </div>
       </div>
     </div>
