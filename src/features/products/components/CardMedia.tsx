@@ -1,11 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
 import type { CatalogSectionKey } from "@/src/features/products/types";
-import { authLog } from "@/src/lib/authLog";
 
 type CardMediaProps = {
   imageSrc: string;
@@ -26,12 +28,16 @@ export default function CardMedia({
   isFavourite = false,
   cartPayload,
 }: CardMediaProps) {
-  authLog("card-media", "render", {
-    category: category ?? null,
-    slug: slug ?? null,
-    isFavourite,
-    hasCartPayload: Boolean(cartPayload),
-  });
+  useEffect(() => {
+    // Force visible browser-side logging (even on production).
+    // Filter console by: [CARD_MEDIA]
+    console.log("[CARD_MEDIA]", {
+      category: category ?? null,
+      slug: slug ?? null,
+      isFavourite,
+      hasCartPayload: Boolean(cartPayload),
+    });
+  }, [category, slug, isFavourite, cartPayload]);
 
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
