@@ -1,19 +1,18 @@
 import "server-only";
 
+import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import { CATALOG_SECTION_KEYS } from "@/src/features/products/data/categoryMeta";
 import { mapCatalogItems } from "@/src/features/products/mapCatalogItems";
 import type {
   CatalogListResult,
   CatalogListsBySection,
 } from "@/src/features/products/api/catalogList.types";
-import { CATALOG_REVALIDATE_SECONDS } from "@/src/features/products/api/catalogList.types";
-import { resolveCatalogApiUrl } from "@/src/features/products/api/resolveCatalogApiUrl";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type {
   CatalogApiItem,
   CatalogPagination,
 } from "@/src/features/products/types/catalogApi";
-import { getServerApiFetchOptions } from "@/src/lib/serverApiHeaders";
+import { apiServer } from "@/src/lib/apiServer";
 
 export type {
   CatalogListResult,
@@ -34,26 +33,31 @@ export async function getCatalogList(
   page = 1,
   search?: string,
 ): Promise<CatalogListResult | null> {
-  const url = await resolveCatalogApiUrl(category, page, search);
+  const endpoint = CATALOG_API_ENDPOINTS[category];
+  const trimmedSearch = search?.trim();
+  const params: Record<string, string | number> = {
+    page,
+    per_page: 8,
+  };
+
+  if (trimmedSearch) {
+    params.search = trimmedSearch;
+  }
 
   try {
-    const fetchOptions = await getServerApiFetchOptions(CATALOG_REVALIDATE_SECONDS);
-    const response = await fetch(url, fetchOptions);
+    const { data, status } = await apiServer.get<CatalogListApiResponse>(endpoint, {
+      params,
+      validateStatus: () => true,
+    });
 
-    if (!response.ok) {
-      console.error(`Fetch error: ${response.status} ${response.statusText}`);
-      return null;
-    }
-
-    const json = (await response.json()) as CatalogListApiResponse;
-
-    if (!json.success) {
+    if (status >= 400 || !data?.success) {
+      console.error(`Fetch error: ${status}`);
       return null;
     }
 
     return {
-      items: mapCatalogItems(category, json.data),
-      pagination: json.pagination,
+      items: mapCatalogItems(category, data.data),
+      pagination: data.pagination,
     };
   } catch (error) {
     console.error("Fetch exception:", error);
