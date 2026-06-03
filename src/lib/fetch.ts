@@ -14,6 +14,7 @@ export async function fetcher<T>(
         "Content-Type": "application/json",
         ...options?.headers,
       },
+      credentials: "include",
     });
 
     if (!response.ok) {
