@@ -30,6 +30,7 @@ export default function HeaderAuthControl({
   const { user: authUser, isAuthReady, isAuthTransitioning } = useAuth();
   const user = authUser ?? serverUser;
   const showLoader = isAuthTransitioning || (!isAuthReady && !user);
+  console.log({showLoader, isAuthReady, isAuthTransitioning, user});
 
   if (showLoader) {
     return <AuthControlSkeleton className={className} />;
