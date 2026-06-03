@@ -54,6 +54,7 @@ export async function getCatalogList(
     const response = await fetch(`${API_URL}${endpoint}?${params}`, {
       headers: { "Content-Type": "application/json" },
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
+      credentials: "include",
     });
 
     if (!response.ok) {
