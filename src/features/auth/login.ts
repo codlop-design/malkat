@@ -52,6 +52,13 @@ export function loginWithEmail(values: LoginFormValues): Promise<LoginResult> {
   });
 }
 
+export function loginWithGoogle(googleToken: string): Promise<LoginResult> {
+  return login({
+    type: "google",
+    google_token: googleToken,
+  });
+}
+
 export async function sendOtp(phone: string): Promise<SendOtpResult> {
   try {
     await ensureCsrfCookie();

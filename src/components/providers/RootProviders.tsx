@@ -1,5 +1,6 @@
 "use client";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Direction } from "radix-ui";
 
 import { Toaster } from "@/src/components/ui/sonner";
@@ -15,12 +16,14 @@ type RootProvidersProps = {
   hasSessionCookie: boolean;
 };
 
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
+
 export function RootProviders({
   children,
   initialUser,
   hasSessionCookie,
 }: RootProvidersProps) {
-  return (
+  const tree = (
     <Direction.Provider dir="rtl">
       <AuthProvider
         initialUser={initialUser}
@@ -33,5 +36,13 @@ export function RootProviders({
         </CartProvider>
       </AuthProvider>
     </Direction.Provider>
+  );
+
+  if (!googleClientId) {
+    return tree;
+  }
+
+  return (
+    <GoogleOAuthProvider clientId={googleClientId}>{tree}</GoogleOAuthProvider>
   );
 }
