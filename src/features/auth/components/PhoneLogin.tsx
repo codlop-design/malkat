@@ -5,6 +5,7 @@ import PhoneInput from "@/src/components/PhoneInput";
 import GoogleAuth from "@/src/components/GoogleAuth";
 import { InputField } from "@/src/components/InputField";
 import { SubmitButton } from "@/src/components/SubmitButton";
+import { completeLoginSuccess } from "@/src/features/auth/completeLoginSuccess";
 import { sendOtp, verifyOtp } from "@/src/features/auth/login";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import {
@@ -33,7 +34,7 @@ type Step = "phone" | "otp";
 
 export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
   const router = useRouter();
-  const { setUser, refreshUser } = useAuth();
+  const auth = useAuth();
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
@@ -79,22 +80,12 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
   }
 
   async function onVerifyOtp(values: PhoneOtpValues) {
+    auth.beginAuthTransition();
     const result = await verifyOtp(phone, verificationToken, values.otp);
 
-    if (!result.success) {
+    if (!(await completeLoginSuccess(auth, router, result))) {
       toast.error(result.message);
-      return;
     }
-
-    if (result.user) {
-      setUser(result.user);
-    } else {
-      await refreshUser();
-    }
-
-    toast.success(result.message);
-    router.refresh();
-    router.replace("/");
   }
 
   async function onResendOtp() {

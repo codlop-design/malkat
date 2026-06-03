@@ -14,8 +14,8 @@ export default function RedirectIfAuthenticated() {
     authLog("guest-redirect", "check", { user: user?.name ?? null });
 
     if (user) {
-      authLog("guest-redirect", "→ redirect / (context user)");
-      router.replace("/");
+      authLog("guest-redirect", "→ redirect /profile (context user)");
+      router.replace("/profile");
       return;
     }
 
@@ -23,10 +23,10 @@ export default function RedirectIfAuthenticated() {
 
     void refreshUser().then((current) => {
       if (!cancelled && current) {
-        authLog("guest-redirect", "→ redirect / (after refresh)", {
+        authLog("guest-redirect", "→ redirect /profile (after refresh)", {
           user: current.name,
         });
-        router.replace("/");
+        router.replace("/profile");
       }
     });
 

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { completeLoginSuccess } from "@/src/features/auth/completeLoginSuccess";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { loginWithGoogle } from "@/src/features/auth/login";
 
@@ -13,27 +14,18 @@ const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
 function GoogleAuthButton() {
   const router = useRouter();
-  const { setUser, refreshUser } = useAuth();
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
 
   async function handleGoogleCredential(credential: string) {
     setLoading(true);
+    auth.beginAuthTransition();
     const result = await loginWithGoogle(credential);
     setLoading(false);
 
-    if (!result.success) {
+    if (!(await completeLoginSuccess(auth, router, result))) {
       toast.error(result.message);
-      return;
     }
-
-    if (result.user) {
-      setUser(result.user);
-    } else {
-      await refreshUser();
-    }
-
-    toast.success(result.message);
-    router.refresh();
   }
 
   return (

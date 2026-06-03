@@ -18,9 +18,12 @@ import { authLog } from "@/src/lib/authLog";
 type AuthContextValue = {
   user: AuthUser | null;
   isAuthReady: boolean;
+  isAuthTransitioning: boolean;
   isAuthenticated: boolean;
   setUser: (user: AuthUser | null) => void;
   refreshUser: () => Promise<AuthUser | null>;
+  beginAuthTransition: () => void;
+  endAuthTransition: () => void;
   logout: () => Promise<void>;
 };
 
@@ -43,8 +46,18 @@ export function AuthProvider({
   const [isAuthReady, setIsAuthReady] = useState(
     initialUser !== null || !hasSessionCookie,
   );
+  const [isAuthTransitioning, setIsAuthTransitioning] = useState(false);
 
-  const user = initialUser ?? clientUser ?? null;
+  const user =
+    clientUser !== undefined ? clientUser : (initialUser ?? null);
+
+  const beginAuthTransition = useCallback(() => {
+    setIsAuthTransitioning(true);
+  }, []);
+
+  const endAuthTransition = useCallback(() => {
+    setIsAuthTransitioning(false);
+  }, []);
 
   authLog("provider", "render", {
     initialUser: initialUser?.name ?? null,
@@ -71,6 +84,7 @@ export function AuthProvider({
     await logout();
     setClientUser(null);
     setIsAuthReady(true);
+    setIsAuthTransitioning(false);
   }, []);
 
   useEffect(() => onAuthUnauthorized(() => setClientUser(null)), []);
@@ -102,12 +116,24 @@ export function AuthProvider({
     () => ({
       user,
       isAuthReady,
+      isAuthTransitioning,
       isAuthenticated: user !== null,
       setUser,
       refreshUser,
+      beginAuthTransition,
+      endAuthTransition,
       logout: logoutUser,
     }),
-    [user, isAuthReady, setUser, refreshUser, logoutUser],
+    [
+      user,
+      isAuthReady,
+      isAuthTransitioning,
+      setUser,
+      refreshUser,
+      beginAuthTransition,
+      endAuthTransition,
+      logoutUser,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

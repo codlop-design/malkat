@@ -3,6 +3,7 @@
 import { UserRound } from "lucide-react";
 import Link from "next/link";
 
+import AuthControlSkeleton from "@/src/features/auth/components/AuthControlSkeleton";
 import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { cn } from "@/src/lib/utils";
@@ -26,19 +27,12 @@ export default function HeaderAuthControl({
   showName = true,
   nameClassName,
 }: HeaderAuthControlProps) {
-  const { user: authUser, isAuthReady } = useAuth();
+  const { user: authUser, isAuthReady, isAuthTransitioning } = useAuth();
   const user = authUser ?? serverUser;
+  const showLoader = isAuthTransitioning || (!isAuthReady && !user);
 
-  if (!isAuthReady && !user) {
-    return (
-      <div
-        className={cn(
-          "size-10 animate-pulse rounded-full bg-[#E8F6F4]",
-          className,
-        )}
-        aria-hidden
-      />
-    );
+  if (showLoader) {
+    return <AuthControlSkeleton className={className} />;
   }
 
   if (user) {
