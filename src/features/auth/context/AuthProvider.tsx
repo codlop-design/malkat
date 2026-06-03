@@ -43,9 +43,8 @@ export function AuthProvider({
   const [clientUser, setClientUser] = useState<AuthUser | null | undefined>(
     undefined,
   );
-  const [isAuthReady, setIsAuthReady] = useState(
-    initialUser !== null || !hasSessionCookie,
-  );
+  // Ready only when the server already sent the user; otherwise wait for client fetch.
+  const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
   const [isAuthTransitioning, setIsAuthTransitioning] = useState(false);
 
   const user =
