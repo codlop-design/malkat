@@ -4,6 +4,7 @@ import type { Swiper as SwiperType } from "swiper";
 import { useEffect, useRef } from "react";
 import { FreeMode } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 import Link from "next/link";
 
 import type {
@@ -12,6 +13,37 @@ import type {
 } from "@/src/components/CategoryFilters";
 
 import "swiper/css";
+
+function isImageIcon(icon: string): boolean {
+  const value = icon.trim();
+  if (!value) return false;
+  if (value.startsWith("/") || /^https?:\/\//i.test(value)) {
+    return true;
+  }
+  return /\.(svg|png|jpe?g|webp|gif|avif)(\?.*)?$/i.test(value);
+}
+
+function CategoryFilterIcon({ icon }: { icon: string }) {
+  if (isImageIcon(icon)) {
+    return (
+      <Image
+        src={icon}
+        alt=""
+        width={20}
+        height={20}
+        className="size-5 shrink-0 object-contain md:size-6"
+        aria-hidden
+        unoptimized
+      />
+    );
+  }
+
+  return (
+    <span className="text-base leading-none md:text-lg" aria-hidden>
+      {icon}
+    </span>
+  );
+}
 
 export default function CategoryFiltersClient<T extends string>({
   active,
@@ -68,9 +100,7 @@ export default function CategoryFiltersClient<T extends string>({
                 }`}
               >
                 <span className="flex items-center gap-2.5 md:gap-3">
-                  <span className="text-base leading-none md:text-lg" aria-hidden>
-                    {icon}
-                  </span>
+                  <CategoryFilterIcon icon={icon} />
                   <span>{label}</span>
                   <span
                     className={`flex min-w-7 items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors duration-300 ${
