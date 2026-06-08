@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { toOrderType } from "@/src/features/cart/lib/mapOrderType";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import type { CatalogSectionKey } from "@/src/features/products/types";
@@ -6,6 +8,13 @@ export type FavouriteActionResult = {
   success: boolean;
   message: string;
 };
+
+const LOGIN_REQUIRED_MESSAGE =
+  "يجب تسجيل الدخول أولًا لإضافة المنتجات إلى المفضلة";
+
+function isUnauthorizedStatus(status: number | undefined): boolean {
+  return status === 401 || status === 403 || status === 419;
+}
 
 export async function addToFavourites(
   category: CatalogSectionKey,
@@ -21,19 +30,21 @@ export async function addToFavourites(
     const { data, status } = await apiClient.post<{
       success?: boolean;
       message?: string;
-    }>("/favourites/toggle", formData);
+    }>("/favourites/toggle", formData, {
+      validateStatus: () => true,
+    });
 
-    if (status === 401 || status === 403) {
+    if (isUnauthorizedStatus(status)) {
       return {
         success: false,
-        message: "يرجى تسجيل الدخول أولاً",
+        message: LOGIN_REQUIRED_MESSAGE,
       };
     }
 
     if (status >= 400 || !data.success) {
       return {
         success: false,
-        message: data.message ?? "تعذر الإضافة للمفضلة",
+        message: data.message ?? "تعذر الإضافة للمفضلة، حاول مرة أخرى",
       };
     }
 
@@ -41,10 +52,26 @@ export async function addToFavourites(
       success: true,
       message: data.message ?? "تمت الإضافة للمفضلة",
     };
-  } catch {
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      isUnauthorizedStatus(error.response?.status)
+    ) {
+      return {
+        success: false,
+        message: LOGIN_REQUIRED_MESSAGE,
+      };
+    }
+
+    const apiMessage =
+      axios.isAxiosError(error) &&
+      typeof error.response?.data?.message === "string"
+        ? error.response.data.message
+        : undefined;
+
     return {
       success: false,
-      message: "تعذر الإضافة للمفضلة",
+      message: apiMessage ?? "تعذر الإضافة للمفضلة، حاول مرة أخرى",
     };
   }
 }

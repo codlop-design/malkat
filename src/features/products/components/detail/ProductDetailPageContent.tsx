@@ -106,6 +106,7 @@ export default function ProductDetailPageContent({
               <div className="lg:w-[42%]">
                 <ProductDetailMedia
                   imageSrc={data.imageSrc}
+                  title={data.title}
                   cartLabel={CART_LABEL[category]}
                   category={category}
                   slug={data.slug}
@@ -176,6 +177,7 @@ export default function ProductDetailPageContent({
               <div className="lg:w-[38%]">
                 <ProductDetailMedia
                   imageSrc={data.imageSrc}
+                  title={data.title}
                   cartLabel={CART_LABEL[category]}
                   category={category}
                   slug={data.slug}
