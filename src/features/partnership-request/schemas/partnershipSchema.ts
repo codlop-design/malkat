@@ -5,25 +5,27 @@ import { phoneLoginSchema } from "@/src/features/auth/schemas/phoneLoginSchema";
 
 export const partnershipSchema = z
   .object({
-    entityName: z.string().min(2, "اسم الجهة مطلوب"),
-    contactName: z.string().min(2, "اسم المسؤول مطلوب"),
-    jobTitle: z.string().min(2, "المسمى الوظيفي مطلوب"),
+    entityName: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
+    contactName: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
+    jobTitle: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
     phone: phoneLoginSchema.shape.phone,
     email: loginSchema.shape.email,
-    confirmEmail: z.string().min(1, "تأكيد البريد الإلكتروني مطلوب"),
-    entityType: z.string().min(1, "يرجى اختيار نوع الجهة"),
-    partnershipType: z.string().min(1, "يرجى اختيار نوع الشراكة"),
+    confirmEmail: z.string().trim().min(1, "تأكيد البريد الإلكتروني مطلوب"),
+    entityType: z.string().trim().min(1, "يرجى اختيار نوع الجهة"),
+    partnershipType: z.string().trim().min(1, "يرجى اختيار نوع الشراكة"),
     aboutEntity: z
       .string()
-      .min(20, "يرجى كتابة نبذة لا تقل عن 20 حرفاً")
-      .max(2000, "النبذة طويلة جداً"),
+      .trim()
+      .min(20, "يجب أن يكون النبذة أكثر من 20 حرف")
+      .max(2000, "يجب أن يكون النبذة أقل من 2000 حرف"),
     partnershipDetails: z
       .string()
-      .min(20, "يرجى كتابة تفاصيل لا تقل عن 20 حرفاً")
-      .max(2000, "التفاصيل طويلة جداً"),
+      .trim()
+      .min(20, "يجب أن يكون التفاصيل أكثر من 20 حرف")
+        .max(2000, "يجب أن يكون التفاصيل أقل من 2000 حرف"),
   })
   .refine((data) => data.email === data.confirmEmail, {
-    message: "البريد الإلكتروني غير متطابق",
+    message: "يجب أن يكون البريد الإلكتروني متطابق",
     path: ["confirmEmail"],
   });
 

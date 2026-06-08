@@ -1,3 +1,4 @@
+import { getServiceTypes } from "@/src/features/services/api/getServiceTypes";
 import { fetcher } from "@/src/lib/fetch";
 import type {
   ServiceRequestFormOptions,
@@ -5,13 +6,13 @@ import type {
 } from "@/src/features/request-service/types";
 
 export async function getServiceRequestFormOptions(): Promise<ServiceRequestFormOptions> {
-  const [typesResponse, groupsResponse] = await Promise.all([
-    fetcher<ServiceRequestLookupOption[]>("/service-request-types"),
+  const [serviceTypes, groupsResponse] = await Promise.all([
+    getServiceTypes(),
     fetcher<ServiceRequestLookupOption[]>("/service-request-target-groups"),
   ]);
 
   return {
-    serviceTypes: typesResponse?.success ? (typesResponse.data ?? []) : [],
+    serviceTypes: serviceTypes.map(({ id, title }) => ({ id, title })),
     targetGroups: groupsResponse?.success ? (groupsResponse.data ?? []) : [],
   };
 }

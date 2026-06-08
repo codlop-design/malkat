@@ -124,8 +124,7 @@ export default function ProductDetailPageContent({
                 {data.title}
               </h1>
 
-              <p className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base">
-                {detail.longDescription}
+              <p className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base" dangerouslySetInnerHTML={{ __html: detail.longDescription }}>
               </p>
 
               {category === "books" && "author" in data ? (
@@ -164,8 +163,8 @@ export default function ProductDetailPageContent({
                       <AccordionTrigger className="text-base font-medium text-black hover:no-underline">
                         {item.title}
                       </AccordionTrigger>
-                      <AccordionContent className="text-[#454545]">
-                        {item.content}
+                      <AccordionContent className="text-[#454545]" >
+                        <p dangerouslySetInnerHTML={{ __html: item.content }}></p>
                       </AccordionContent>
                     </AccordionItem>
                   ))}

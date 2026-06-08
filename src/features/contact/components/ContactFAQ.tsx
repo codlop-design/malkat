@@ -71,8 +71,8 @@ export default function ContactFAQ({ faqs = [] }: ContactFAQProps) {
                         }}
                         className="overflow-hidden"
                       >
-                        <p className="px-5 pb-4 pt-2 text-sm leading-relaxed text-[#454545] md:text-base">
-                          {item.answer}
+                        <p className="px-5 pb-4 pt-2 text-sm leading-relaxed text-[#454545] md:text-base" dangerouslySetInnerHTML={{ __html: item.answer }}>
+                          
                         </p>
                       </motion.div>
                     ) : null}

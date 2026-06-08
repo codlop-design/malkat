@@ -4,14 +4,14 @@ import { loginSchema } from "@/src/features/auth/schemas/loginSchema";
 import { phoneLoginSchema } from "@/src/features/auth/schemas/phoneLoginSchema";
 
 const sharedFields = {
-  name: z.string().trim().min(2, "الاسم مطلوب"),
+  name: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
   phone: phoneLoginSchema.shape.phone,
   email: loginSchema.shape.email,
   message: z
     .string()
     .trim()
-    .min(1, "يرجى كتابة رسالتك")
-    .max(2000, "الرسالة طويلة جداً"),
+    .min(10, "يجب أن تكون الرسالة أكثر من 10 أحرف")
+    .max(2000, "يجب أن تكون الرسالة أقل من 2000 حرف"),
 };
 
 export const interestOrganizationSchema = z.object({
