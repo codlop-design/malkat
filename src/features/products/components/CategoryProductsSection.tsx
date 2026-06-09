@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 import Pagination from "@/src/components/Pagination";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import type { CatalogListItem } from "@/src/features/products/data/catalogRegistry";
 import { renderCatalogCard } from "@/src/features/products/data/catalogRegistry";
@@ -26,6 +28,8 @@ export default function CategoryProductsSection({
   initialQuery = "",
 }: CategoryProductsSectionProps) {
   const router = useRouter();
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { syncCatalogList } = useFavourites();
   const [query, setQuery] = useState(initialQuery);
   const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
   const [prevInitialQuery, setPrevInitialQuery] = useState(initialQuery);
@@ -40,6 +44,19 @@ export default function CategoryProductsSection({
   const totalPages = Math.max(1, pagination.last_page);
   const { searchPlaceholder } = CATEGORY_META[category];
   const basePath = `/products/${category}`;
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+
+    void syncCatalogList(category, currentPage, initialQuery);
+  }, [
+    category,
+    currentPage,
+    initialQuery,
+    isAuthReady,
+    isAuthenticated,
+    syncCatalogList,
+  ]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

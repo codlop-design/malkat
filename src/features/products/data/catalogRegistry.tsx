@@ -40,7 +40,7 @@ export type CatalogListItem = {
 
 export type CatalogCardOptions = Pick<
   CatalogItemBase,
-  "isFavourite" | "onFavouriteChange"
+  "onFavouriteChange"
 >;
 
 type CatalogRegistryEntry = {

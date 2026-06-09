@@ -56,7 +56,6 @@ export default function GuideCard({
         cartLabel="تحميل الدليل"
         category={category}
         slug={slug}
-        isFavourite={isFavourite}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />

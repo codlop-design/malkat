@@ -1,10 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { buildProductCategories } from "@/src/features/products/data/categories";
 import ProductCarousel from "@/src/features/products/components/ProductCarousel";
 import {
@@ -63,6 +65,8 @@ export default function DiscoverSectionClient({
   initialCategory = null,
 }: DiscoverSectionClientProps) {
   const category = parseProductCategory(initialCategory);
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { syncCatalogList } = useFavourites();
 
   const visibleSections = useMemo(
     () => VISIBLE_BY_CATEGORY[category],
@@ -97,6 +101,14 @@ export default function DiscoverSectionClient({
       ) as Record<CatalogSectionKey, SectionConfig>,
     [catalogItems],
   );
+
+  useEffect(() => {
+    if (!isAuthReady || !isAuthenticated) return;
+
+    for (const key of visibleSections) {
+      void syncCatalogList(key, 1);
+    }
+  }, [visibleSections, isAuthReady, isAuthenticated, syncCatalogList]);
 
   return (
     <div>

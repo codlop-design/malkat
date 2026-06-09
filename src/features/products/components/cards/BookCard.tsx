@@ -64,7 +64,6 @@ export default function BookCard(props: BookCardProps) {
         href={href}
         category={category}
         slug={slug}
-        isFavourite={isFavourite}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />

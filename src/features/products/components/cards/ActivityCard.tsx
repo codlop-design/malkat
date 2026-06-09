@@ -59,7 +59,6 @@ export default function ActivityCard({
         cartLabel="حجز النشاط"
         category={category}
         slug={slug}
-        isFavourite={isFavourite}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />

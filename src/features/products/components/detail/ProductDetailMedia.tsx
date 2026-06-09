@@ -17,7 +17,6 @@ type ProductDetailMediaProps = {
   cartLabel?: string;
   category: CatalogSectionKey;
   slug: string;
-  isFavourite?: boolean;
   cartPayload: AddToCartPayload;
 };
 
@@ -27,7 +26,6 @@ export default function ProductDetailMedia({
   cartLabel = "إضافة للسلة",
   category,
   slug,
-  isFavourite = false,
   cartPayload,
 }: ProductDetailMediaProps) {
   const shareUrl = productDetailHref(category, slug);
@@ -46,7 +44,6 @@ export default function ProductDetailMedia({
         <FavouriteButton
           category={category}
           slug={slug}
-          isFavourite={isFavourite}
           className="size-10"
         />
         <ShareButton

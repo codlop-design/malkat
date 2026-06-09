@@ -1,6 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import { renderCatalogCard } from "@/src/features/products/data/catalogRegistry";
@@ -14,6 +18,17 @@ type RelatedProductsSectionProps = {
 export default function RelatedProductsSection({
   products,
 }: RelatedProductsSectionProps) {
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { syncProductFavourite } = useFavourites();
+
+  useEffect(() => {
+    if (!isAuthReady || !isAuthenticated) return;
+
+    for (const product of products) {
+      void syncProductFavourite(product.category, product.data.slug);
+    }
+  }, [products, isAuthReady, isAuthenticated, syncProductFavourite]);
+
   if (products.length === 0) return null;
 
   return (

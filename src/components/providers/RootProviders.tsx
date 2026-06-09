@@ -8,6 +8,7 @@ import AuthFlowLogger from "@/src/features/auth/components/AuthFlowLogger";
 import { AuthProvider } from "@/src/features/auth/context/AuthProvider";
 import type { AuthUser } from "@/src/features/auth/types";
 import { CartProvider } from "@/src/features/cart/context/CartProvider";
+import { FavouritesProvider } from "@/src/features/products/context/FavouritesProvider";
 import { isAuthLogEnabled } from "@/src/lib/authLog";
 
 type RootProvidersProps = {
@@ -30,9 +31,11 @@ export function RootProviders({
         hasSessionCookie={hasSessionCookie}
       >
         <CartProvider>
-          {isAuthLogEnabled() ? <AuthFlowLogger /> : null}
-          <Toaster />
-          {children}
+          <FavouritesProvider>
+            {isAuthLogEnabled() ? <AuthFlowLogger /> : null}
+            <Toaster />
+            {children}
+          </FavouritesProvider>
         </CartProvider>
       </AuthProvider>
     </Direction.Provider>

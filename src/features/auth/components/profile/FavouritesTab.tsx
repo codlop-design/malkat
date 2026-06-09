@@ -8,6 +8,7 @@ import {
   useTransition,
 } from "react";
 
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { getFavourites } from "@/src/features/products/api/getFavouritesClient";
 import {
@@ -59,11 +60,16 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
   const category = parseFavCategory(searchParams.get("fav"), initialCategory);
   const [items, setItems] = useState<CatalogListItem[]>([]);
   const [isPending, startTransition] = useTransition();
+  const { seedFavourites } = useFavourites();
 
   function load(nextCategory: CatalogSectionKey) {
     startTransition(async () => {
       try {
         const result = await getFavourites(nextCategory);
+        seedFavourites(
+          nextCategory,
+          result.map((item) => item.slug),
+        );
         setItems(result);
       } catch {
         setItems([]);
@@ -145,7 +151,6 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
           {items.map((item) => (
             <div key={item.id}>
               {renderCatalogCard(category, item, {
-                isFavourite: true,
                 onFavouriteChange: (isFavourite) => {
                   if (!isFavourite) {
                     handleRemoveFavourite(item.slug);

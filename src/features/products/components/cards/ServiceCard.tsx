@@ -60,7 +60,6 @@ export default function ServiceCard({
         cartLabel="طلب الخدمة"
         category={category}
         slug={slug}
-        isFavourite={isFavourite}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />

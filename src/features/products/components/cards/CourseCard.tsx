@@ -71,7 +71,6 @@ export default function CourseCard({
         cartLabel="عرض الدورة"
         category={category}
         slug={slug}
-        isFavourite={isFavourite}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   BookOpen,
   Clock,
@@ -15,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import { buildCartPayloadFromProduct } from "@/src/features/cart/lib/buildCartPayload";
 import {
@@ -28,6 +30,7 @@ import type { CourseCardProps } from "@/src/features/products/components/cards/C
 import type { GuideCardProps } from "@/src/features/products/components/cards/GuideCard";
 import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import ProductDetailMedia from "@/src/features/products/components/detail/ProductDetailMedia";
 import ProductReviewsSection from "@/src/features/products/components/detail/ProductReviewsSection";
 import RelatedProductsSection from "@/src/features/products/components/detail/RelatedProductsSection";
@@ -81,8 +84,22 @@ export default function ProductDetailPageContent({
   related,
 }: ProductDetailPageContentProps) {
   const { category, data } = product;
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { syncProductFavourite } = useFavourites();
   const imageFirst = category === "books" || category === "guides";
   const cartPayload = buildCartPayloadFromProduct(product);
+
+  useEffect(() => {
+    if (!isAuthReady || !isAuthenticated) return;
+
+    void syncProductFavourite(category, data.slug);
+  }, [
+    category,
+    data.slug,
+    isAuthReady,
+    isAuthenticated,
+    syncProductFavourite,
+  ]);
 
   const rating =
     detail.averageRating > 0
@@ -110,7 +127,6 @@ export default function ProductDetailPageContent({
                   cartLabel={CART_LABEL[category]}
                   category={category}
                   slug={data.slug}
-                  isFavourite={data.isFavourite}
                   cartPayload={cartPayload}
                 />
               </div>
@@ -185,7 +201,6 @@ export default function ProductDetailPageContent({
                   cartLabel={CART_LABEL[category]}
                   category={category}
                   slug={data.slug}
-                  isFavourite={data.isFavourite}
                   cartPayload={cartPayload}
                 />
                 {category === "courses" && detail.courseFeatures ? (

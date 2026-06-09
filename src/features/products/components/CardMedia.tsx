@@ -14,8 +14,8 @@ type CardMediaProps = {
   cartLabel?: string;
   category?: CatalogSectionKey;
   slug?: string;
-  isFavourite?: boolean;
   onFavouriteChange?: (isFavourite: boolean) => void;
+  favouriteSyncMode?: "none" | "product";
   cartPayload?: AddToCartPayload;
 };
 
@@ -25,8 +25,8 @@ export default function CardMedia({
   cartLabel = "إضافة للسلة",
   category,
   slug,
-  isFavourite = false,
   onFavouriteChange,
+  favouriteSyncMode = "none",
   cartPayload,
 }: CardMediaProps) {
   return (
@@ -44,7 +44,7 @@ export default function CardMedia({
         <FavouriteButton
           category={category}
           slug={slug}
-          isFavourite={isFavourite}
+          syncMode={favouriteSyncMode}
           onFavouriteChange={onFavouriteChange}
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
