@@ -12,13 +12,69 @@ export type FavouriteActionResult = {
 const LOGIN_REQUIRED_MESSAGE =
   "يجب تسجيل الدخول أولًا لإضافة المنتجات إلى المفضلة";
 
+type FavouriteApiBody = {
+  success?: boolean;
+  message?: string;
+};
+
 function isUnauthorizedStatus(status: number | undefined): boolean {
-  return status === 401 || status === 403 || status === 419;
+  return status === 401 || status === 419;
 }
 
-export async function toggleFavourite(
+function parseFavouriteResponse(
+  status: number,
+  data: FavouriteApiBody | undefined,
+  fallbackSuccessMessage: string,
+  fallbackErrorMessage: string,
+): FavouriteActionResult {
+  if (isUnauthorizedStatus(status)) {
+    return { success: false, message: LOGIN_REQUIRED_MESSAGE };
+  }
+
+  if (status >= 400) {
+    return {
+      success: false,
+      message: data?.message ?? fallbackErrorMessage,
+    };
+  }
+
+  if (data?.success === false) {
+    return {
+      success: false,
+      message: data.message ?? fallbackErrorMessage,
+    };
+  }
+
+  return {
+    success: true,
+    message: data?.message ?? fallbackSuccessMessage,
+  };
+}
+
+function parseFavouriteError(
+  error: unknown,
+  fallback: string,
+): FavouriteActionResult {
+  if (axios.isAxiosError(error) && isUnauthorizedStatus(error.response?.status)) {
+    return { success: false, message: LOGIN_REQUIRED_MESSAGE };
+  }
+
+  const apiMessage =
+    axios.isAxiosError(error) &&
+    typeof error.response?.data?.message === "string"
+      ? error.response.data.message
+      : undefined;
+
+  return {
+    success: false,
+    message: apiMessage ?? fallback,
+  };
+}
+
+async function postFavouriteToggle(
   category: CatalogSectionKey,
   slug: string,
+  wasFavourite: boolean,
 ): Promise<FavouriteActionResult> {
   const formData = new FormData();
   formData.append("type", toOrderType(category));
@@ -27,53 +83,44 @@ export async function toggleFavourite(
   try {
     await ensureCsrfCookie();
 
-    const { data, status } = await apiClient.post<{
-      success?: boolean;
-      message?: string;
-    }>("/favourites/toggle", formData, {
-      validateStatus: () => true,
-    });
+    const { data, status } = await apiClient.post<FavouriteApiBody>(
+      "/favourites/toggle",
+      formData,
+      { validateStatus: () => true },
+    );
 
-    if (isUnauthorizedStatus(status)) {
-      return {
-        success: false,
-        message: LOGIN_REQUIRED_MESSAGE,
-      };
-    }
-
-    if (status >= 400 || !data.success) {
-      return {
-        success: false,
-        message: data.message ?? "تعذر الإضافة للمفضلة، حاول مرة أخرى",
-      };
-    }
-
-    return {
-      success: true,
-      message: data.message ?? "تمت الإضافة للمفضلة",
-    };
+    return parseFavouriteResponse(
+      status,
+      data,
+      wasFavourite ? "تمت الإزالة من المفضلة" : "تمت الإضافة للمفضلة",
+      wasFavourite
+        ? "تعذر الإزالة من المفضلة، حاول مرة أخرى"
+        : "تعذر الإضافة للمفضلة، حاول مرة أخرى",
+    );
   } catch (error) {
-    if (
-      axios.isAxiosError(error) &&
-      isUnauthorizedStatus(error.response?.status)
-    ) {
-      return {
-        success: false,
-        message: LOGIN_REQUIRED_MESSAGE,
-      };
-    }
-
-    const apiMessage =
-      axios.isAxiosError(error) &&
-      typeof error.response?.data?.message === "string"
-        ? error.response.data.message
-        : undefined;
-
-    return {
-      success: false,
-      message: apiMessage ?? "تعذر تحديث المفضلة، حاول مرة أخرى",
-    };
+    return parseFavouriteError(
+      error,
+      wasFavourite
+        ? "تعذر الإزالة من المفضلة، حاول مرة أخرى"
+        : "تعذر الإضافة للمفضلة، حاول مرة أخرى",
+    );
   }
 }
 
-export const addToFavourites = toggleFavourite;
+export async function toggleFavourite(
+  category: CatalogSectionKey,
+  slug: string,
+  isFavourite = false,
+): Promise<FavouriteActionResult> {
+  return postFavouriteToggle(category, slug, isFavourite);
+}
+
+export const addToFavourites = (
+  category: CatalogSectionKey,
+  slug: string,
+) => toggleFavourite(category, slug, false);
+
+export const removeFromFavourites = (
+  category: CatalogSectionKey,
+  slug: string,
+) => toggleFavourite(category, slug, true);

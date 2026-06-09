@@ -71,8 +71,7 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
     });
   }
 
-  function handleFavouriteChange(slug: string, isFavourite: boolean) {
-    if (isFavourite) return;
+  function handleRemoveFavourite(slug: string) {
     setItems((current) => current.filter((item) => item.slug !== slug));
   }
 
@@ -147,8 +146,11 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
             <div key={item.id}>
               {renderCatalogCard(category, item, {
                 isFavourite: true,
-                onFavouriteChange: (isFavourite) =>
-                  handleFavouriteChange(item.slug, isFavourite),
+                onFavouriteChange: (isFavourite) => {
+                  if (!isFavourite) {
+                    handleRemoveFavourite(item.slug);
+                  }
+                },
               })}
             </div>
           ))}

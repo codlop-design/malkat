@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useEffect, useState, useTransition, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { toast } from "sonner";
 
 import { toggleFavourite } from "@/src/features/products/api/addToFavouritesClient";
@@ -24,21 +24,31 @@ export default function FavouriteButton({
   onFavouriteChange,
 }: FavouriteButtonProps) {
   const [isFavourite, setIsFavourite] = useState(initialIsFavourite);
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
+  const itemKeyRef = useRef(`${category}:${slug}`);
 
   useEffect(() => {
-    setIsFavourite(initialIsFavourite);
-  }, [initialIsFavourite, slug, category]);
+    const nextKey = `${category}:${slug}`;
+    if (itemKeyRef.current !== nextKey) {
+      itemKeyRef.current = nextKey;
+      setIsFavourite(initialIsFavourite);
+    }
+  }, [category, slug, initialIsFavourite]);
 
-  function handleClick(event: MouseEvent<HTMLButtonElement>) {
+  async function handleClick(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    startTransition(async () => {
-      const result = await toggleFavourite(category, slug);
+    if (isPending) return;
+
+    const wasFavourite = isFavourite;
+    setIsPending(true);
+
+    try {
+      const result = await toggleFavourite(category, slug, wasFavourite);
 
       if (result.success) {
-        const next = !isFavourite;
+        const next = !wasFavourite;
         setIsFavourite(next);
         onFavouriteChange?.(next);
         toast.success(result.message);
@@ -46,7 +56,9 @@ export default function FavouriteButton({
       }
 
       toast.error(result.message);
-    });
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
