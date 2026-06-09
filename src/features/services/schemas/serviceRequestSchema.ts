@@ -4,7 +4,7 @@ import { loginSchema } from "@/src/features/auth/schemas/loginSchema";
 import { phoneLoginSchema } from "@/src/features/auth/schemas/phoneLoginSchema";
 
 export const serviceRequestSchema = z.object({
-  name: z.string().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
+  name: z.string().trim().min(2, "يجب أن يكون الاسم حرفين فأكثر"),
   phone: phoneLoginSchema.shape.phone,
   email: loginSchema.shape.email,
   serviceType: z.string().min(1, "يرجى اختيار نوع الخدمة"),

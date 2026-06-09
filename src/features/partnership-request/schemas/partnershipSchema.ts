@@ -5,9 +5,9 @@ import { phoneLoginSchema } from "@/src/features/auth/schemas/phoneLoginSchema";
 
 export const partnershipSchema = z
   .object({
-    entityName: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
-    contactName: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
-    jobTitle: z.string().trim().min(3, "يجب أن يكون الاسم أكثر من 3 أحرف"),
+    entityName: z.string().trim().min(2, "يجب أن يكون اسم الجهة حرفين فأكثر"),
+    contactName: z.string().trim().min(2, "يجب أن يكون الاسم حرفين فأكثر"),
+    jobTitle: z.string().trim().min(2, "يجب أن يكون المسمى الوظيفي حرفين فأكثر"),
     phone: phoneLoginSchema.shape.phone,
     email: loginSchema.shape.email,
     confirmEmail: z.string().trim().min(1, "تأكيد البريد الإلكتروني مطلوب"),
