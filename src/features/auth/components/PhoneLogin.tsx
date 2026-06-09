@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import AuthFormAlert from "@/src/features/auth/components/AuthFormAlert";
+
 type PhoneLoginProps = {
   onContinueWithEmail: () => void;
 };
@@ -39,6 +41,7 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
   const [phone, setPhone] = useState("");
   const [verificationToken, setVerificationToken] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const phoneForm = useForm<PhoneLoginFormValues>({
     resolver: zodResolver(phoneLoginSchema),
@@ -80,10 +83,12 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
   }
 
   async function onVerifyOtp(values: PhoneOtpValues) {
+    setFormError(null);
     auth.beginAuthTransition();
     const result = await verifyOtp(phone, verificationToken, values.otp);
 
     if (!(await completeLoginSuccess(auth, router, result))) {
+      setFormError(result.message);
       toast.error(result.message);
     }
   }
@@ -150,6 +155,8 @@ export default function PhoneLogin({ onContinueWithEmail }: PhoneLoginProps) {
             onSubmit={otpForm.handleSubmit(onVerifyOtp)}
             noValidate
           >
+            <AuthFormAlert message={formError} />
+
             <InputField
               label="رمز التحقق"
               type="text"

@@ -5,6 +5,10 @@ import type {
   VerifyOtpResult,
 } from "@/src/features/auth/types";
 import type { LoginFormValues } from "@/src/features/auth/schemas/loginSchema";
+import {
+  getAuthErrorMessage,
+  resolveAuthFailureMessage,
+} from "@/src/features/auth/utils/authErrors";
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 
 const PHONE_CODE = "966";
@@ -27,7 +31,10 @@ async function login(payload: Record<string, string>): Promise<LoginResult> {
     if (status >= 400 || !data.success) {
       return {
         success: false,
-        message: data.message ?? "تعذر تسجيل الدخول، تحقق من البيانات",
+        message: resolveAuthFailureMessage(
+          data.message,
+          "تعذر تسجيل الدخول، تحقق من البيانات",
+        ),
       };
     }
 
@@ -36,10 +43,10 @@ async function login(payload: Record<string, string>): Promise<LoginResult> {
       message: data.message ?? "تم تسجيل الدخول بنجاح",
       user: data.data,
     };
-  } catch {
+  } catch (error) {
     return {
       success: false,
-      message: "تعذر تسجيل الدخول، حاول مرة أخرى",
+      message: getAuthErrorMessage(error, "تعذر تسجيل الدخول، حاول مرة أخرى"),
     };
   }
 }
@@ -70,7 +77,10 @@ export async function sendOtp(phone: string): Promise<SendOtpResult> {
     if (status >= 400 || !data.success) {
       return {
         success: false,
-        message: data.message ?? "تعذر إرسال رمز التحقق",
+        message: resolveAuthFailureMessage(
+          data.message,
+          "تعذر إرسال رمز التحقق",
+        ),
       };
     }
 
@@ -84,8 +94,11 @@ export async function sendOtp(phone: string): Promise<SendOtpResult> {
       message: data.message ?? "تم إرسال رمز التحقق",
       verificationToken,
     };
-  } catch {
-    return { success: false, message: "تعذر إرسال رمز التحقق، حاول مرة أخرى" };
+  } catch (error) {
+    return {
+      success: false,
+      message: getAuthErrorMessage(error, "تعذر إرسال رمز التحقق، حاول مرة أخرى"),
+    };
   }
 }
 
@@ -110,7 +123,10 @@ export async function verifyOtp(
     if (status >= 400 || !data.success) {
       return {
         success: false,
-        message: data.message ?? "رمز التحقق غير صحيح",
+        message: resolveAuthFailureMessage(
+          data.message,
+          "رمز التحقق غير صحيح",
+        ),
       };
     }
 
@@ -119,7 +135,10 @@ export async function verifyOtp(
       message: data.message ?? "تم تسجيل الدخول بنجاح",
       user: data.data,
     };
-  } catch {
-    return { success: false, message: "تعذر التحقق من الرمز، حاول مرة أخرى" };
+  } catch (error) {
+    return {
+      success: false,
+      message: getAuthErrorMessage(error, "تعذر التحقق من الرمز، حاول مرة أخرى"),
+    };
   }
 }

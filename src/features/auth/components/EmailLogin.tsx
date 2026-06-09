@@ -11,11 +11,13 @@ import {
 } from "@/src/features/auth/schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import GoogleAuth from "@/src/components/GoogleAuth";
+import AuthFormAlert from "@/src/features/auth/components/AuthFormAlert";
 import { authLog } from "@/src/lib/authLog";
 
 type EmailLoginProps = {
@@ -25,6 +27,7 @@ type EmailLoginProps = {
 export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
   const router = useRouter();
   const auth = useAuth();
+  const [formError, setFormError] = useState<string | null>(null);
 
   const {
     register,
@@ -39,10 +42,12 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
   });
 
   async function onSubmit(values: LoginFormValues) {
+    setFormError(null);
     auth.beginAuthTransition();
     const result = await loginWithEmail(values);
 
     if (!(await completeLoginSuccess(auth, router, result))) {
+      setFormError(result.message);
       toast.error(result.message);
       return;
     }
@@ -57,6 +62,8 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
+        <AuthFormAlert message={formError} />
+
         <InputField
           label="البريد الإلكتروني"
           type="email"
