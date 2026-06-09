@@ -24,10 +24,11 @@ const quickLinks: FooterLink[] = [
 ];
 
 const educationalLinks: FooterLink[] = [
-  { label: "الكتب", href: "/books" },
-  { label: "الأنشطة", href: "/activities" },
-  { label: "الدورات", href: "/courses" },
-  { label: "أخبارنا", href: "/news" },
+  { label: "الكتب", href: "/products/books" },
+  { label: "الأنشطة", href: "/products/activities" },
+  { label: "الدورات", href: "/products/courses" },
+  { label: "الخدمات", href: "/products/services" },
+  { label: "أدلة إجرائية", href: "/products/guides" },
 ];
 
 const supportLinks: FooterLink[] = [

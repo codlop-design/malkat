@@ -1,11 +1,16 @@
+import Pagination from "@/src/components/Pagination";
 import NewsCard from "@/src/features/news/components/NewsCard";
-import type { NewsArticle } from "@/src/features/news/types";
+import type { NewsArticle, NewsPagination } from "@/src/features/news/types";
 
 type AllNewsSectionProps = {
   articles: NewsArticle[];
+  pagination: NewsPagination;
 };
 
-export default function AllNewsSection({ articles }: AllNewsSectionProps) {
+export default function AllNewsSection({
+  articles,
+  pagination,
+}: AllNewsSectionProps) {
   return (
     <section className="py-8">
       <div className="container">
@@ -23,6 +28,14 @@ export default function AllNewsSection({ articles }: AllNewsSectionProps) {
             ))}
           </div>
         )}
+
+        <div className="mt-10">
+          <Pagination
+            page={pagination.current_page}
+            totalPages={pagination.last_page}
+            basePath="/news/all"
+          />
+        </div>
       </div>
     </section>
   );

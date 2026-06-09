@@ -25,6 +25,12 @@ export async function getNewsBySlug(
   }
 
   const { new_details } = detailResponse.data;
+
+  if (!new_details) {
+    return null;
+  }
+
+  const gallery = new_details.new_images ?? [];
   const listItem = listResult?.items.find((item) => item.slug === slug);
 
   const article: NewsArticle = listItem ?? {
@@ -33,14 +39,14 @@ export async function getNewsBySlug(
     title: new_details.title,
     excerpt: "",
     date: "",
-    imageSrc: new_details.new_images[0] ?? "",
+    imageSrc: gallery[0] ?? "",
   };
 
   const detail: NewsArticleDetail = {
     title: new_details.title,
-    contentHtml: new_details.content,
-    video: new_details.video,
-    gallery: new_details.new_images ?? [],
+    contentHtml: new_details.content ?? "",
+    video: new_details.video?.url ?? null,
+    gallery,
   };
 
   return { article, detail };

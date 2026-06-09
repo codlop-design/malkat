@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import ValueCard from "@/src/features/about/components/ValueCard";
 import {
@@ -10,6 +11,8 @@ import {
   staggerContainer,
 } from "@/src/lib/motion";
 import type { AboutValuesBlock } from "@/src/features/about/types";
+
+import "swiper/css";
 
 type ValuesSectionProps = {
   valuesBlock?: AboutValuesBlock | null;
@@ -54,21 +57,34 @@ export default function ValuesSection({ valuesBlock }: ValuesSectionProps) {
         </motion.header>
 
         <motion.div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}
-          variants={staggerContainer(0.1)}
+          variants={fadeUp}
+          className="-mx-5 overflow-hidden ps-5 md:mx-0 md:ps-0"
         >
-          {valuesBlock.items.map((value) => (
-            <motion.div key={value.title} variants={fadeUp}>
-              <ValueCard
-                title={value.title}
-                description={value.content}
-                iconSrc={value.icon}
-              />
-            </motion.div>
-          ))}
+          <Swiper
+            speed={500}
+            spaceBetween={16}
+            slidesPerView={1.25}
+            breakpoints={{
+              480: { slidesPerView: 1.5, spaceBetween: 16 },
+              640: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
+              1280: { slidesPerView: 4, spaceBetween: 32 },
+            }}
+            className="values-swiper overflow-visible!"
+          >
+            {valuesBlock.items.map((value) => (
+              <SwiperSlide key={value.title} className="h-auto!">
+                <ValueCard
+                  title={value.title}
+                  description={value.content}
+                  iconSrc={value.icon}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </motion.div>
       </div>
     </section>

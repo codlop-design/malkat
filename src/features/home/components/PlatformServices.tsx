@@ -64,9 +64,9 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
             }}
             className="services-swiper overflow-visible!"
           >
-            {services.map((service, index) => (
+            {services.map((service) => (
               <SwiperSlide key={service.title} className="h-auto!">
-                <ServiceCard {...service} featured={index === 2} />
+                <ServiceCard {...service} />
               </SwiperSlide>
             ))}
           </Swiper>

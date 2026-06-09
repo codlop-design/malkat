@@ -1,10 +1,8 @@
 "use client";
 
-import { Share2 } from "lucide-react";
 import Image from "next/image";
-import { useCallback } from "react";
-import { toast } from "sonner";
 
+import ShareButton from "@/src/components/ShareButton";
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
@@ -23,26 +21,6 @@ type ProductDetailMediaProps = {
   cartPayload: AddToCartPayload;
 };
 
-async function shareProduct(title: string, url: string) {
-  if (typeof navigator !== "undefined" && navigator.share) {
-    try {
-      await navigator.share({ title, url });
-      return;
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
-        return;
-      }
-    }
-  }
-
-  try {
-    await navigator.clipboard.writeText(url);
-    toast.success("تم نسخ رابط المنتج");
-  } catch {
-    toast.error("تعذر مشاركة المنتج");
-  }
-}
-
 export default function ProductDetailMedia({
   imageSrc,
   title,
@@ -52,13 +30,10 @@ export default function ProductDetailMedia({
   isFavourite = false,
   cartPayload,
 }: ProductDetailMediaProps) {
-  const handleShare = useCallback(async () => {
-    const url = `${window.location.origin}${productDetailHref(category, slug)}`;
-    await shareProduct(title, url);
-  }, [category, slug, title]);
+  const shareUrl = productDetailHref(category, slug);
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:aspect-square lg:max-h-[420px]">
+    <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl lg:aspect-square lg:max-h-[420px]">
       <Image
         src={imageSrc}
         alt=""
@@ -74,14 +49,11 @@ export default function ProductDetailMedia({
           isFavourite={isFavourite}
           className="size-10"
         />
-        <button
-          type="button"
-          onClick={handleShare}
-          className="flex size-10 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-sm transition-colors hover:bg-white"
-          aria-label="مشاركة"
-        >
-          <Share2 className="size-5" strokeWidth={1.5} />
-        </button>
+        <ShareButton
+          url={shareUrl}
+          title={title}
+          className="size-10 rounded-full bg-white/90 text-[#454545] shadow-sm hover:bg-white"
+        />
       </div>
       <AddToCartButton
         payload={cartPayload}

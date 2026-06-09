@@ -18,7 +18,7 @@ type NewsListApiResponse = {
 
 export async function getNewsList(page = 1): Promise<NewsListResult | null> {
   try {
-    const response = await fetch(`${API_URL}/news?page=${page}`, {
+    const response = await fetch(`${API_URL}/news?page=${page}&per_page=8`, {
       headers: { "Content-Type": "application/json" },
       next: { revalidate: 60 },
     });

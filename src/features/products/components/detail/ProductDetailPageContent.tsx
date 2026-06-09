@@ -125,8 +125,10 @@ export default function ProductDetailPageContent({
                 {data.title}
               </h1>
 
-              <p className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base" dangerouslySetInnerHTML={{ __html: detail.longDescription }}>
-              </p>
+              <p
+                className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base"
+                dangerouslySetInnerHTML={{ __html: detail.longDescription }}
+              ></p>
 
               {category === "books" && "author" in data ? (
                 <BookInfo data={data} detail={detail} />
@@ -164,8 +166,10 @@ export default function ProductDetailPageContent({
                       <AccordionTrigger className="text-base font-medium text-black hover:no-underline">
                         {item.title}
                       </AccordionTrigger>
-                      <AccordionContent className="text-[#454545]" >
-                        <p dangerouslySetInnerHTML={{ __html: item.content }}></p>
+                      <AccordionContent className="text-[#454545]">
+                        <p
+                          dangerouslySetInnerHTML={{ __html: item.content }}
+                        ></p>
                       </AccordionContent>
                     </AccordionItem>
                   ))}
@@ -212,7 +216,9 @@ export default function ProductDetailPageContent({
 
         {detail.chapters ? (
           <section className="mt-10">
-            <h2 className="mb-5 text-xl font-bold text-black">محتويات الكتاب</h2>
+            <h2 className="mb-5 text-xl font-bold text-black">
+              محتويات الكتاب
+            </h2>
             <ul className="flex flex-col gap-3">
               {detail.chapters.map((chapter) => (
                 <li
@@ -233,7 +239,9 @@ export default function ProductDetailPageContent({
 
         {detail.curriculum ? (
           <section className="mt-10">
-            <h2 className="mb-5 text-xl font-bold text-black">محتويات الدورة</h2>
+            <h2 className="mb-5 text-xl font-bold text-black">
+              محتويات الدورة
+            </h2>
             <Accordion type="multiple" className="flex flex-col gap-3">
               {detail.curriculum.map((section) => (
                 <AccordionItem
@@ -251,7 +259,9 @@ export default function ProductDetailPageContent({
                           {section.title}
                         </p>
                         {section.meta ? (
-                          <p className="text-xs text-[#717171]">{section.meta}</p>
+                          <p className="text-xs text-[#717171]">
+                            {section.meta}
+                          </p>
                         ) : null}
                       </div>
                     </div>
@@ -284,9 +294,8 @@ export default function ProductDetailPageContent({
                 <li
                   key={point}
                   className="text-sm leading-relaxed text-[#454545]"
-                >
-                  {point}
-                </li>
+                  dangerouslySetInnerHTML={{ __html: point }}
+                ></li>
               ))}
             </ul>
           </section>
@@ -345,7 +354,10 @@ function BookInfo({
           <MetaItem icon={Languages} label="اللغة" value={meta.language} />
         </div>
       ) : null}
-      <InstructorRow contributor={detail.contributor} fallbackName={book.author} />
+      <InstructorRow
+        contributor={detail.contributor}
+        fallbackName={book.author}
+      />
     </>
   );
 }

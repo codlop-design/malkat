@@ -18,6 +18,8 @@ export default async function NewsArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const news = await getNewsBySlug(slug);
 
+  console.log(news);
+
   if (!news) {
     notFound();
   }

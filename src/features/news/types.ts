@@ -14,12 +14,18 @@ export interface NewsMainApiData {
   latest_news?: NewsApiItem[] | null;
 }
 
+export interface NewsVideoApiData {
+  title: string | null;
+  content: string | null;
+  url: string | null;
+}
+
 export interface NewsDetailsApiData {
   new_details: {
     title: string;
     content: string;
-    video: string | null;
-    new_images: string[];
+    video?: NewsVideoApiData | null;
+    new_images?: string[];
   };
 }
 

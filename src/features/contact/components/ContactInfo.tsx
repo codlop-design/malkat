@@ -83,6 +83,8 @@ export default function ContactInfo({ contacts }: ContactInfoProps) {
                         className={
                           line.icon ? "dir-ltr text-end" : undefined
                         }
+
+                        dir="ltr"
                       >
                         {line.text}
                       </span>

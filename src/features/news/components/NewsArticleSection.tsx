@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 
+import ShareButton from "@/src/components/ShareButton";
 import NewsArticleGallery from "@/src/features/news/components/NewsArticleGallery";
 import {
   fadeUp,
@@ -19,6 +20,8 @@ export default function NewsArticleSection({
   article,
   detail,
 }: NewsArticleSectionProps) {
+  const shareUrl = `/news/all/${article.slug}`;
+
   return (
     <section className="bg-white py-10 md:py-14">
       <motion.div
@@ -34,18 +37,35 @@ export default function NewsArticleSection({
             variants={fadeUp}
             className="min-w-0 flex-1 text-right lg:flex-[1.1]"
           >
-            {article.date ? (
-              <time className="text-sm text-[#717171]">{article.date}</time>
-            ) : null}
+            <div className="flex items-center justify-between gap-4">
+              {article.date ? (
+                <time className="text-sm text-[#717171]">{article.date}</time>
+              ) : (
+                <span />
+              )}
+              <ShareButton
+                url={shareUrl}
+                title={detail.title}
+                className="size-9 rounded-full bg-[#F5F5F5] text-[#454545] hover:bg-[#EBEBEB]"
+              />
+            </div>
+
+            <h1 className="mt-3 text-2xl font-bold leading-snug text-black md:text-3xl">
+              {detail.title}
+            </h1>
 
             {detail.video ? (
-              <div className="mt-6 overflow-hidden rounded-2xl">
+              <div className="mt-6 overflow-hidden rounded-2xl bg-[#1a1a1a]">
                 <video
+                  key={detail.video}
                   src={detail.video}
                   controls
                   playsInline
-                  className="aspect-video w-full bg-black object-cover"
-                />
+                  preload="metadata"
+                  className="aspect-video w-full object-contain"
+                >
+                  <source src={detail.video} type="video/mp4" />
+                </video>
               </div>
             ) : null}
 
