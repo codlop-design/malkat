@@ -40,6 +40,7 @@ export default function CourseCard({
   rating,
   ratingCount,
   isFavourite = false,
+  onFavouriteChange,
 }: CourseCardProps) {
   const href =
     category != null
@@ -71,6 +72,7 @@ export default function CourseCard({
         category={category}
         slug={slug}
         isFavourite={isFavourite}
+        onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">

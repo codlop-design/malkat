@@ -36,6 +36,7 @@ export default function BookCard(props: BookCardProps) {
     rating,
     ratingCount,
     isFavourite = false,
+    onFavouriteChange,
   } = props;
 
   const href =
@@ -64,6 +65,7 @@ export default function BookCard(props: BookCardProps) {
         category={category}
         slug={slug}
         isFavourite={isFavourite}
+        onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">

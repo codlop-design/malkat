@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { useEffect, useState, useTransition, type MouseEvent } from "react";
 import { toast } from "sonner";
 
-import { addToFavourites } from "@/src/features/products/api/addToFavouritesClient";
+import { toggleFavourite } from "@/src/features/products/api/addToFavouritesClient";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { cn } from "@/src/lib/utils";
 
@@ -13,6 +13,7 @@ type FavouriteButtonProps = {
   slug: string;
   isFavourite?: boolean;
   className?: string;
+  onFavouriteChange?: (isFavourite: boolean) => void;
 };
 
 export default function FavouriteButton({
@@ -20,6 +21,7 @@ export default function FavouriteButton({
   slug,
   isFavourite: initialIsFavourite = false,
   className,
+  onFavouriteChange,
 }: FavouriteButtonProps) {
   const [isFavourite, setIsFavourite] = useState(initialIsFavourite);
   const [isPending, startTransition] = useTransition();
@@ -32,15 +34,13 @@ export default function FavouriteButton({
     event.preventDefault();
     event.stopPropagation();
 
-    if (isFavourite) {
-      return;
-    }
-
     startTransition(async () => {
-      const result = await addToFavourites(category, slug);
+      const result = await toggleFavourite(category, slug);
 
       if (result.success) {
-        setIsFavourite(true);
+        const next = !isFavourite;
+        setIsFavourite(next);
+        onFavouriteChange?.(next);
         toast.success(result.message);
         return;
       }
@@ -53,13 +53,13 @@ export default function FavouriteButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={isPending || isFavourite}
+      disabled={isPending}
       className={cn(
         "flex items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-sm transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-70",
         isFavourite && "text-primary",
         className,
       )}
-      aria-label={isFavourite ? "في المفضلة" : "إضافة للمفضلة"}
+      aria-label={isFavourite ? "إزالة من المفضلة" : "إضافة للمفضلة"}
       aria-pressed={isFavourite}
     >
       <Heart

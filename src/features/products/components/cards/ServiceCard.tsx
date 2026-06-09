@@ -31,6 +31,7 @@ export default function ServiceCard({
   rating,
   ratingCount,
   isFavourite = false,
+  onFavouriteChange,
 }: ServiceCardProps) {
   const href =
     category === "services"
@@ -60,6 +61,7 @@ export default function ServiceCard({
         category={category}
         slug={slug}
         isFavourite={isFavourite}
+        onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">

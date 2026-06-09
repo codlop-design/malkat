@@ -71,6 +71,11 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
     });
   }
 
+  function handleFavouriteChange(slug: string, isFavourite: boolean) {
+    if (isFavourite) return;
+    setItems((current) => current.filter((item) => item.slug !== slug));
+  }
+
   useImperativeHandle(
     ref,
     () => ({
@@ -139,7 +144,13 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <div key={item.id}>{renderCatalogCard(category, item)}</div>
+            <div key={item.id}>
+              {renderCatalogCard(category, item, {
+                isFavourite: true,
+                onFavouriteChange: (isFavourite) =>
+                  handleFavouriteChange(item.slug, isFavourite),
+              })}
+            </div>
           ))}
         </div>
       )}

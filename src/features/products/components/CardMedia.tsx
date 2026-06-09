@@ -15,6 +15,7 @@ type CardMediaProps = {
   category?: CatalogSectionKey;
   slug?: string;
   isFavourite?: boolean;
+  onFavouriteChange?: (isFavourite: boolean) => void;
   cartPayload?: AddToCartPayload;
 };
 
@@ -25,6 +26,7 @@ export default function CardMedia({
   category,
   slug,
   isFavourite = false,
+  onFavouriteChange,
   cartPayload,
 }: CardMediaProps) {
   return (
@@ -43,6 +45,7 @@ export default function CardMedia({
           category={category}
           slug={slug}
           isFavourite={isFavourite}
+          onFavouriteChange={onFavouriteChange}
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}

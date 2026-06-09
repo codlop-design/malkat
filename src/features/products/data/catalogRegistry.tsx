@@ -33,7 +33,15 @@ export type CatalogListItem = {
   slug: string;
   title: string;
   description: string;
-} & Pick<CatalogItemBase, "isFavourite" | "isRated" | "rating" | "ratingCount">;
+} & Pick<
+  CatalogItemBase,
+  "isFavourite" | "onFavouriteChange" | "isRated" | "rating" | "ratingCount"
+>;
+
+export type CatalogCardOptions = Pick<
+  CatalogItemBase,
+  "isFavourite" | "onFavouriteChange"
+>;
 
 type CatalogRegistryEntry = {
   items: CatalogListItem[];
@@ -100,8 +108,9 @@ export function getCatalogItems(category: CatalogSectionKey): CatalogListItem[] 
 export function renderCatalogCard(
   category: CatalogSectionKey,
   item: CatalogListItem,
+  options?: CatalogCardOptions,
 ): ReactNode {
-  return CATALOG_REGISTRY[category].renderCard(item);
+  return CATALOG_REGISTRY[category].renderCard({ ...item, ...options });
 }
 
 export function searchCatalogItems(

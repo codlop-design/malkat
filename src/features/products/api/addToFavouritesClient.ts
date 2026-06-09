@@ -16,7 +16,7 @@ function isUnauthorizedStatus(status: number | undefined): boolean {
   return status === 401 || status === 403 || status === 419;
 }
 
-export async function addToFavourites(
+export async function toggleFavourite(
   category: CatalogSectionKey,
   slug: string,
 ): Promise<FavouriteActionResult> {
@@ -71,7 +71,9 @@ export async function addToFavourites(
 
     return {
       success: false,
-      message: apiMessage ?? "تعذر الإضافة للمفضلة، حاول مرة أخرى",
+      message: apiMessage ?? "تعذر تحديث المفضلة، حاول مرة أخرى",
     };
   }
 }
+
+export const addToFavourites = toggleFavourite;
