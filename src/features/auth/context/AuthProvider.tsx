@@ -13,7 +13,6 @@ import {
 import { fetchCurrentUser, logout } from "@/src/features/auth/session.client";
 import type { AuthUser } from "@/src/features/auth/types";
 import { onAuthUnauthorized } from "@/src/lib/authUnauthorized";
-import { authLog } from "@/src/lib/authLog";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -47,8 +46,7 @@ export function AuthProvider({
   const [isAuthReady, setIsAuthReady] = useState(initialUser !== null);
   const [isAuthTransitioning, setIsAuthTransitioning] = useState(false);
 
-  const user =
-    clientUser !== undefined ? clientUser : (initialUser ?? null);
+  const user = clientUser !== undefined ? clientUser : (initialUser ?? null);
 
   const beginAuthTransition = useCallback(() => {
     setIsAuthTransitioning(true);
@@ -58,21 +56,12 @@ export function AuthProvider({
     setIsAuthTransitioning(false);
   }, []);
 
-  authLog("provider", "render", {
-    initialUser: initialUser?.name ?? null,
-    clientUser: clientUser === undefined ? "undefined" : clientUser?.name ?? null,
-    resolvedUser: user?.name ?? null,
-    isAuthReady,
-  });
-
   const setUser = useCallback((next: AuthUser | null) => {
-    authLog("provider", "setUser", { name: next?.name ?? null });
     setClientUser(next);
     setIsAuthReady(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
-    authLog("provider", "refreshUser");
     const current = await fetchCurrentUser();
     setClientUser(current);
     setIsAuthReady(true);
@@ -90,18 +79,15 @@ export function AuthProvider({
 
   useEffect(() => {
     if (initialUser !== null) {
-      authLog("provider", "skip client fetch — have initialUser from server");
       return;
     }
 
-    authLog("provider", "client fetch — no initialUser from server");
     let cancelled = false;
 
     void fetchCurrentUser().then((current) => {
       if (cancelled) {
         return;
       }
-      authLog("provider", "client fetch done", { user: current?.name ?? null });
       setClientUser(current);
       setIsAuthReady(true);
     });

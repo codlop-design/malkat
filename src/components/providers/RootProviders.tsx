@@ -9,7 +9,6 @@ import { AuthProvider } from "@/src/features/auth/context/AuthProvider";
 import type { AuthUser } from "@/src/features/auth/types";
 import { CartProvider } from "@/src/features/cart/context/CartProvider";
 import { FavouritesProvider } from "@/src/features/products/context/FavouritesProvider";
-import { isAuthLogEnabled } from "@/src/lib/authLog";
 
 type RootProvidersProps = {
   children: React.ReactNode;
@@ -32,7 +31,6 @@ export function RootProviders({
       >
         <CartProvider>
           <FavouritesProvider>
-            {isAuthLogEnabled() ? <AuthFlowLogger /> : null}
             <Toaster />
             {children}
           </FavouritesProvider>

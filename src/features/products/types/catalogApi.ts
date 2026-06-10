@@ -29,10 +29,10 @@ export interface BookApiItem extends CatalogSocialFields {
   title: string;
   overview: string;
   image: string;
-  age_group: string;
-  difficulty: string;
+  age_group: string | null;
+  difficulty: string | null;
   price: string;
-  contributor: ProductContributor;
+  contributor: ProductContributor | null;
 }
 
 export interface CourseApiItem extends CatalogSocialFields {

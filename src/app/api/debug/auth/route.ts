@@ -4,14 +4,9 @@ import { NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { getServerUser } from "@/src/features/auth/session.server";
 import { USER_PATH } from "@/src/features/auth/parseUser";
-import { isAuthLogEnabled } from "@/src/lib/authLog";
 import { getRequestSiteUrl } from "@/src/lib/requestSiteUrl";
 
 export async function GET() {
-  if (!isAuthLogEnabled()) {
-    return NextResponse.json({ error: "Set AUTH_DEBUG=true" }, { status: 404 });
-  }
-
   const cookieStore = await cookies();
   const all = cookieStore.getAll();
   const siteUrl = await getRequestSiteUrl();

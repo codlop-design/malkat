@@ -18,7 +18,6 @@ import Image from "next/image";
 import Link from "next/link";
 import GoogleAuth from "@/src/components/GoogleAuth";
 import AuthFormAlert from "@/src/features/auth/components/AuthFormAlert";
-import { authLog } from "@/src/lib/authLog";
 
 type EmailLoginProps = {
   onContinueWithPhone: () => void;
@@ -51,8 +50,6 @@ export default function EmailLogin({ onContinueWithPhone }: EmailLoginProps) {
       toast.error(result.message);
       return;
     }
-
-    authLog("login", "success", { user: result.user?.name ?? "from refresh" });
   }
 
   return (

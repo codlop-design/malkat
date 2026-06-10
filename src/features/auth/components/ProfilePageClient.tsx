@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 import type { AuthUser } from "@/src/features/auth/types";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
-import { authLog } from "@/src/lib/authLog";
 import ProfileSidebar from "@/src/features/auth/components/profile/ProfileSidebar";
 import ProfileDetailsTab from "@/src/features/auth/components/profile/ProfileDetailsTab";
 import FavouritesTab, {
@@ -46,10 +45,6 @@ export default function ProfilePageClient() {
   const profileUser = user ?? fetchedUser;
 
   useEffect(() => {
-    authLog("profile", "mount", {
-      contextUser: user?.name ?? null,
-    });
-
     if (user) {
       return;
     }
@@ -61,10 +56,7 @@ export default function ProfilePageClient() {
         return;
       }
 
-      authLog("profile", "after refreshUser", { user: current?.name ?? null });
-
       if (!current) {
-        authLog("profile", "→ redirect /login");
         router.replace("/login");
         return;
       }

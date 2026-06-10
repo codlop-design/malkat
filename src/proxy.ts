@@ -3,11 +3,9 @@ import { NextResponse } from "next/server";
 
 import { SESSION_COOKIE_NAME } from "@/src/features/auth/constants";
 import { isAuthGuestPath, isProtectedPath } from "@/src/features/auth/routes";
-import { authLog } from "@/src/lib/authLog";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const cookieNames = request.cookies.getAll().map((c) => c.name);
   const hasSession = request.cookies
     .getAll()
     .some(
@@ -15,16 +13,7 @@ export function proxy(request: NextRequest) {
         cookie.name === SESSION_COOKIE_NAME && cookie.value.length > 0,
     );
 
-  authLog("proxy", "request", {
-    pathname,
-    cookieNames,
-    hasMalkatSession: hasSession,
-    isAuthGuest: isAuthGuestPath(pathname),
-    isProtected: isProtectedPath(pathname),
-  });
-
   if (isProtectedPath(pathname)) {
-    authLog("proxy", "protected route — pass through (page handles auth)");
     return NextResponse.next();
   }
 
@@ -33,11 +22,9 @@ export function proxy(request: NextRequest) {
   }
 
   if (hasSession) {
-    authLog("proxy", "→ redirect /");
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  authLog("proxy", "→ next()");
   return NextResponse.next();
 }
 
