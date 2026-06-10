@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cn } from "@/src/lib/utils";
 import type { HomeDiscoverItem } from "../types";
 
 type ServiceCardProps = HomeDiscoverItem & {
@@ -9,28 +10,53 @@ export default function ServiceCard({
   title,
   description,
   image,
+  featured = false,
 }: ServiceCardProps) {
   return (
     <article
-      className={`flex h-full flex-col items-center gap-4 rounded-3xl px-5 py-8 text-center transition-colors bg-[#E8F6F4] text-[#1F1F1F]`}
+      className={cn(
+        "flex h-full flex-col items-center justify-center gap-4 rounded-2xl px-5 py-8 text-center transition-colors md:rounded-3xl",
+        featured
+          ? "bg-primary px-6 py-10 text-white md:py-12"
+          : "bg-[#E0F7FA] text-[#1F1F1F]",
+      )}
     >
-      <div className="flex size-14 items-center justify-center rounded-full bg-white">
+      <div
+        className={cn(
+          "flex items-center justify-center rounded-full",
+          featured
+            ? "size-20 bg-white md:size-24"
+            : "size-14 bg-primary",
+        )}
+      >
         <Image
           src={image}
           alt=""
-          width={28}
-          height={28}
-          className="size-7 object-contain"
+          width={featured ? 40 : 28}
+          height={featured ? 40 : 28}
+          className={cn(
+            "object-contain",
+            featured ? "size-10 md:size-11" : "size-7 brightness-0 invert",
+          )}
           aria-hidden
         />
       </div>
 
       <div className="flex flex-col gap-2">
         <h3
-          className="text-lg font-bold leading-snug text-black">
+          className={cn(
+            "text-lg font-bold leading-snug",
+            featured ? "text-white" : "text-black",
+          )}
+        >
           {title}
         </h3>
-        <p className="text-sm leading-relaxed text-[#454545]">
+        <p
+          className={cn(
+            "text-sm leading-relaxed",
+            featured ? "text-white/85" : "text-[#666666]",
+          )}
+        >
           {description}
         </p>
       </div>

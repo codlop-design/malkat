@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
+import { cn } from "@/src/lib/utils";
 import type { HomeDiscoverSection } from "../types";
 import ServiceCard from "./ServiceCard";
 import "swiper/css";
@@ -11,18 +12,23 @@ type PlatformServicesProps = {
   content?: HomeDiscoverSection | null;
 };
 
+const FEATURED_INDEX = 2;
+
 export default function PlatformServices({ content }: PlatformServicesProps) {
   if (!content?.items?.length) {
     return null;
   }
 
   const services = content.items;
+  const featured = services[FEATURED_INDEX];
+  const rightColumn = [services[0], services[1]].filter(Boolean);
+  const leftColumn = [services[3], services[4]].filter(Boolean);
 
   return (
-    <section className="py-16">
+    <section className="bg-[#F5F5F5] py-16 md:py-20">
       <div className="container overflow-hidden">
         <motion.div
-          className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-3 text-center"
+          className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-3 text-center md:mb-14"
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}
@@ -30,7 +36,7 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
         >
           <motion.span
             variants={fadeUp}
-            className="text-base font-medium text-primary"
+            className="text-base font-medium text-[#666666]"
           >
             استكشف المحتوى
           </motion.span>
@@ -42,7 +48,7 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-base text-[#454545] md:text-lg"
+            className="text-base text-[#666666] md:text-lg"
           >
             {content.description}
           </motion.p>
@@ -56,7 +62,6 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
           className="overflow-hidden lg:hidden"
         >
           <Swiper
-            
             spaceBetween={16}
             slidesPerView={1.5}
             breakpoints={{
@@ -64,28 +69,53 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
             }}
             className="services-swiper overflow-visible!"
           >
-            {services.map((service) => (
+            {services.map((service, index) => (
               <SwiperSlide key={service.title} className="h-auto!">
-                <ServiceCard {...service} />
+                <ServiceCard {...service} featured={index === FEATURED_INDEX} />
               </SwiperSlide>
             ))}
           </Swiper>
         </motion.div>
 
         <motion.div
-          className="hidden gap-5 lg:grid lg:grid-cols-5"
+          className="hidden gap-5 lg:grid lg:grid-cols-3 lg:grid-rows-2"
           initial="hidden"
           whileInView="visible"
           viewport={motionViewport}
           variants={staggerContainer(0.1, 0.15)}
         >
-          {services.map((service, index) => (
+          {rightColumn.map((service, index) => (
             <motion.div
               key={service.title}
               variants={fadeUp}
-              className="h-full"
+              className={cn(
+                "col-start-1",
+                index === 0 ? "row-start-1" : "row-start-2",
+              )}
             >
-              <ServiceCard {...service} featured={index === 2} />
+              <ServiceCard {...service} />
+            </motion.div>
+          ))}
+
+          {featured ? (
+            <motion.div
+              variants={fadeUp}
+              className="col-start-2 row-span-2 row-start-1"
+            >
+              <ServiceCard {...featured} featured />
+            </motion.div>
+          ) : null}
+
+          {leftColumn.map((service, index) => (
+            <motion.div
+              key={service.title}
+              variants={fadeUp}
+              className={cn(
+                "col-start-3",
+                index === 0 ? "row-start-1" : "row-start-2",
+              )}
+            >
+              <ServiceCard {...service} />
             </motion.div>
           ))}
         </motion.div>
