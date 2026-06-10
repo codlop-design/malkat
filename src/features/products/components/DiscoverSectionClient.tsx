@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
+// import Image from "next/image";
 import CategoryFilters from "@/src/components/CategoryFilters";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
@@ -114,7 +114,7 @@ export default function DiscoverSectionClient({
     <div>
       <section className="overflow-hidden pb-6 pt-6 md:pb-8 md:pt-8 lg:pb-10">
         <div className="container">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+          {/* <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
             <div className="order-2 max-w-xl space-y-4 text-right lg:order-1 lg:justify-self-start">
               <h1 className="text-2xl font-bold leading-snug text-black md:text-3xl lg:text-[40px] lg:leading-[1.35]">
                 اكتشف عالماً من المحتوى التعليمي الممتع
@@ -136,7 +136,7 @@ export default function DiscoverSectionClient({
                 unoptimized
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="mt-10 overflow-hidden rounded-2xl bg-[#F5F5F5] p-4 md:mt-12 lg:mt-14">
             <CategoryFilters
