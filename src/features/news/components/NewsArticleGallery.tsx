@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Swiper as SwiperInstance } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,9 +12,26 @@ type NewsArticleGalleryProps = {
   images: string[];
 };
 
+function isValidImageSrc(src: string): boolean {
+  return (
+    src.startsWith("/") ||
+    src.startsWith("http://") ||
+    src.startsWith("https://")
+  );
+}
+
 export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) {
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const galleryImages = useMemo(
+    () => images.filter((src) => isValidImageSrc(src)),
+    [images],
+  );
+
+  if (galleryImages.length === 0) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -25,9 +42,9 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
           speed={400}
           className="overflow-hidden rounded-2xl"
         >
-          {images.map((src, index) => (
+          {galleryImages.map((src, index) => (
             <SwiperSlide key={`${src}-${index}`}>
-              <div className="relative aspect-4/3 w-full">
+              <div className="relative aspect-4/3 w-full bg-[#F5F5F5]">
                 <Image
                   src={src}
                   alt=""
@@ -41,12 +58,12 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
           ))}
         </Swiper>
 
-        {images.length > 1 ? (
+        {galleryImages.length > 1 ? (
           <>
             <button
               type="button"
               onClick={() => swiper?.slidePrev()}
-              className="absolute top-1/2 inset-s-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-md transition-colors hover:bg-white"
+              className="absolute top-1/2 inset-s-3 z-10 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-md transition-colors hover:bg-white"
               aria-label="الصورة السابقة"
             >
               <ChevronRight className="size-5" strokeWidth={2} />
@@ -54,7 +71,7 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
             <button
               type="button"
               onClick={() => swiper?.slideNext()}
-              className="absolute top-1/2 inset-e-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-md transition-colors hover:bg-white"
+              className="absolute top-1/2 inset-e-3 z-10 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/90 text-[#454545] shadow-md transition-colors hover:bg-white"
               aria-label="الصورة التالية"
             >
               <ChevronLeft className="size-5" strokeWidth={2} />
@@ -63,14 +80,14 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
         ) : null}
       </div>
 
-      {images.length > 1 ? (
-        <div className="grid grid-cols-3 gap-3">
-          {images.map((src, index) => (
+      {galleryImages.length > 1 ? (
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {galleryImages.map((src, index) => (
             <button
               key={`thumb-${src}-${index}`}
               type="button"
               onClick={() => swiper?.slideTo(index)}
-              className={`relative aspect-square overflow-hidden rounded-xl transition-opacity ${
+              className={`relative size-20 shrink-0 cursor-pointer overflow-hidden rounded-xl transition-opacity sm:size-24 ${
                 index === activeIndex
                   ? "ring-2 ring-primary ring-offset-2"
                   : "opacity-70 hover:opacity-100"
@@ -83,7 +100,7 @@ export default function NewsArticleGallery({ images }: NewsArticleGalleryProps) 
                 alt=""
                 fill
                 className="object-cover"
-                sizes="120px"
+                sizes="96px"
               />
             </button>
           ))}

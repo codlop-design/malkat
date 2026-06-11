@@ -1,4 +1,8 @@
 import { fetcher } from "@/src/lib/fetch";
+import {
+  normalizeNewsGallery,
+  normalizeNewsImageUrl,
+} from "@/src/features/news/lib/normalizeNewsImages";
 import type {
   NewsArticle,
   NewsArticleDetail,
@@ -30,17 +34,23 @@ export async function getNewsBySlug(
     return null;
   }
 
-  const gallery = new_details.new_images ?? [];
   const listItem = listResult?.items.find((item) => item.slug === slug);
+  const gallery = normalizeNewsGallery(new_details.new_images);
+  const imageSrc =
+    normalizeNewsImageUrl(new_details.image) ??
+    normalizeNewsImageUrl(listItem?.imageSrc) ??
+    "";
 
-  const article: NewsArticle = listItem ?? {
-    id: slug,
-    slug,
-    title: new_details.title,
-    excerpt: "",
-    date: "",
-    imageSrc: gallery[0] ?? "",
-  };
+  const article: NewsArticle = listItem
+    ? { ...listItem, imageSrc }
+    : {
+        id: slug,
+        slug,
+        title: new_details.title,
+        excerpt: "",
+        date: "",
+        imageSrc,
+      };
 
   const detail: NewsArticleDetail = {
     title: new_details.title,

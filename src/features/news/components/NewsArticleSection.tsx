@@ -9,6 +9,7 @@ import {
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+import { buildSwiperImages } from "@/src/features/news/lib/normalizeNewsImages";
 import type { NewsArticle, NewsArticleDetail } from "@/src/features/news/types";
 
 type NewsArticleSectionProps = {
@@ -21,6 +22,7 @@ export default function NewsArticleSection({
   detail,
 }: NewsArticleSectionProps) {
   const shareUrl = `/news/all/${article.slug}`;
+  const swiperImages = buildSwiperImages(article.imageSrc, detail.gallery);
 
   return (
     <section className="bg-white py-10 md:py-14">
@@ -75,12 +77,12 @@ export default function NewsArticleSection({
             />
           </motion.article>
 
-          {detail.gallery.length > 0 ? (
+          {swiperImages.length > 0 ? (
             <motion.div
               variants={fadeUp}
               className="min-w-0 flex-1 lg:max-w-[540px]"
             >
-              <NewsArticleGallery images={detail.gallery} />
+              <NewsArticleGallery images={swiperImages} />
             </motion.div>
           ) : null}
         </div>

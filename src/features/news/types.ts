@@ -20,12 +20,20 @@ export interface NewsVideoApiData {
   url: string | null;
 }
 
+export type NewsImageApiValue =
+  | string
+  | {
+      image?: string | null;
+      url?: string | null;
+    };
+
 export interface NewsDetailsApiData {
   new_details: {
     title: string;
     content: string;
+    image?: string | null;
     video?: NewsVideoApiData | null;
-    new_images?: string[];
+    new_images?: NewsImageApiValue[];
   };
 }
 
