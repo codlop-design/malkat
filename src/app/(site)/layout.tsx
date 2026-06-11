@@ -16,7 +16,7 @@ export default async function SiteLayout({
   ]);
 
   return (
-    <SettingsProvider settings={settings}>
+    <SettingsProvider settings={settings}> 
       <Header authUser={authUser} />
       <main className="min-h-screen">{children}</main>
       <Footer />

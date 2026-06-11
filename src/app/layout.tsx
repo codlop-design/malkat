@@ -6,6 +6,7 @@ import {
   hasSessionCookie,
 } from "@/src/features/auth/session.server";
 import { getSettings } from "@/src/features/settings";
+import NextTopLoader from "nextjs-toploader";
 
 import "./globals.css";
 
@@ -141,6 +142,7 @@ export default async function RootLayout({
           initialUser={initialUser}
           hasSessionCookie={sessionCookie}
         >
+            <NextTopLoader showSpinner={false} color="#00a650" />
           {children}
         </RootProviders>
       </body>
