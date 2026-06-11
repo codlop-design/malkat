@@ -8,16 +8,19 @@ import ContactInfo from "@/src/features/contact/components/ContactInfo";
 import ContactIntro from "@/src/features/contact/components/ContactIntro";
 import ContactSocialLinks from "@/src/features/contact/components/ContactSocialLinks";
 import type { ContactPageData, ContactType } from "@/src/features/contact/types";
+import type { LookupOption } from "@/src/features/register-interest/types";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
 type ContactPageContentProps = {
   data: ContactPageData | null;
   contactTypes: ContactType[];
+  organizationTypes: LookupOption[];
 };
 
 export default function ContactPageContent({
   data,
   contactTypes,
+  organizationTypes,
 }: ContactPageContentProps) {
   return (
     <>
@@ -37,7 +40,11 @@ export default function ContactPageContent({
               <ContactInfo contacts={data?.contacts} />
             </motion.div>
             <motion.div variants={fadeUp} className="min-w-0">
-              <ContactForm contactTypes={contactTypes} variant="page" />
+              <ContactForm
+                contactTypes={contactTypes}
+                organizationTypes={organizationTypes}
+                variant="page"
+              />
             </motion.div>
           </div>
         </motion.div>

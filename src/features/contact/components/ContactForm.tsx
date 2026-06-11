@@ -15,12 +15,15 @@ import {
   type ContactFormValues,
 } from "@/src/features/contact/schemas/contactSchema";
 import type { ContactType } from "@/src/features/contact/types";
+import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
+import type { LookupOption } from "@/src/features/register-interest/types";
 
 const defaultValues: ContactFormValues = {
   full_name: "",
   email: "",
   phone: "",
   contact_type: "",
+  organization_type_id: "",
   message: "",
 };
 
@@ -29,11 +32,13 @@ const textareaClassName =
 
 type ContactFormProps = {
   contactTypes: ContactType[];
+  organizationTypes: LookupOption[];
   variant?: "home" | "page";
 };
 
 export default function ContactForm({
   contactTypes,
+  organizationTypes,
   variant = "home",
 }: ContactFormProps) {
   const isPage = variant === "page";
@@ -66,6 +71,8 @@ export default function ContactForm({
     value: type.key,
     label: type.label,
   }));
+
+  const organizationTypeOptions = mapLookupOptions(organizationTypes);
 
   const fields = (
     <>
@@ -118,21 +125,39 @@ export default function ContactForm({
         />
       )}
 
-      <Controller
-        name="contact_type"
-        control={control}
-        render={({ field }) => (
-          <SelectField
-            label="نوع التواصل *"
-            placeholder="اختر نوع التواصل"
-            options={typeOptions}
-            value={field.value}
-            onValueChange={field.onChange}
-            disabled={isSubmitting || typeOptions.length === 0}
-            error={errors.contact_type?.message}
-          />
-        )}
-      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Controller
+          name="contact_type"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              label="نوع التواصل *"
+              placeholder="اختر نوع التواصل"
+              options={typeOptions}
+              value={field.value}
+              onValueChange={field.onChange}
+              disabled={isSubmitting || typeOptions.length === 0}
+              error={errors.contact_type?.message}
+            />
+          )}
+        />
+
+        <Controller
+          name="organization_type_id"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              label="نوع الجهة *"
+              placeholder="اختر نوع الجهة"
+              options={organizationTypeOptions}
+              value={field.value}
+              onValueChange={field.onChange}
+              disabled={isSubmitting || organizationTypeOptions.length === 0}
+              error={errors.organization_type_id?.message}
+            />
+          )}
+        />
+      </div>
 
       <div>
         <label

@@ -7,6 +7,7 @@ export const contactSchema = z.object({
   email: z.string().trim().email("يرجى إدخال بريد إلكتروني صحيح"),
   phone: phoneLoginSchema.shape.phone,
   contact_type: z.string().min(1, "يرجى اختيار نوع التواصل"),
+  organization_type_id: z.string().min(1, "يرجى اختيار نوع الجهة"),
   message: z
     .string("يرجى كتابة رسالتك")
     .trim()

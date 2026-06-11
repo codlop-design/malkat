@@ -30,6 +30,7 @@ export async function submitContactAction(
   formData.append("phone_code", "966");
   formData.append("phone", parsed.data.phone);
   formData.append("contact_type", parsed.data.contact_type);
+  formData.append("organization_type_id", parsed.data.organization_type_id);
   formData.append("message", parsed.data.message);
 
   try {

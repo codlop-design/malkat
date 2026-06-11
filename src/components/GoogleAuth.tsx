@@ -3,7 +3,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { completeLoginSuccess } from "@/src/features/auth/completeLoginSuccess";
@@ -16,6 +16,7 @@ function GoogleAuthButton() {
   const router = useRouter();
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
+  const googleLoginRef = useRef<HTMLDivElement>(null);
 
   async function handleGoogleCredential(credential: string) {
     setLoading(true);
@@ -28,19 +29,38 @@ function GoogleAuthButton() {
     }
   }
 
+  function handleGoogleClick() {
+    if (loading) return;
+
+    const googleButton = googleLoginRef.current?.querySelector(
+      '[role="button"]',
+    ) as HTMLElement | null;
+
+    if (!googleButton) {
+      toast.error("تعذر تحميل تسجيل الدخول عبر جوجل");
+      return;
+    }
+
+    googleButton.click();
+  }
+
   return (
-    <div className="relative w-full h-14">
+    <div className="relative w-full">
       <button
         type="button"
         disabled={loading}
-        tabIndex={-1}
-        aria-hidden
-        className="w-full h-14 flex items-center justify-center gap-2 rounded-xl text-base font-medium text-[#000000] border border-primary pointer-events-none disabled:opacity-70"
+        onClick={handleGoogleClick}
+        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        <Image src="/google.svg" alt="" width={24} height={24} />
+        <Image src="/google.svg" alt="" width={24} height={24} aria-hidden />
         <span>{loading ? "جاري تسجيل الدخول..." : "متابعة باستخدام جوجل"}</span>
       </button>
-      <div className="absolute inset-0 opacity-0 overflow-hidden [&>div]:w-full! [&>div]:h-14! [&_iframe]:w-full! [&_iframe]:h-14!">
+
+      <div
+        ref={googleLoginRef}
+        className="pointer-events-none fixed top-0 left-[-9999px] opacity-0"
+        aria-hidden
+      >
         <GoogleLogin
           onSuccess={(response) => {
             if (!response.credential) {
@@ -56,7 +76,6 @@ function GoogleAuthButton() {
           type="standard"
           size="large"
           text="continue_with"
-          width="400"
         />
       </div>
     </div>
@@ -69,7 +88,7 @@ export default function GoogleAuth() {
       <button
         type="button"
         disabled
-        className="w-full h-14 flex items-center justify-center gap-2 rounded-xl text-base font-medium text-[#000000] border border-primary opacity-70 cursor-not-allowed"
+        className="flex h-14 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000] opacity-70"
       >
         <Image src="/google.svg" alt="Google" width={24} height={24} />
         <span>متابعة باستخدام جوجل</span>

@@ -4,15 +4,20 @@ import { motion } from "framer-motion";
 
 import ContactForm from "@/src/features/contact/components/ContactForm";
 import type { ContactType } from "@/src/features/contact/types";
+import type { LookupOption } from "@/src/features/register-interest/types";
 import { fadeUp, motionViewport } from "@/src/lib/motion";
 import ContactInfoPanel from "./ContactInfoPanel";
 import ContactSectionHeader from "./ContactSectionHeader";
 
 type ContactSectionProps = {
   contactTypes: ContactType[];
+  organizationTypes: LookupOption[];
 };
 
-export default function ContactSection({ contactTypes }: ContactSectionProps) {
+export default function ContactSection({
+  contactTypes,
+  organizationTypes,
+}: ContactSectionProps) {
   return (
     <section className="bg-[#FAFAFA] py-16">
       <div className="container">
@@ -27,7 +32,10 @@ export default function ContactSection({ contactTypes }: ContactSectionProps) {
             viewport={motionViewport}
             variants={fadeUp}
           >
-            <ContactForm contactTypes={contactTypes} />
+            <ContactForm
+              contactTypes={contactTypes}
+              organizationTypes={organizationTypes}
+            />
           </motion.div>
         </div>
       </div>

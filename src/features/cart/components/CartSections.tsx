@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
 import { Button } from "@/src/components/ui/button";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { placeOrder } from "@/src/features/cart/api/placeOrderClient";
 import CartLineItem from "@/src/features/cart/components/CartLineItem";
 import { useCart } from "@/src/features/cart/context/CartProvider";
@@ -103,12 +104,20 @@ export function PlaceOrderButton({
   onSuccess?: () => void;
 }) {
   const router = useRouter();
+  const { isAuthenticated, isAuthReady } = useAuth();
   const { items, clearCart, itemCount } = useCart();
   const [isPending, startTransition] = useTransition();
 
   function handlePlaceOrder() {
+    if (!isAuthReady) return;
+
     if (itemCount === 0) {
       toast.error("السلة فارغة");
+      return;
+    }
+
+    if (!isAuthenticated) {
+      router.push("/login");
       return;
     }
 
