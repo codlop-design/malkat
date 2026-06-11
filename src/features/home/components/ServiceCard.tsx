@@ -1,9 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/src/lib/utils";
 import type { HomeDiscoverItem } from "../types";
 
 type ServiceCardProps = HomeDiscoverItem & {
   featured?: boolean;
+  href: string;
 };
 
 export default function ServiceCard({
@@ -11,19 +13,26 @@ export default function ServiceCard({
   description,
   image,
   featured = false,
+  href,
 }: ServiceCardProps) {
   return (
     <article
       className={cn(
-        "flex h-full flex-col items-center justify-center gap-4 rounded-2xl px-5 py-8 text-center transition-colors md:rounded-3xl",
+        "group relative flex h-full flex-col items-center justify-center gap-4 rounded-2xl px-5 py-8 text-center transition-colors md:rounded-3xl",
         featured
-          ? "bg-primary px-6 py-10 text-white md:py-12"
-          : "bg-[#E0F7FA] text-[#1F1F1F]",
+          ? "bg-primary px-6 py-10 text-white hover:bg-primary/90 md:py-12"
+          : "bg-[#E0F7FA] text-[#1F1F1F] hover:bg-[#D4F1F6]",
       )}
     >
+      <Link
+        href={href}
+        className="absolute inset-0 z-0 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:rounded-3xl"
+        aria-label={title}
+      />
+
       <div
         className={cn(
-          "flex items-center justify-center rounded-full",
+          "relative z-1 flex items-center justify-center rounded-full transition-transform group-hover:scale-105",
           featured
             ? "size-20 bg-white md:size-24"
             : "size-14 bg-primary",
@@ -42,7 +51,7 @@ export default function ServiceCard({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="relative z-1 flex flex-col gap-2">
         <h3
           className={cn(
             "text-lg font-bold leading-snug",

@@ -31,9 +31,24 @@ export interface AboutPartnersBlock {
   content: string;
 }
 
+export interface ImpactItem {
+  icon: string | null;
+  count: number;
+  title: string;
+  content: string;
+}
+
+export interface ImpactBlock {
+  icon: string | null;
+  title: string;
+  content: string;
+  items: ImpactItem[];
+}
+
 export interface AboutPageData {
   aboutus_sections: AboutUsSection[];
   vision_messages: VisionMessage[];
   values: AboutValuesBlock[];
+  impacts: ImpactBlock[];
   partners: AboutPartnersBlock;
 }

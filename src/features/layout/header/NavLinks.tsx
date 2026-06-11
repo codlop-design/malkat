@@ -5,7 +5,7 @@ export const navLinks = [
   { label: "من نحن", href: "/about" },
   { label: "المنتجات", href: "/products" },
   { label: "الخدمات", href: "/services" },
-  { label: "الأخبار", href: "/news" },
+  { label: "الفعاليات", href: "/news" },
   { label: "تواصل معنا", href: "/contact" },
 ];
 

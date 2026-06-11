@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 import { cn } from "@/src/lib/utils";
+import { discoverItemHref } from "../data/discoverLinks";
 import type { HomeDiscoverSection } from "../types";
 import ServiceCard from "./ServiceCard";
 import "swiper/css";
@@ -71,7 +72,11 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
           >
             {services.map((service, index) => (
               <SwiperSlide key={service.title} className="h-auto!">
-                <ServiceCard {...service} featured={index === FEATURED_INDEX} />
+                <ServiceCard
+                  {...service}
+                  href={discoverItemHref(index)}
+                  featured={index === FEATURED_INDEX}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -93,7 +98,7 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
                 index === 0 ? "row-start-1" : "row-start-2",
               )}
             >
-              <ServiceCard {...service} />
+              <ServiceCard {...service} href={discoverItemHref(index)} />
             </motion.div>
           ))}
 
@@ -102,7 +107,11 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
               variants={fadeUp}
               className="col-start-2 row-span-2 row-start-1"
             >
-              <ServiceCard {...featured} featured />
+              <ServiceCard
+                {...featured}
+                href={discoverItemHref(FEATURED_INDEX)}
+                featured
+              />
             </motion.div>
           ) : null}
 
@@ -115,7 +124,7 @@ export default function PlatformServices({ content }: PlatformServicesProps) {
                 index === 0 ? "row-start-1" : "row-start-2",
               )}
             >
-              <ServiceCard {...service} />
+              <ServiceCard {...service} href={discoverItemHref(index + 3)} />
             </motion.div>
           ))}
         </motion.div>

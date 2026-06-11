@@ -1,6 +1,7 @@
 import PageHeader from "@/src/components/PageHeader";
 import { getAboutContent } from "@/src/features/about/api/getAboutContent";
 import AboutPageContent from "@/src/features/about/components/AboutPageContent";
+import ImpactSection from "@/src/features/about/components/ImpactSection";
 import PartnersSection from "@/src/features/about/components/PartnersSection";
 import ValuesSection from "@/src/features/about/components/ValuesSection";
 import VisionSection from "@/src/features/about/components/VisionSection";
@@ -20,6 +21,7 @@ export default async function AboutPage() {
       <AboutPageContent sections={aboutContent?.aboutus_sections ?? []} />
       <VisionSection messages={aboutContent?.vision_messages ?? []} />
       <ValuesSection valuesBlock={aboutContent?.values?.[0]} />
+      <ImpactSection impact={aboutContent?.impacts?.[0]} />
       <PartnersSection partners={aboutContent?.partners} />
     </>
   );
