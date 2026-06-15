@@ -108,7 +108,6 @@ export default function ProductDetailPageContent({
         ? (data.rating ?? 0)
         : 0;
   const reviewCount = detail.reviewCount;
-  const showReviews = detail.reviews.length > 0 || rating > 0;
 
   return (
     <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
@@ -316,12 +315,12 @@ export default function ProductDetailPageContent({
           </section>
         ) : null}
 
-        {showReviews ? (
-          <ProductReviewsSection
-            detail={detail}
-            title={REVIEWS_TITLE[category]}
-          />
-        ) : null}
+        <ProductReviewsSection
+          detail={detail}
+          title={REVIEWS_TITLE[category]}
+          category={category}
+          slug={data.slug}
+        />
         <RelatedProductsSection products={related} />
       </div>
     </div>
