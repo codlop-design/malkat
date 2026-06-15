@@ -12,7 +12,7 @@ type InputFieldProps = {
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   function InputField(
-    { label, error, id, type = "text", disabled, ...inputProps },
+    { label, error, id, type = "text", disabled, readOnly, ...inputProps },
     ref,
   ) {
     const inputId = id ?? label.replace(/\s+/g, "-");
@@ -35,7 +35,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             id={inputId}
             type={inputType}
             disabled={disabled}
-            className={`w-full h-14 rounded-xl border text-[#717171] border-[#E5E5E5] p-3 text-sm outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60${isPassword ? " pe-12" : ""} ${error ? " border-red-600" : ""}`}
+            readOnly={readOnly}
+            className={`w-full h-14 rounded-xl border text-[#717171] border-[#E5E5E5] p-3 text-sm outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60${readOnly ? " cursor-not-allowed bg-[#F9FAFB] opacity-60" : ""}${isPassword ? " pe-12" : ""} ${error ? " border-red-600" : ""}`}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? `${inputId}-error` : undefined}
             {...inputProps}

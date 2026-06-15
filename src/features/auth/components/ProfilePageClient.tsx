@@ -43,6 +43,24 @@ export default function ProfilePageClient() {
   const activeTab = parseProfileTab(searchParams.get("tab"));
 
   const profileUser = user ?? fetchedUser;
+  const showPasswordTab = profileUser?.has_password !== false;
+
+  useEffect(() => {
+    if (!profileUser || showPasswordTab || activeTab !== "password") {
+      return;
+    }
+
+    const next = new URLSearchParams(searchParams.toString());
+    next.set("tab", "profile");
+    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+  }, [
+    profileUser,
+    showPasswordTab,
+    activeTab,
+    pathname,
+    router,
+    searchParams,
+  ]);
 
   useEffect(() => {
     if (user) {
@@ -109,7 +127,9 @@ export default function ProfilePageClient() {
 
   const tabs = [
     { id: "profile" as const, label: "الملف الشخصي", icon: UserRound },
-    { id: "password" as const, label: "تغيير كلمة المرور", icon: Lock },
+    ...(showPasswordTab
+      ? [{ id: "password" as const, label: "تغيير كلمة المرور", icon: Lock }]
+      : []),
     { id: "favourites" as const, label: "المفضلة", icon: Heart },
     { id: "orders" as const, label: "طلباتي", icon: ShoppingBag },
   ];

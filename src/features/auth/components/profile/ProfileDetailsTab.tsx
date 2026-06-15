@@ -11,7 +11,7 @@ import type { AuthUser } from "@/src/features/auth/types";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { updateProfile } from "@/src/features/auth/api/updateProfileClient";
 import {
-  updateProfileSchema,
+  createUpdateProfileSchema,
   type UpdateProfileFormValues,
 } from "@/src/features/auth/schemas/updateProfileSchema";
 
@@ -24,13 +24,16 @@ export default function ProfileDetailsTab({
   user,
   onUserUpdated,
 }: ProfileDetailsTabProps) {
+  const isSocialLogin = user.has_password === false;
+  const profileSchema = createUpdateProfileSchema(!isSocialLogin);
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<UpdateProfileFormValues>({
-    resolver: zodResolver(updateProfileSchema),
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user.name,
       phone: user.phone,
@@ -47,7 +50,7 @@ export default function ProfileDetailsTab({
       name: values.name,
       phone_code: user.phone_code || "966",
       phone: values.phone,
-      email: values.email,
+      email: isSocialLogin ? user.email : values.email,
     });
 
     if (!result.success) {
@@ -95,7 +98,7 @@ export default function ProfileDetailsTab({
             {...register("name")}
           />
           <PhoneInput
-            label="رقم الجوال"
+            label={isSocialLogin ? "رقم الجوال (اختياري)" : "رقم الجوال"}
             placeholder="ادخل رقم الجوال"
             error={errors.phone?.message}
             disabled={isSubmitting}
@@ -109,6 +112,7 @@ export default function ProfileDetailsTab({
           placeholder="ادخل البريد الإلكتروني"
           error={errors.email?.message}
           disabled={isSubmitting}
+          readOnly={isSocialLogin}
           {...register("email")}
         />
 

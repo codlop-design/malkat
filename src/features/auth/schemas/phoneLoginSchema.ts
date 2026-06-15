@@ -20,4 +20,12 @@ export const phoneLoginSchema = z.object({
     ),
 });
 
+export const optionalPhoneSchema = z
+  .string()
+  .transform(normalizeSaudiMobile)
+  .refine(
+    (digits) => digits === "" || /^5\d{8}$/.test(digits),
+    "يرجى إدخال رقم جوال سعودي صحيح (9 أرقام يبدأ بـ 5)",
+  );
+
 export type PhoneLoginFormValues = z.infer<typeof phoneLoginSchema>;

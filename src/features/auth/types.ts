@@ -5,6 +5,7 @@ export type AuthUser = {
   phone: string;
   full_phone: string;
   email: string;
+  has_password?: boolean;
   is_active: boolean;
   policies_accepted: boolean;
 };
