@@ -98,24 +98,34 @@ export default function CartLineItem({
         ) : null}
       </div>
 
-      {showActions ? (
-        <div className="flex w-full items-center justify-between">
-          {canAdjustQuantity ? (
-            <QuantityControl
-              quantity={item.quantity}
-              onChange={(q) => onQuantityChange?.(q)}
-            />
+      {(showActions || canAdjustQuantity) ? (
+        <div
+          className={`flex w-full items-center ${showActions ? "justify-between" : ""}`}
+        >
+          {showActions ? (
+            canAdjustQuantity ? (
+              <QuantityControl
+                quantity={item.quantity}
+                onChange={(q) => onQuantityChange?.(q)}
+              />
+            ) : (
+              <span className="text-sm text-[#717171]">الكمية: 1</span>
+            )
           ) : (
-            <span className="text-sm text-[#717171]">الكمية: 1</span>
+            <span className="text-sm text-[#717171]">
+              الكمية: {item.quantity}
+            </span>
           )}
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={() => onRemove?.()}
-          >
-            <Trash className="size-4" />
-            <span className="sr-only">حذف</span>
-          </Button>
+          {showActions ? (
+            <Button
+              variant="destructive"
+              size="icon"
+              onClick={() => onRemove?.()}
+            >
+              <Trash className="size-4" />
+              <span className="sr-only">حذف</span>
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </div>

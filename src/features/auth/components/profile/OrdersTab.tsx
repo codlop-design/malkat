@@ -73,10 +73,9 @@ function toStoredCartItem(raw: unknown): StoredCartItem | null {
   const image = typeof product.image === "string" ? product.image : "";
   if (!slug || !title) return null;
 
+  const quantityValue = Number(record.quantity);
   const quantity =
-    typeof record.quantity === "number" && record.quantity > 0
-      ? record.quantity
-      : 1;
+    Number.isFinite(quantityValue) && quantityValue > 0 ? quantityValue : 1;
 
   const difficulty =
     typeof product.difficulty === "string" ? product.difficulty : undefined;
