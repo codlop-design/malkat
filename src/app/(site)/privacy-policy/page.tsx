@@ -27,10 +27,14 @@ export default async function PrivacyPolicyPage() {
               سياسة الخصوصية
             </h2>
 
-            <p className="whitespace-pre-line text-sm leading-relaxed text-[#454545] md:text-base">
-              {settings?.privacy_policy?.trim() ||
-                "سيتم إضافة سياسة الخصوصية قريباً."}
-            </p>
+            <p
+              className="whitespace-pre-line text-sm leading-relaxed text-[#454545] md:text-base"
+              dangerouslySetInnerHTML={{
+                __html:
+                  settings?.privacy_policy?.trim() ||
+                  "سيتم إضافة سياسة الخصوصية قريباً.",
+              }}
+            />
           </div>
         </div>
       </section>

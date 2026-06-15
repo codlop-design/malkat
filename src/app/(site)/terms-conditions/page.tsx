@@ -27,10 +27,14 @@ export default async function TermsConditionsPage() {
               الشروط والأحكام
             </h2>
 
-            <p className="whitespace-pre-line text-sm leading-relaxed text-[#454545] md:text-base">
-              {settings?.terms_and_conditions?.trim() ||
-                "سيتم إضافة الشروط والأحكام قريباً."}
-            </p>
+            <p
+              className="whitespace-pre-line text-sm leading-relaxed text-[#454545] md:text-base"
+              dangerouslySetInnerHTML={{
+                __html:
+                  settings?.terms_and_conditions?.trim() ||
+                  "سيتم إضافة الشروط والأحكام قريباً.",
+              }}
+            />
           </div>
         </div>
       </section>
