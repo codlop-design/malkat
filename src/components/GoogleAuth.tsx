@@ -1,9 +1,9 @@
 "use client";
 
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleOAuth } from "@react-oauth/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { completeLoginSuccess } from "@/src/features/auth/completeLoginSuccess";
@@ -15,8 +15,28 @@ const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 function GoogleAuthButton() {
   const router = useRouter();
   const auth = useAuth();
+  const { scriptLoadedSuccessfully } = useGoogleOAuth();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [buttonWidth, setButtonWidth] = useState(0);
   const [loading, setLoading] = useState(false);
-  const googleLoginRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) {
+      return;
+    }
+
+    const updateWidth = () => {
+      setButtonWidth(element.offsetWidth);
+    };
+
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
 
   async function handleGoogleCredential(credential: string) {
     setLoading(true);
@@ -29,55 +49,38 @@ function GoogleAuthButton() {
     }
   }
 
-  function handleGoogleClick() {
-    if (loading) return;
-
-    const googleButton = googleLoginRef.current?.querySelector(
-      '[role="button"]',
-    ) as HTMLElement | null;
-
-    if (!googleButton) {
-      toast.error("تعذر تحميل تسجيل الدخول عبر جوجل");
-      return;
-    }
-
-    googleButton.click();
-  }
-
   return (
-    <div className="relative w-full">
-      <button
-        type="button"
-        disabled={loading}
-        onClick={handleGoogleClick}
-        className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        <Image src="/google.svg" alt="" width={24} height={24} aria-hidden />
-        <span>{loading ? "جاري تسجيل الدخول..." : "متابعة باستخدام جوجل"}</span>
-      </button>
-
+    <div ref={containerRef} className="relative h-14 w-full">
       <div
-        ref={googleLoginRef}
-        className="pointer-events-none fixed top-0 left-[-9999px] opacity-0"
+        className="pointer-events-none flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-primary text-base font-medium text-[#000000]"
         aria-hidden
       >
-        <GoogleLogin
-          onSuccess={(response) => {
-            if (!response.credential) {
-              toast.error("تعذر الحصول على بيانات جوجل");
-              return;
-            }
-            void handleGoogleCredential(response.credential);
-          }}
-          onError={() => {
-            toast.error("تعذر تسجيل الدخول عبر جوجل");
-          }}
-          useOneTap={false}
-          type="standard"
-          size="large"
-          text="continue_with"
-        />
+        <Image src="/google.svg" alt="" width={24} height={24} />
+        <span>{loading ? "جاري تسجيل الدخول..." : "متابعة باستخدام جوجل"}</span>
       </div>
+
+      {buttonWidth > 0 && scriptLoadedSuccessfully && !loading ? (
+        <div className="absolute inset-0 z-10 overflow-hidden opacity-[0.01]">
+          <GoogleLogin
+            width={buttonWidth}
+            onSuccess={(response) => {
+              if (!response.credential) {
+                toast.error("تعذر الحصول على بيانات جوجل");
+                return;
+              }
+              void handleGoogleCredential(response.credential);
+            }}
+            onError={() => {
+              toast.error("تعذر تسجيل الدخول عبر جوجل");
+            }}
+            useOneTap={false}
+            type="standard"
+            size="large"
+            text="continue_with"
+            theme="outline"
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
