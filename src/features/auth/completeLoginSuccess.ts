@@ -32,7 +32,7 @@ export async function completeLoginSuccess(
   }
 
   toast.success(result.message);
-  router.replace("/profile");
+  router.replace("/");
   auth.endAuthTransition();
   router.refresh();
 
