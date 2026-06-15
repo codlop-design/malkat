@@ -102,8 +102,8 @@ const STATIC_ROUTES: Array<{
   { path: "/about", label: "من نحن", priority: 0.8, changeFrequency: "monthly" },
   { path: "/products", label: "المنتجات", priority: 0.9, changeFrequency: "daily" },
   { path: "/services", label: "الخدمات", priority: 0.8, changeFrequency: "weekly" },
-  { path: "/news", label: "الأخبار", priority: 0.8, changeFrequency: "daily" },
-  { path: "/news/all", label: "كل الأخبار", priority: 0.7, changeFrequency: "daily" },
+  { path: "/news", label: "الفعاليات", priority: 0.8, changeFrequency: "daily" },
+  { path: "/news/all", label: "كل الفعاليات", priority: 0.7, changeFrequency: "daily" },
   { path: "/contact", label: "تواصل معنا", priority: 0.6, changeFrequency: "monthly" },
   {
     path: "/register-your-interest",
@@ -226,7 +226,7 @@ export async function collectSitemapSections(): Promise<SitemapSection[]> {
 
   if (newsItems.length > 0) {
     sections.push({
-      title: "الأخبار",
+      title: "الفعاليات",
       links: newsItems.map((item) => ({
         href: `/news/all/${item.slug}`,
         label: item.title,

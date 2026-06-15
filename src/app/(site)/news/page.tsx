@@ -13,8 +13,8 @@ export default async function NewsPage() {
   return (
     <>
       <PageHeader
-        title="الأخبار"
-        breadcrumbs={[{ label: "الرئيسية", href: "/" }, { label: "الأخبار" }]}
+        title="الفعاليات"
+        breadcrumbs={[{ label: "الرئيسية", href: "/" }, { label: "الفعاليات" }]}
       />
       {hasNews ? (
         <>

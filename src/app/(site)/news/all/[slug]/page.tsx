@@ -30,7 +30,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
         title={detail.title}
         breadcrumbs={[
           { label: "الرئيسية", href: "/" },
-          { label: "الأخبار", href: "/news" },
+          { label: "الفعاليات", href: "/news" },
           { label: "الكل", href: "/news/all" },
           { label: detail.title },
         ]}

@@ -24,10 +24,10 @@ export default async function AllNewsPage({ searchParams }: PageProps) {
   return (
     <>
       <PageHeader
-        title="الأخبار"
+        title="الفعاليات"
         breadcrumbs={[
           { label: "الرئيسية", href: "/" },
-          { label: "الأخبار", href: "/news" },
+          { label: "الفعاليات", href: "/news" },
           { label: "الكل" },
         ]}
       />

@@ -10,6 +10,7 @@ import {
   AvatarImage,
 } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
+import { isQuantityAdjustableCategory } from "@/src/features/cart/lib/cartQuantity";
 import type { StoredCartItem } from "@/src/features/cart/types/cart-types";
 
 type CartLineItemProps = {
@@ -25,6 +26,8 @@ export default function CartLineItem({
   onRemove,
   showActions = true,
 }: CartLineItemProps) {
+  const canAdjustQuantity = isQuantityAdjustableCategory(item.category);
+
   return (
     <div className="space-y-4 border-t border-[#E5E5E5] pt-4">
       <div className="flex items-center gap-2">
@@ -97,10 +100,14 @@ export default function CartLineItem({
 
       {showActions ? (
         <div className="flex w-full items-center justify-between">
-          <QuantityControl
-            quantity={item.quantity}
-            onChange={(q) => onQuantityChange?.(q)}
-          />
+          {canAdjustQuantity ? (
+            <QuantityControl
+              quantity={item.quantity}
+              onChange={(q) => onQuantityChange?.(q)}
+            />
+          ) : (
+            <span className="text-sm text-[#717171]">الكمية: 1</span>
+          )}
           <Button
             variant="destructive"
             size="icon"

@@ -35,7 +35,7 @@ export default function LatestNewsSection({ articles }: LatestNewsSectionProps) 
             className="mb-8 flex items-center justify-between gap-4"
           >
             <h2 className="text-xl font-bold text-black md:text-2xl">
-              آخر الأخبار
+              آخر الفعاليات
             </h2>
             <Link
               href="/news/all"

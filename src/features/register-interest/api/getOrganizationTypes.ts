@@ -2,7 +2,7 @@ import { fetcher } from "@/src/lib/fetch";
 import type { LookupOption } from "@/src/features/register-interest/types";
 
 export async function getOrganizationTypes(): Promise<LookupOption[]> {
-  const response = await fetcher<LookupOption[]>("/orgnization-types");
+  const response = await fetcher<LookupOption[]>("/organization-types");
 
   if (!response?.success) {
     return [];

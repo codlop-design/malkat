@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -13,11 +14,13 @@ import {
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { getCategoryIcon } from "@/src/features/cart/data/categoryIcons";
+import { isQuantityAdjustableCategory } from "@/src/features/cart/lib/cartQuantity";
 import {
   buildCartItemId,
   readCartFromSession,
   writeCartToSession,
 } from "@/src/features/cart/lib/cartStorage";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import type {
   AddToCartPayload,
   CartItemCategory,
@@ -54,6 +57,28 @@ function groupCartItems(items: StoredCartItem[]): CartItemCategory[] {
   }));
 }
 
+function CartAuthSync() {
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { clearCart } = useCart();
+  const wasAuthenticatedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+
+    if (isAuthenticated) {
+      wasAuthenticatedRef.current = true;
+      return;
+    }
+
+    if (wasAuthenticatedRef.current) {
+      clearCart();
+      wasAuthenticatedRef.current = false;
+    }
+  }, [isAuthenticated, isAuthReady, clearCart]);
+
+  return null;
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<StoredCartItem[]>(() => readCartFromSession());
   const [isHydrated] = useState(true);
@@ -64,30 +89,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, isHydrated]);
 
   const addItem = useCallback((payload: AddToCartPayload, quantity = 1) => {
+    const canAdjustQuantity = isQuantityAdjustableCategory(payload.category);
+    const nextQuantity = canAdjustQuantity ? quantity : 1;
+
     setItems((current) => {
       const id = buildCartItemId(payload.category, payload.slug);
       const existing = current.find((item) => item.id === id);
 
       if (existing) {
+        if (!canAdjustQuantity) {
+          return current;
+        }
+
         return current.map((item) =>
           item.id === id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: item.quantity + nextQuantity }
             : item,
         );
       }
 
-      return [...current, { ...payload, id, quantity }];
+      return [...current, { ...payload, id, quantity: nextQuantity }];
     });
   }, []);
 
   const updateQuantity = useCallback((id: string, quantity: number) => {
     setItems((current) => {
-      if (quantity < 1) {
-        return current.filter((item) => item.id !== id);
+      const item = current.find((entry) => entry.id === id);
+      if (!item || !isQuantityAdjustableCategory(item.category)) {
+        return current;
       }
 
-      return current.map((item) =>
-        item.id === id ? { ...item, quantity } : item,
+      if (quantity < 1) {
+        return current.filter((entry) => entry.id !== id);
+      }
+
+      return current.map((entry) =>
+        entry.id === id ? { ...entry, quantity } : entry,
       );
     });
   }, []);
@@ -130,7 +167,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     ],
   );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      <CartAuthSync />
+      {children}
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

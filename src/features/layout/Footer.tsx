@@ -19,7 +19,7 @@ const quickLinks: FooterLink[] = [
   { label: "الرئيسية", href: "/" },
   { label: "من نحن", href: "/about" },
   { label: "المنتجات", href: "/products" },
-  { label: "الأخبار", href: "/news" },
+  { label: "الفعاليات", href: "/news" },
   { label: "تواصل معنا", href: "/contact" },
 ];
 
