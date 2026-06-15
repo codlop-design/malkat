@@ -8,13 +8,24 @@ import type { ProductReview } from "@/src/features/products/data/productDetail";
 
 type RateSource = CatalogSocialFields & { rate_average?: number | null };
 
+function toPositiveNumber(value: unknown): number {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
+function toNonNegativeInt(value: unknown): number {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : 0;
+}
+
 export function resolveCatalogRating(
   item: RateSource,
 ): Pick<CatalogItemBase, "rating" | "ratingCount"> {
   if (item.rate) {
+    const avgRate = toPositiveNumber(item.rate.avg_rate);
     return {
-      rating: item.rate.avg_rate > 0 ? item.rate.avg_rate : undefined,
-      ratingCount: item.rate.count,
+      rating: avgRate > 0 ? avgRate : undefined,
+      ratingCount: toNonNegativeInt(item.rate.count),
     };
   }
 
@@ -45,15 +56,15 @@ export function buildRatingMetaFromApi(
   averageRating: number;
   ratingLabel: string;
 } {
-  const averageRating =
-    rate?.avg_rate && rate.avg_rate > 0
-      ? rate.avg_rate
-      : legacyRating && legacyRating > 0
-        ? legacyRating
-        : 0;
+  const averageRating = rate
+    ? toPositiveNumber(rate.avg_rate)
+    : toPositiveNumber(legacyRating);
 
-  const reviewCount =
-    rate?.count ?? (averageRating > 0 && !rate ? 1 : 0);
+  const reviewCount = rate
+    ? toNonNegativeInt(rate.count)
+    : averageRating > 0
+      ? 1
+      : 0;
 
   return {
     reviewCount,
@@ -80,9 +91,9 @@ export function mapRatingBreakdown(
   }
 
   for (const item of breakdown) {
-    const index = 5 - item.star;
+    const index = 5 - toNonNegativeInt(item.star);
     if (index >= 0 && index <= 4) {
-      distribution[index] = item.count;
+      distribution[index] = toNonNegativeInt(item.count);
     }
   }
 
@@ -100,7 +111,7 @@ export function mapApiReviews(
     id: `${review.name}-${index}`,
     author: review.name,
     date: review.duration,
-    rating: review.rating,
+    rating: toNonNegativeInt(review.rating),
     text: review.comment,
   }));
 }

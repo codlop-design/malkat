@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BookOpen,
   Clock,
@@ -84,10 +84,15 @@ export default function ProductDetailPageContent({
   related,
 }: ProductDetailPageContentProps) {
   const { category, data } = product;
+  const [liveDetail, setLiveDetail] = useState(detail);
   const { isAuthenticated, isAuthReady } = useAuth();
   const { syncProductFavourite } = useFavourites();
   const imageFirst = category === "books" || category === "guides";
   const cartPayload = buildCartPayloadFromProduct(product);
+
+  useEffect(() => {
+    setLiveDetail(detail);
+  }, [detail]);
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
@@ -102,12 +107,12 @@ export default function ProductDetailPageContent({
   ]);
 
   const rating =
-    detail.averageRating > 0
-      ? detail.averageRating
+    liveDetail.averageRating > 0
+      ? liveDetail.averageRating
       : "rating" in data
         ? (data.rating ?? 0)
         : 0;
-  const reviewCount = detail.reviewCount;
+  const reviewCount = liveDetail.reviewCount;
 
   return (
     <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
@@ -142,23 +147,23 @@ export default function ProductDetailPageContent({
 
               <p
                 className="mt-4 text-sm leading-[1.9] text-[#454545] md:text-base"
-                dangerouslySetInnerHTML={{ __html: detail.longDescription }}
+                dangerouslySetInnerHTML={{ __html: liveDetail.longDescription }}
               ></p>
 
               {category === "books" && "author" in data ? (
-                <BookInfo data={data} detail={detail} />
+                <BookInfo data={data} detail={liveDetail} />
               ) : null}
               {category === "courses" && "instructorName" in data ? (
-                <CourseInfo data={data} detail={detail} />
+                <CourseInfo data={data} detail={liveDetail} />
               ) : null}
               {category === "activities" ? (
-                <ActivityInfo data={data} detail={detail} />
+                <ActivityInfo data={data} detail={liveDetail} />
               ) : null}
               {category === "services" ? (
-                <ServiceInfo data={data} detail={detail} />
+                <ServiceInfo data={data} detail={liveDetail} />
               ) : null}
               {category === "guides" ? (
-                <GuideInfo data={data} detail={detail} />
+                <GuideInfo data={data} detail={liveDetail} />
               ) : null}
 
               {category !== "courses" ? (
@@ -173,10 +178,10 @@ export default function ProductDetailPageContent({
               <div className="mt-6">
                 <Accordion
                   type="multiple"
-                  defaultValue={detail.accordions.map((_, i) => `item-${i}`)}
+                  defaultValue={liveDetail.accordions.map((_, i) => `item-${i}`)}
                   className="w-full"
                 >
-                  {detail.accordions.map((item, index) => (
+                  {liveDetail.accordions.map((item, index) => (
                     <AccordionItem key={item.title} value={`item-${index}`}>
                       <AccordionTrigger className="text-base font-medium text-black hover:no-underline">
                         {item.title}
@@ -202,9 +207,9 @@ export default function ProductDetailPageContent({
                   slug={data.slug}
                   cartPayload={cartPayload}
                 />
-                {category === "courses" && detail.courseFeatures ? (
+                {category === "courses" && liveDetail.courseFeatures ? (
                   <ul className="mt-6 flex flex-col gap-3">
-                    {detail.courseFeatures.map((feature) => (
+                    {liveDetail.courseFeatures.map((feature) => (
                       <li
                         key={feature}
                         className="flex items-center gap-2 text-sm text-[#454545]"
@@ -228,13 +233,13 @@ export default function ProductDetailPageContent({
           </div>
         </div>
 
-        {detail.chapters ? (
+        {liveDetail.chapters ? (
           <section className="mt-10">
             <h2 className="mb-5 text-xl font-bold text-black">
               محتويات الكتاب
             </h2>
             <ul className="flex flex-col gap-3">
-              {detail.chapters.map((chapter) => (
+              {liveDetail.chapters.map((chapter) => (
                 <li
                   key={chapter.number}
                   className="flex items-center gap-4 rounded-xl border border-[#E8E8E8] bg-white px-4 py-3"
@@ -251,13 +256,13 @@ export default function ProductDetailPageContent({
           </section>
         ) : null}
 
-        {detail.curriculum ? (
+        {liveDetail.curriculum ? (
           <section className="mt-10">
             <h2 className="mb-5 text-xl font-bold text-black">
               محتويات الدورة
             </h2>
             <Accordion type="multiple" className="flex flex-col gap-3">
-              {detail.curriculum.map((section) => (
+              {liveDetail.curriculum.map((section) => (
                 <AccordionItem
                   key={section.number}
                   value={`section-${section.number}`}
@@ -300,11 +305,11 @@ export default function ProductDetailPageContent({
           </section>
         ) : null}
 
-        {detail.learningPoints ? (
+        {liveDetail.learningPoints ? (
           <section className="mt-10 rounded-2xl border border-[#E8E8E8] bg-white p-6 md:p-8">
             <h2 className="mb-4 text-xl font-bold text-black">ما ستتعلمه</h2>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {detail.learningPoints.map((point) => (
+              {liveDetail.learningPoints.map((point) => (
                 <li
                   key={point}
                   className="text-sm leading-relaxed text-[#454545]"
@@ -316,10 +321,11 @@ export default function ProductDetailPageContent({
         ) : null}
 
         <ProductReviewsSection
-          detail={detail}
+          detail={liveDetail}
           title={REVIEWS_TITLE[category]}
           category={category}
           slug={data.slug}
+          onDetailUpdated={setLiveDetail}
         />
         <RelatedProductsSection products={related} />
       </div>

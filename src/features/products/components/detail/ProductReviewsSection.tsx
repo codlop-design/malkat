@@ -1,23 +1,29 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/src/components/ui/button";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { getProductDetailsClient } from "@/src/features/products/api/getProductDetailsClient";
 import { submitProductRate } from "@/src/features/products/api/submitProductRateClient";
 import ProductRatingModal from "@/src/features/products/components/detail/ProductRatingModal";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import {
+  isDetailRatingEqual,
+  mergeDetailRatingFields,
+  pickDetailRatingFields,
+} from "@/src/features/products/utils/productDetailRating";
 
 type ProductReviewsSectionProps = {
   detail: ProductDetailMeta;
   title?: string;
   category: CatalogSectionKey;
   slug: string;
+  onDetailUpdated?: (detail: ProductDetailMeta) => void;
 };
 
 const RATING_MODAL_TITLE: Record<CatalogSectionKey, string> = {
@@ -64,12 +70,36 @@ export default function ProductReviewsSection({
   title = "آراء القراء",
   category,
   slug,
+  onDetailUpdated,
 }: ProductReviewsSectionProps) {
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRated, setIsRated] = useState(Boolean(detail.isRated));
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setIsRated(Boolean(detail.isRated));
+  }, [detail.isRated]);
+
+  async function refreshDetailFromApi() {
+    const refreshed = await getProductDetailsClient(category, slug);
+    if (!refreshed) {
+      return;
+    }
+
+    const currentRating = pickDetailRatingFields(detail);
+    const freshRating = pickDetailRatingFields(refreshed.detail);
+
+    if (!isDetailRatingEqual(currentRating, freshRating)) {
+      onDetailUpdated?.(mergeDetailRatingFields(detail, freshRating));
+      return;
+    }
+
+    if (freshRating.isRated) {
+      onDetailUpdated?.(mergeDetailRatingFields(detail, freshRating));
+    }
+  }
 
   const maxCount = Math.max(...detail.ratingDistribution, 1);
   const hasReviews = detail.reviews.length > 0;
@@ -109,6 +139,7 @@ export default function ProductReviewsSection({
       toast.success(result.message);
       setIsRated(true);
       setIsModalOpen(false);
+      await refreshDetailFromApi();
       router.refresh();
     });
   }
