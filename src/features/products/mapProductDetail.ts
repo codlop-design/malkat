@@ -4,7 +4,7 @@ import type {
   ProductChapter,
 } from "@/src/features/products/data/productDetail";
 import {
-  buildRatingMetaFromApi,
+  buildDetailRatingMeta,
   resolveDetailSocialFields,
 } from "@/src/features/products/utils/catalogSocial";
 import {
@@ -18,6 +18,7 @@ import type { CatalogSectionKey } from "@/src/features/products/types";
 import type {
   ActivityDetailsApi,
   BookDetailsApi,
+  CatalogRate,
   CourseDetailsApi,
   EvidenceDetailsApi,
   ProductDetailsApiPayload,
@@ -29,8 +30,15 @@ export type ProductDetailView = {
   detail: ProductDetailMeta;
 };
 
-const EMPTY_REVIEWS: ProductDetailMeta["reviews"] = [];
-const EMPTY_DISTRIBUTION = [0, 0, 0, 0, 0];
+function buildRatingMeta(
+  rate?: CatalogRate | null,
+  legacyRating?: number | null,
+): Pick<
+  ProductDetailMeta,
+  "reviewCount" | "averageRating" | "ratingLabel" | "ratingDistribution" | "reviews"
+> {
+  return buildDetailRatingMeta(rate, legacyRating);
+}
 
 function languageLabel(code: string): string {
   if (code === "ar") return "العربية";
@@ -66,27 +74,6 @@ function mapFeatures(items: unknown[]): string[] | undefined {
   return items.map((item) =>
     typeof item === "string" ? item : String((item as { title?: string }).title ?? item),
   );
-}
-
-function buildRatingMeta(
-  rate?: { avg_rate: number; count: number } | null,
-  legacyRating?: number | null,
-): Pick<
-  ProductDetailMeta,
-  "reviewCount" | "averageRating" | "ratingLabel" | "ratingDistribution" | "reviews"
-> {
-  const { reviewCount, averageRating, ratingLabel } = buildRatingMetaFromApi(
-    rate,
-    legacyRating,
-  );
-
-  return {
-    reviewCount,
-    averageRating,
-    ratingLabel,
-    ratingDistribution: EMPTY_DISTRIBUTION,
-    reviews: EMPTY_REVIEWS,
-  };
 }
 
 function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {

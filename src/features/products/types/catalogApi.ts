@@ -12,9 +12,23 @@ export interface ServiceContributor extends ProductContributor {
   id?: number;
 }
 
+export interface CatalogRatingBreakdownItem {
+  star: number;
+  count: number;
+}
+
+export interface CatalogReviewApiItem {
+  name: string;
+  duration: string;
+  comment: string;
+  rating: number;
+}
+
 export interface CatalogRate {
   avg_rate: number;
   count: number;
+  rating_breakdown?: CatalogRatingBreakdownItem[];
+  reviews?: CatalogReviewApiItem[];
 }
 
 export interface CatalogSocialFields {
