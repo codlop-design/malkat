@@ -48,11 +48,11 @@ const REVIEWS_TITLE: Record<CatalogSectionKey, string> = {
 };
 
 const CART_LABEL: Record<CatalogSectionKey, string> = {
-  books: "إضافة للسلة",
-  activities: "حجز النشاط",
-  courses: "إضافة للسلة",
-  services: "طلب الخدمة",
-  guides: "تحميل الدليل",
+  books: "طلب المنتج",
+  activities: "طلب المنتج",
+  courses: "طلب المنتج",
+  services: "طلب المنتج",
+  guides: "طلب المنتج",
 };
 
 type ProductDetailPageContentProps = {

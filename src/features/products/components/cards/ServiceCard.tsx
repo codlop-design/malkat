@@ -57,7 +57,7 @@ export default function ServiceCard({
       <CardMedia
         imageSrc={imageSrc}
         href={href}
-        cartLabel="طلب الخدمة"
+        cartLabel="طلب المنتج"
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}

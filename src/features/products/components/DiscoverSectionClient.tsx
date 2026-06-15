@@ -29,8 +29,10 @@ type SectionConfig = {
   renderSlide: (item: CatalogListItem) => ReactNode;
 };
 
+type DiscoverSectionKey = Exclude<CatalogSectionKey, "services">;
+
 const SECTION_META: Record<
-  CatalogSectionKey,
+  DiscoverSectionKey,
   Pick<SectionConfig, "title" | "viewAllHref">
 > = {
   books: {
@@ -38,16 +40,12 @@ const SECTION_META: Record<
     viewAllHref: categoryListingHref("books"),
   },
   activities: {
-    title: "الأنشطة",
+    title: "الأنشطة و التدريبات",
     viewAllHref: categoryListingHref("activities"),
   },
   courses: {
-    title: "الدورات",
+    title: "البرامج",
     viewAllHref: categoryListingHref("courses"),
-  },
-  services: {
-    title: "الخدمات",
-    viewAllHref: "/services",
   },
   guides: {
     title: "أدلة إجرائية",
@@ -69,7 +67,10 @@ export default function DiscoverSectionClient({
   const { syncCatalogList } = useFavourites();
 
   const visibleSections = useMemo(
-    () => VISIBLE_BY_CATEGORY[category],
+    () =>
+      VISIBLE_BY_CATEGORY[category].filter(
+        (key): key is DiscoverSectionKey => key !== "services",
+      ),
     [category],
   );
 
@@ -82,14 +83,14 @@ export default function DiscoverSectionClient({
             catalogItems[key].total,
           ]),
         ) as Record<CatalogSectionKey, number>,
-      ),
+      ).filter((category) => category.id !== "services"),
     [catalogItems],
   );
 
   const catalogSections = useMemo(
     () =>
       Object.fromEntries(
-        (Object.keys(SECTION_META) as CatalogSectionKey[]).map((key) => [
+        (Object.keys(SECTION_META) as DiscoverSectionKey[]).map((key) => [
           key,
           {
             ...SECTION_META[key],
@@ -98,7 +99,7 @@ export default function DiscoverSectionClient({
               renderCatalogCard(key, item),
           },
         ]),
-      ) as Record<CatalogSectionKey, SectionConfig>,
+      ) as Record<DiscoverSectionKey, SectionConfig>,
     [catalogItems],
   );
 
@@ -120,7 +121,7 @@ export default function DiscoverSectionClient({
                 اكتشف عالماً من المحتوى التعليمي الممتع
               </h1>
               <p className="text-base leading-[1.85] text-[#454545] md:text-lg">
-                تصفّح الكتب والأنشطة والدورات والمنتجات المصممة لتنمية مهارات
+                تصفّح الكتب والأنشطة والبرامج والمنتجات المصممة لتنمية مهارات
                 الأطفال بطريقة عصرية وتفاعلية.
               </p>
             </div>

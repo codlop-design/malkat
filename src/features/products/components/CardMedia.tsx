@@ -22,7 +22,7 @@ type CardMediaProps = {
 export default function CardMedia({
   imageSrc,
   href = "#",
-  cartLabel = "إضافة للسلة",
+  cartLabel = "طلب المنتج",
   category,
   slug,
   onFavouriteChange,

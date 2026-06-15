@@ -127,8 +127,8 @@ const STATIC_ROUTES: Array<{
 
 const CATEGORY_LABELS: Record<CatalogSectionKey, string> = {
   books: "الكتب",
-  activities: "الأنشطة",
-  courses: "الدورات",
+  activities: "الأنشطة و التدريبات",
+  courses: "البرامج",
   services: "الخدمات",
   guides: "أدلة إجرائية",
 };

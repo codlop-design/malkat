@@ -7,8 +7,8 @@ export type CategoryMeta = {
 
 export const CATEGORY_META: Record<CatalogSectionKey, CategoryMeta> = {
   books: { label: "الكتب", searchPlaceholder: "ابحث عن كتاب..." },
-  activities: { label: "الأنشطة", searchPlaceholder: "ابحث عن نشاط..." },
-  courses: { label: "الدورات", searchPlaceholder: "ابحث عن دورة..." },
+  activities: { label: "الأنشطة و التدريبات", searchPlaceholder: "ابحث عن نشاط..." },
+  courses: { label: "البرامج", searchPlaceholder: "ابحث عن دورة..." },
   services: { label: "الخدمات", searchPlaceholder: "ابحث عن خدمة..." },
   guides: { label: "أدلة إجرائية", searchPlaceholder: "ابحث عن دليل..." },
 };

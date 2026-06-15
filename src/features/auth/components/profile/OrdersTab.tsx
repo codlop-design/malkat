@@ -135,9 +135,9 @@ function OrderRow({ order }: { order: OrderListItem }) {
     items: unknown[];
   }> = [
     { key: "books" as const, label: "الكتب", items: books },
-    { key: "courses" as const, label: "الدورات", items: courses },
+    { key: "courses" as const, label: "البرامج", items: courses },
     { key: "services" as const, label: "الخدمات", items: services },
-    { key: "activities" as const, label: "الأنشطة", items: activities },
+    { key: "activities" as const, label: "الأنشطة و التدريبات", items: activities },
   ].filter((s) => s.items.length > 0);
 
   return (

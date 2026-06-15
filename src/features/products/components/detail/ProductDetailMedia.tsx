@@ -23,7 +23,7 @@ type ProductDetailMediaProps = {
 export default function ProductDetailMedia({
   imageSrc,
   title,
-  cartLabel = "إضافة للسلة",
+  cartLabel = "طلب المنتج",
   category,
   slug,
   cartPayload,

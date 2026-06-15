@@ -53,7 +53,7 @@ export default function GuideCard({
       <CardMedia
         imageSrc={imageSrc}
         href={href}
-        cartLabel="تحميل الدليل"
+        cartLabel="طلب المنتج"
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}

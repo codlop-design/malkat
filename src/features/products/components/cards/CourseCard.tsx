@@ -68,7 +68,7 @@ export default function CourseCard({
       <CardMedia
         imageSrc={imageSrc}
         href={href}
-        cartLabel="عرض الدورة"
+        cartLabel="طلب المنتج"
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}

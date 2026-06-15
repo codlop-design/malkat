@@ -4,9 +4,8 @@ import type { ProductCategoryId } from "@/src/features/products/types";
 export const PRODUCT_CATEGORY_OPTIONS = [
   { id: "all", icon: "✨", label: "الكل" },
   { id: "books", icon: "📚", label: "الكتب" },
-  { id: "activities", icon: "🎮", label: "الأنشطة" },
-  { id: "courses", icon: "🎓", label: "الدورات" },
-  { id: "services", icon: "💼", label: "الخدمات" },
+  { id: "activities", icon: "🎮", label: "الأنشطة و التدريبات" },
+  { id: "courses", icon: "🎓", label: "البرامج" },
   { id: "guides", icon: "📖", label: "أدلة إجرائية" },
 ] as const satisfies readonly Omit<
   CategoryFilterItem<ProductCategoryId>,

@@ -25,8 +25,8 @@ const quickLinks: FooterLink[] = [
 
 const educationalLinks: FooterLink[] = [
   { label: "الكتب", href: "/products/books" },
-  { label: "الأنشطة", href: "/products/activities" },
-  { label: "الدورات", href: "/products/courses" },
+  { label: "الأنشطة و التدريبات", href: "/products/activities" },
+  { label: "البرامج", href: "/products/courses" },
   { label: "الخدمات", href: "/products/services" },
   { label: "أدلة إجرائية", href: "/products/guides" },
 ];

@@ -20,7 +20,7 @@ export default function AddToCartButton({
   payload,
   className,
   iconSize = 20,
-  label = "إضافة للسلة",
+  label = "طلب المنتج",
   variant = "icon",
 }: AddToCartButtonProps) {
   const { addItem } = useCart();
@@ -30,7 +30,7 @@ export default function AddToCartButton({
     event.stopPropagation();
 
     addItem(payload);
-    toast.success("تمت الإضافة إلى السلة");
+    toast.success("تم طلب المنتج");
   }
 
   if (variant === "button") {

@@ -56,7 +56,7 @@ export default function ActivityCard({
       <CardMedia
         imageSrc={imageSrc}
         href={href}
-        cartLabel="حجز النشاط"
+        cartLabel="طلب المنتج"
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}
