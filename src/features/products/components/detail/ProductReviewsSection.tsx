@@ -7,16 +7,11 @@ import { toast } from "sonner";
 
 import { Button } from "@/src/components/ui/button";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
-import { getProductDetailsClient } from "@/src/features/products/api/getProductDetailsClient";
+import { fetchProductDetailRatingUpdate } from "@/src/features/products/api/fetchProductDetailRating";
 import { submitProductRate } from "@/src/features/products/api/submitProductRateClient";
 import ProductRatingModal from "@/src/features/products/components/detail/ProductRatingModal";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import type { CatalogSectionKey } from "@/src/features/products/types";
-import {
-  isDetailRatingEqual,
-  mergeDetailRatingFields,
-  pickDetailRatingFields,
-} from "@/src/features/products/utils/productDetailRating";
 
 type ProductReviewsSectionProps = {
   detail: ProductDetailMeta;
@@ -83,21 +78,9 @@ export default function ProductReviewsSection({
   }, [detail.isRated]);
 
   async function refreshDetailFromApi() {
-    const refreshed = await getProductDetailsClient(category, slug);
-    if (!refreshed) {
-      return;
-    }
-
-    const currentRating = pickDetailRatingFields(detail);
-    const freshRating = pickDetailRatingFields(refreshed.detail);
-
-    if (!isDetailRatingEqual(currentRating, freshRating)) {
-      onDetailUpdated?.(mergeDetailRatingFields(detail, freshRating));
-      return;
-    }
-
-    if (freshRating.isRated) {
-      onDetailUpdated?.(mergeDetailRatingFields(detail, freshRating));
+    const next = await fetchProductDetailRatingUpdate(category, slug, detail);
+    if (next) {
+      onDetailUpdated?.(next);
     }
   }
 

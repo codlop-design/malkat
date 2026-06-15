@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   Clock,
@@ -31,6 +31,7 @@ import type { GuideCardProps } from "@/src/features/products/components/cards/Gu
 import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
+import { useClientProductDetailRating } from "@/src/features/products/hooks/useClientProductDetailRating";
 import ProductDetailMedia from "@/src/features/products/components/detail/ProductDetailMedia";
 import ProductReviewsSection from "@/src/features/products/components/detail/ProductReviewsSection";
 import RelatedProductsSection from "@/src/features/products/components/detail/RelatedProductsSection";
@@ -38,6 +39,9 @@ import { RatingBadge } from "@/src/features/products/components/CardMedia";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { LucideIcon } from "lucide-react";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
+import {
+  pickDetailRatingFields,
+} from "@/src/features/products/utils/productDetailRating";
 
 const REVIEWS_TITLE: Record<CatalogSectionKey, string> = {
   books: "آراء القراء",
@@ -89,10 +93,36 @@ export default function ProductDetailPageContent({
   const { syncProductFavourite } = useFavourites();
   const imageFirst = category === "books" || category === "guides";
   const cartPayload = buildCartPayloadFromProduct(product);
+  const slug = data.slug;
+  const lastSlugRef = useRef(slug);
 
   useEffect(() => {
-    setLiveDetail(detail);
-  }, [detail]);
+    const slugChanged = lastSlugRef.current !== slug;
+    lastSlugRef.current = slug;
+
+    if (slugChanged) {
+      setLiveDetail(detail);
+      return;
+    }
+
+    setLiveDetail((current) => {
+      const clientHasRicherReviews =
+        current.reviewCount > detail.reviewCount ||
+        current.reviews.length > detail.reviews.length;
+
+      if (clientHasRicherReviews) {
+        return { ...detail, ...pickDetailRatingFields(current) };
+      }
+
+      return detail;
+    });
+  }, [detail, slug]);
+
+  useClientProductDetailRating({
+    category,
+    slug,
+    onDetailUpdated: setLiveDetail,
+  });
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
