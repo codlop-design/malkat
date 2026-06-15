@@ -142,15 +142,6 @@ export default function ProductReviewsSection({
                 لا توجد تقييمات بعد. كن أول من يقيّم هذا المنتج.
               </div>
             )}
-
-            {hasReviews ? (
-              <Link
-                href="#"
-                className="text-center text-sm font-medium text-primary hover:underline"
-              >
-                عرض الكل
-              </Link>
-            ) : null}
           </div>
 
           <div className="flex w-full shrink-0 flex-col items-center gap-5 rounded-2xl border border-[#E8E8E8] bg-[#FAFAFA] p-6 lg:w-[280px]">
