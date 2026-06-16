@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import type { AuthUser } from "@/src/features/auth/types";
 import HeaderAuthControl from "@/src/features/auth/components/HeaderAuthControl";
+import { useSettings } from "@/src/features/settings";
 import NavLinks from "./NavLinks";
 
 type SideMenuProps = {
@@ -22,6 +23,10 @@ export default function SideMenu({
   pathname,
   authUser,
 }: SideMenuProps) {
+  const settings = useSettings();
+  const logoSrc = settings?.logo ?? "/logo.png";
+  const logoAlt = settings?.title ?? "Logo";
+
   return (
     <AnimatePresence>
       {menuOpen && (
@@ -55,11 +60,12 @@ export default function SideMenu({
             <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-4">
               <Link href="/" onClick={closeMenu}>
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
+                  src={logoSrc}
+                  alt={logoAlt}
                   width={100}
                   height={40}
                   className="h-auto w-auto object-contain"
+                  unoptimized={logoSrc.startsWith("http")}
                 />
               </Link>
               
