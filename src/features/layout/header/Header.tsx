@@ -55,7 +55,7 @@ export default function Header({ authUser }: HeaderProps) {
         <div className="container">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 md:gap-12">
+              <div className="flex items-center gap-0 md:gap-12">
                 <button
                   type="button"
                   className="flex size-10 cursor-pointer items-center justify-center md:hidden"
