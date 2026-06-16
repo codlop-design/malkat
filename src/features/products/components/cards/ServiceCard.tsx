@@ -5,7 +5,6 @@ import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
 import {
-  productDetailHref,
   resolveProductHref,
   type CatalogSectionKey,
 } from "@/src/features/products/types";
@@ -30,12 +29,11 @@ export default function ServiceCard({
   tags = ["مجانية", "أونلاين", "للآباء"],
   rating,
   ratingCount,
-  isFavourite = false,
   onFavouriteChange,
 }: ServiceCardProps) {
   const href =
     category === "services"
-      ? productDetailHref("services", slug)
+      ? `/services/${slug}`
       : category != null
         ? resolveProductHref(category, slug, hrefProp)
         : (hrefProp ?? "#");
