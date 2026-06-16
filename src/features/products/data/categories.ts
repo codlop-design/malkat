@@ -15,7 +15,9 @@ export const PRODUCT_CATEGORY_OPTIONS = [
 export function buildProductCategories(
   totals: Record<Exclude<ProductCategoryId, "all">, number>,
 ): CategoryFilterItem<ProductCategoryId>[] {
-  const allTotal = Object.values(totals).reduce((sum, count) => sum + count, 0);
+  // "services" are not shown in the products filter UI, so exclude them from "all".
+  const allTotal =
+    totals.books + totals.activities + totals.courses + totals.guides;
 
   return PRODUCT_CATEGORY_OPTIONS.map(({ id, icon, label }) => ({
     id,

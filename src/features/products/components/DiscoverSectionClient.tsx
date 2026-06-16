@@ -81,6 +81,7 @@ export default function DiscoverSectionClient({
           books: catalogItems.books.total,
           activities: catalogItems.activities.total,
           courses: catalogItems.courses.total,
+          services: catalogItems.services.total,
           guides: catalogItems.guides.total,
         },
       ),
