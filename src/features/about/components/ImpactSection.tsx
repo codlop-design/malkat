@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -22,6 +23,11 @@ export default function ImpactSection({ impact }: ImpactSectionProps) {
     return null;
   }
 
+  const iconSrc =
+    typeof impact.icon === "string" && impact.icon.trim()
+      ? impact.icon
+      : "/impact.svg";
+
   return (
     <section className="bg-[#F5F5F5] py-14 md:py-16 lg:py-20">
       <div className="container">
@@ -32,6 +38,16 @@ export default function ImpactSection({ impact }: ImpactSectionProps) {
           viewport={motionViewport}
           variants={staggerContainer()}
         >
+          <motion.div variants={fadeUp} className="mb-4 flex justify-center">
+            <Image
+              src={iconSrc}
+              alt=""
+              width={48}
+              height={48}
+              className="h-auto w-12 object-contain"
+              unoptimized={iconSrc.startsWith("http")}
+            />
+          </motion.div>
           <motion.h2
             variants={fadeUp}
             className="text-2xl font-bold text-black md:text-3xl lg:text-[32px]"

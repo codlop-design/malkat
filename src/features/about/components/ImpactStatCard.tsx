@@ -36,7 +36,7 @@ export default function ImpactStatCard({
             alt=""
             width={28}
             height={28}
-            className="size-7 object-contain brightness-0 invert"
+            className="size-7 object-contain"
             aria-hidden
           />
         ) : (
