@@ -21,9 +21,9 @@ const FAVOURITE_CATEGORIES: ReadonlyArray<{
   label: string;
 }> = [
   { id: "books", label: "كتب" },
-  { id: "courses", label: "دورات" },
+  { id: "courses", label: "برامج" },
   { id: "services", label: "خدمات" },
-  { id: "activities", label: "أنشطة" },
+  { id: "activities", label: "أنشطة وتدريبات" },
   { id: "guides", label: "أدلة" },
 ];
 
