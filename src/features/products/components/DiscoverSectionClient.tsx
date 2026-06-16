@@ -77,13 +77,13 @@ export default function DiscoverSectionClient({
   const filterCategories = useMemo(
     () =>
       buildProductCategories(
-        Object.fromEntries(
-          (Object.keys(catalogItems) as CatalogSectionKey[]).map((key) => [
-            key,
-            catalogItems[key].total,
-          ]),
-        ) as Record<CatalogSectionKey, number>,
-      ).filter((category) => category.id !== "services"),
+        {
+          books: catalogItems.books.total,
+          activities: catalogItems.activities.total,
+          courses: catalogItems.courses.total,
+          guides: catalogItems.guides.total,
+        },
+      ),
     [catalogItems],
   );
 
