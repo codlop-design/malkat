@@ -12,7 +12,7 @@ export default function ContactDetailCard({ item }: ContactDetailCardProps) {
   return (
     <motion.div
       variants={fadeUp}
-      className="flex items-center gap-4 rounded-2xl bg-[#E8F6F4] px-5 py-4"
+      className="flex items-center gap-4 rounded-2xl bg-[#E8F6F4] px-5 py-4 w-full"
     >
       <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white">
         <item.icon
