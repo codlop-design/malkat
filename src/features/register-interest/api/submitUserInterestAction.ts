@@ -35,7 +35,7 @@ export async function submitUserInterestAction(
   formData.append("message", data.message);
 
   if (data.interested_applicant_types === "organization") {
-    formData.append("orgnization_type_id", data.orgnization_type_id);
+    formData.append("organization_type_id", data.organization_type_id);
     formData.append("parternes_type_id", data.parternes_type_id);
   }
 

@@ -33,7 +33,7 @@ export async function submitPartnershipRequestAction(
   formData.append("phone_code", "966");
   formData.append("phone", data.phone);
   formData.append("email", data.email);
-  formData.append("orgnization_type_id", data.entityType);
+  formData.append("organization_type_id", data.entityType);
   formData.append("parternes_type_id", data.partnershipType);
   formData.append("organization_about", data.aboutEntity);
   formData.append("partnership_details", data.partnershipDetails);

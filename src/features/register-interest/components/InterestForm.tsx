@@ -27,7 +27,7 @@ function buildDefaultValues(
   if (applicantType === "organization") {
     return {
       interested_applicant_types: "organization",
-      orgnization_type_id: "",
+      organization_type_id: "",
       parternes_type_id: "",
       ...shared,
     };
@@ -175,7 +175,7 @@ export default function InterestForm({
         {isOrganization ? (
           <div className="grid gap-5 sm:grid-cols-2">
             <Controller
-              name="orgnization_type_id"
+              name="organization_type_id"
               control={control}
               render={({ field }) => (
                 <SelectField
@@ -185,8 +185,8 @@ export default function InterestForm({
                   value={field.value}
                   onValueChange={field.onChange}
                   error={
-                    "orgnization_type_id" in errors
-                      ? errors.orgnization_type_id?.message
+                    "organization_type_id" in errors
+                      ? errors.organization_type_id?.message
                       : undefined
                   }
                   disabled={isSubmitting || organizationTypeOptions.length === 0}

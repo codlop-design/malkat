@@ -16,7 +16,7 @@ const sharedFields = {
 
 export const interestOrganizationSchema = z.object({
   interested_applicant_types: z.literal("organization"),
-  orgnization_type_id: z.string().min(1, "يرجى اختيار نوع الجهة"),
+  organization_type_id: z.string().min(1, "يرجى اختيار نوع الجهة"),
   parternes_type_id: z.string().min(1, "يرجى اختيار نوع الشراكة"),
   ...sharedFields,
 });
