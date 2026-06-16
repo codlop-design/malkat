@@ -26,7 +26,7 @@ export default function ContactInfoPanel() {
       viewport={motionViewport}
       variants={staggerContainer(0.1, 0.1)}
     >
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         {contactDetails.map((item) => (
           <ContactDetailCard key={item.label} item={item} />
         ))}
