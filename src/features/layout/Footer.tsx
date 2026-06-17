@@ -28,7 +28,7 @@ const educationalLinks: FooterLink[] = [
   { label: "الأنشطة و التدريبات", href: "/products/activities" },
   { label: "البرامج", href: "/products/courses" },
   { label: "الخدمات", href: "/products/services" },
-  { label: "أدلة إجرائية", href: "/products/guides" },
+  { label: "الأدلة إجرائية", href: "/products/guides" },
 ];
 
 const supportLinks: FooterLink[] = [

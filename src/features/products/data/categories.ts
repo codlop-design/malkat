@@ -6,7 +6,7 @@ export const PRODUCT_CATEGORY_OPTIONS = [
   { id: "courses", icon: "🎓", label: "البرامج" },
   { id: "books", icon: "📚", label: "الكتب" },
   { id: "activities", icon: "🎮", label: "الأنشطة و التدريبات" },
-  { id: "guides", icon: "📖", label: "أدلة إجرائية" },
+  { id: "guides", icon: "📖", label: "الأدلة إجرائية" },
 ] as const satisfies readonly Omit<
   CategoryFilterItem<ProductCategoryId>,
   "count"

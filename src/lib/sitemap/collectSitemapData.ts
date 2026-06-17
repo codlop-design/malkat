@@ -130,7 +130,7 @@ const CATEGORY_LABELS: Record<CatalogSectionKey, string> = {
   activities: "الأنشطة و التدريبات",
   courses: "البرامج",
   services: "الخدمات",
-  guides: "أدلة إجرائية",
+  guides: "الأدلة إجرائية",
 };
 
 export async function collectSitemapEntries(): Promise<MetadataRoute.Sitemap> {

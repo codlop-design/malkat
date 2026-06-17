@@ -10,7 +10,7 @@ export const CATEGORY_META: Record<CatalogSectionKey, CategoryMeta> = {
   activities: { label: "الأنشطة و التدريبات", searchPlaceholder: "ابحث عن نشاط..." },
   courses: { label: "البرامج", searchPlaceholder: "ابحث عن برنامج..." },
   services: { label: "الخدمات", searchPlaceholder: "ابحث عن خدمة..." },
-  guides: { label: "أدلة إجرائية", searchPlaceholder: "ابحث عن دليل..." },
+  guides: { label: "الأدلة إجرائية", searchPlaceholder: "ابحث عن دليل..." },
 };
 
 export const CATALOG_SECTION_KEYS = Object.keys(

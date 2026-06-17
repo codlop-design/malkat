@@ -48,7 +48,7 @@ const SECTION_META: Record<
     viewAllHref: categoryListingHref("courses"),
   },
   guides: {
-    title: "أدلة إجرائية",
+    title: "الأدلة إجرائية",
     viewAllHref: categoryListingHref("guides"),
   },
 };
