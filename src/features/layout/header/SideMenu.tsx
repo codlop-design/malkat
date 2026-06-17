@@ -57,14 +57,14 @@ export default function SideMenu({
             }}
             className="fixed inset-y-0 inset-s-0 z-70 flex w-[min(320px,88vw)] flex-col bg-white shadow-[8px_0_32px_rgba(0,0,0,0.12)] md:hidden"
           >
-            <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-4">
-              <Link href="/" onClick={closeMenu}>
+            <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-3">
+              <Link href="/" onClick={closeMenu} className="shrink-0">
                 <Image
                   src={logoSrc}
                   alt={logoAlt}
-                  width={100}
-                  height={40}
-                  className="h-auto w-auto object-contain"
+                  width={88}
+                  height={32}
+                  className="h-8 w-auto max-w-[88px] object-contain"
                   unoptimized={logoSrc.startsWith("http")}
                 />
               </Link>
