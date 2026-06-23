@@ -161,12 +161,9 @@ export default function CourseStagesSection({
                           </div>
                         </div>
 
-                        <div className="flex shrink-0 flex-wrap gap-2 sm:justify-end">
+                        <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
                           {isUnlocked && lesson.fileUrl ? (
-                            <Button
-                              asChild
-                              className="h-10 min-w-30 px-4"
-                            >
+                            <Button asChild className="h-10 min-w-30 px-4">
                               <a
                                 href={lesson.fileUrl}
                                 target="_blank"
@@ -185,27 +182,25 @@ export default function CourseStagesSection({
                             </Button>
                           )}
 
-                          {lesson.hasQuiz ? (
-                            isUnlocked ? (
-                              <Button
-                                asChild
-                                variant="outline"
-                                className="h-10 min-w-30 border-primary px-4 text-primary hover:bg-[#E0F5F3]"
-                              >
-                                <Link href={quizHref}>
-                                  {lesson.isPassed ? "إعادة الاختبار" : "الإختبار"}
-                                </Link>
-                              </Button>
-                            ) : (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                disabled
-                                className="h-10 min-w-30 border-primary/30 px-4 text-primary/40"
-                              >
-                                الإختبار
-                              </Button>
-                            )
+                          {lesson.hasQuiz && isUnlocked ? (
+                            <Button
+                              asChild
+                              variant="outline"
+                              className="h-10 min-w-30 border-primary px-4 text-primary hover:bg-[#E0F5F3]"
+                            >
+                              <Link href={quizHref}>
+                                {lesson.isPassed ? "إعادة الاختبار" : "الإختبار"}
+                              </Link>
+                            </Button>
+                          ) : lesson.hasQuiz ? (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              disabled
+                              className="h-10 min-w-30 border-primary/30 px-4 text-primary/40"
+                            >
+                              الإختبار
+                            </Button>
                           ) : null}
                         </div>
                       </li>

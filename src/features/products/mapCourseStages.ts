@@ -23,7 +23,7 @@ function mapLesson(
     subtitle: lesson.subtitle ?? lesson.description ?? "",
     type: lesson.type ?? "file",
     isLocked: lesson.is_locked,
-    hasQuiz: lesson.has_quiz,
+    hasQuiz: lesson.has_quiz !== false,
     isPassed: lesson.is_passed ?? false,
     fileUrl: lesson.file ?? null,
   };
