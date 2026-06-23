@@ -45,12 +45,12 @@ export async function submitCourseQuizClient(
   console.log("[CourseQuiz] submit request", {
     slug,
     lessonId,
-    url: `/courses/${slug}/lessons/${lessonId}/quiz`,
+    url: `/courses/${slug}/lessons/${lessonId}/quiz/submit`,
     body: requestBody,
   });
 
   const { data, status } = await apiClient.post<CourseQuizSubmitApiResponse>(
-    `/courses/${slug}/lessons/${lessonId}/quiz`,
+    `/courses/${slug}/lessons/${lessonId}/quiz/submit`,
     requestBody,
     { validateStatus: () => true },
   );
