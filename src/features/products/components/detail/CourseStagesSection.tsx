@@ -183,18 +183,9 @@ export default function CourseStagesSection({
 
                           {lesson.hasQuiz && isUnlocked ? (
                             lesson.isPassed ? (
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className="inline-flex h-10 items-center rounded-xl bg-[#E8F7EF] px-4 text-sm font-medium text-[#22A06B]">
-                                  اجتزت الاختبار ✓
-                                </span>
-                                <Button
-                                  asChild
-                                  variant="outline"
-                                  className="h-10 min-w-30 border-[#E8E8E8] px-4 text-[#717171] hover:bg-[#FAFAFA]"
-                                >
-                                  <Link href={quizHref}>إعادة الاختبار</Link>
-                                </Button>
-                              </div>
+                              <span className="inline-flex h-10 items-center rounded-xl bg-[#E8F7EF] px-4 text-sm font-medium text-[#22A06B]">
+                                اجتزت الاختبار ✓
+                              </span>
                             ) : (
                               <Button
                                 asChild
