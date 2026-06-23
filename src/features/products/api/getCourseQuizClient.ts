@@ -40,15 +40,34 @@ export async function submitCourseQuizClient(
 ): Promise<CourseQuizSubmitResult | null> {
   await ensureCsrfCookie();
 
+  const requestBody = { answers };
+
+  console.log("[CourseQuiz] submit request", {
+    slug,
+    lessonId,
+    url: `/courses/${slug}/lessons/${lessonId}/quiz`,
+    body: requestBody,
+  });
+
   const { data, status } = await apiClient.post<CourseQuizSubmitApiResponse>(
     `/courses/${slug}/lessons/${lessonId}/quiz`,
-    { answers },
+    requestBody,
     { validateStatus: () => true },
   );
 
+  console.log("[CourseQuiz] submit response", {
+    status,
+    raw: data,
+  });
+
   if (status >= 400 || data?.success === false) {
+    console.warn("[CourseQuiz] submit failed", { status, raw: data });
     return null;
   }
 
-  return mapCourseQuizSubmitResponse(data ?? {});
+  const mapped = mapCourseQuizSubmitResponse(data ?? {});
+
+  console.log("[CourseQuiz] submit mapped", mapped);
+
+  return mapped;
 }
