@@ -34,7 +34,6 @@ export default function CourseStagesSection({
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
-    if (initialStages && initialStages.length > 0) return;
 
     let cancelled = false;
 
@@ -60,7 +59,7 @@ export default function CourseStagesSection({
     return () => {
       cancelled = true;
     };
-  }, [initialStages, isAuthenticated, isAuthReady, slug]);
+  }, [isAuthenticated, isAuthReady, slug]);
 
   if (isLoading) {
     return (
@@ -183,15 +182,28 @@ export default function CourseStagesSection({
                           )}
 
                           {lesson.hasQuiz && isUnlocked ? (
-                            <Button
-                              asChild
-                              variant="outline"
-                              className="h-10 min-w-30 border-primary px-4 text-primary hover:bg-[#E0F5F3]"
-                            >
-                              <Link href={quizHref}>
-                                {lesson.isPassed ? "إعادة الاختبار" : "الإختبار"}
-                              </Link>
-                            </Button>
+                            lesson.isPassed ? (
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="inline-flex h-10 items-center rounded-xl bg-[#E8F7EF] px-4 text-sm font-medium text-[#22A06B]">
+                                  اجتزت الاختبار ✓
+                                </span>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="h-10 min-w-30 border-[#E8E8E8] px-4 text-[#717171] hover:bg-[#FAFAFA]"
+                                >
+                                  <Link href={quizHref}>إعادة الاختبار</Link>
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                asChild
+                                variant="outline"
+                                className="h-10 min-w-30 border-primary px-4 text-primary hover:bg-[#E0F5F3]"
+                              >
+                                <Link href={quizHref}>الإختبار</Link>
+                              </Button>
+                            )
                           ) : lesson.hasQuiz ? (
                             <Button
                               type="button"

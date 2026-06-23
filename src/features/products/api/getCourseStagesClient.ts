@@ -13,13 +13,24 @@ export async function getCourseStagesClient(
     { validateStatus: () => true },
   );
 
+  console.log("[CourseStages] load response", {
+    slug,
+    status,
+    raw: data,
+  });
+
   if (status === 401 || status === 419) {
     return null;
   }
 
   if (status >= 400 || data?.success === false) {
+    console.warn("[CourseStages] load failed", { slug, status, raw: data });
     return [];
   }
 
-  return mapCourseStagesResponse(data ?? {});
+  const mapped = mapCourseStagesResponse(data ?? {});
+
+  console.log("[CourseStages] load mapped", mapped);
+
+  return mapped;
 }

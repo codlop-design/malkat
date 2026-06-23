@@ -24,7 +24,11 @@ function mapLesson(
     type: lesson.type ?? "file",
     isLocked: lesson.is_locked,
     hasQuiz: lesson.has_quiz !== false,
-    isPassed: lesson.is_passed ?? false,
+    isPassed: Boolean(
+      lesson.is_passed ??
+        (lesson as { quiz_passed?: boolean }).quiz_passed ??
+        (lesson as { is_quiz_passed?: boolean }).is_quiz_passed,
+    ),
     fileUrl: lesson.file ?? null,
   };
 }

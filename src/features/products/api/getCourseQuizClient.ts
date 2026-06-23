@@ -21,11 +21,23 @@ export async function getCourseQuizClient(
     { validateStatus: () => true },
   );
 
+  console.log("[CourseQuiz] load response", {
+    slug,
+    lessonId,
+    status,
+    raw: data,
+  });
+
   if (status >= 400 || data?.success === false || !data?.data) {
+    console.warn("[CourseQuiz] load failed", { slug, lessonId, status, raw: data });
     return null;
   }
 
-  return mapCourseQuizResponse(data.data);
+  const mapped = mapCourseQuizResponse(data.data);
+
+  console.log("[CourseQuiz] load mapped", mapped);
+
+  return mapped;
 }
 
 export type CourseQuizAnswerPayload = {
