@@ -14,6 +14,9 @@ import {
   mapEvidenceItem,
   mapServiceItem,
 } from "@/src/features/products/mapCatalogItems";
+import {
+  parseWhatLearn,
+} from "@/src/features/products/mapCourseStages";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type {
   ActivityDetailsApi,
@@ -138,9 +141,14 @@ function mapCourseDetail(slug: string, raw: CourseDetailsApi): ProductDetailView
     }),
   };
 
-  const learningPoints = raw.what_learn
-    ? raw.what_learn.split("،").map((point) => point.trim()).filter(Boolean)
-    : undefined;
+  const learningPoints = parseWhatLearn(raw.what_learn);
+
+  const faqAccordions = (raw.faqs ?? [])
+    .map((faq) => ({
+      title: faq.title ?? faq.question ?? "",
+      content: faq.content ?? faq.answer ?? "",
+    }))
+    .filter((faq) => faq.title && faq.content);
 
   const detail: ProductDetailMeta = {
     longDescription: raw.overview,
@@ -148,15 +156,18 @@ function mapCourseDetail(slug: string, raw: CourseDetailsApi): ProductDetailView
       name: raw.contributor.name,
       image: raw.contributor.image,
     },
-    accordions: [
-      {
-        title: "متطلبات الدورة",
-        content: raw.overview,
-      },
-    ],
-    curriculum: mapContentItems(raw.content),
+    accordions:
+      faqAccordions.length > 0
+        ? faqAccordions
+        : [
+            {
+              title: "متطلبات الدورة",
+              content: raw.overview,
+            },
+          ],
+    curriculum: mapContentItems(raw.content ?? []),
     learningPoints,
-    courseFeatures: mapFeatures(raw.features),
+    courseFeatures: mapFeatures(raw.features ?? []),
     courseMeta: {
       hoursCount: raw.hours_count,
       lessonsCount: raw.lessons_count,

@@ -139,13 +139,19 @@ export interface CourseDetailsApi extends CatalogSocialFields {
   period: string;
   lessons_count: number;
   hours_count: number;
-  rating: number | null;
+  rating?: number | null;
   students_registered: number | null;
   practice_projects: number;
   contributor: CourseContributor;
   what_learn: string;
-  content: unknown[];
-  features: unknown[];
+  content?: unknown[];
+  features?: unknown[];
+  faqs?: Array<{
+    title?: string;
+    question?: string;
+    content?: string;
+    answer?: string;
+  }>;
 }
 
 export interface ServiceDetailsApi extends CatalogSocialFields {
