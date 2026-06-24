@@ -14,9 +14,7 @@ import {
   mapEvidenceItem,
   mapServiceItem,
 } from "@/src/features/products/mapCatalogItems";
-import {
-  parseWhatLearn,
-} from "@/src/features/products/mapCourseStages";
+import { parseWhatLearn } from "@/src/features/products/mapCourseStages";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type {
   ActivityDetailsApi,
@@ -38,7 +36,11 @@ function buildRatingMeta(
   legacyRating?: number | null,
 ): Pick<
   ProductDetailMeta,
-  "reviewCount" | "averageRating" | "ratingLabel" | "ratingDistribution" | "reviews"
+  | "reviewCount"
+  | "averageRating"
+  | "ratingLabel"
+  | "ratingDistribution"
+  | "reviews"
 > {
   return buildDetailRatingMeta(rate, legacyRating);
 }
@@ -75,7 +77,9 @@ function mapContentItems(items: unknown[]): ProductChapter[] | undefined {
 function mapFeatures(items: unknown[]): string[] | undefined {
   if (!Array.isArray(items) || items.length === 0) return undefined;
   return items.map((item) =>
-    typeof item === "string" ? item : String((item as { title?: string }).title ?? item),
+    typeof item === "string"
+      ? item
+      : String((item as { title?: string }).title ?? item),
   );
 }
 
@@ -109,7 +113,7 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
     bookMeta: {
       pageCount: raw.page_count,
       fileType: raw.file_type,
-      language: languageLabel(raw.language),
+      language: raw.language,
     },
     ...buildRatingMeta(raw.rate),
     ...resolveDetailSocialFields(raw),
@@ -118,7 +122,10 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
   return { product, detail };
 }
 
-function mapCourseDetail(slug: string, raw: CourseDetailsApi): ProductDetailView {
+function mapCourseDetail(
+  slug: string,
+  raw: CourseDetailsApi,
+): ProductDetailView {
   const product: CatalogProduct = {
     category: "courses",
     data: mapCourseItem({
@@ -203,11 +210,9 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
     category: "services",
     data: {
       ...base,
-      tags: [
-        ...(base.tags ?? []),
-        raw.age_group,
-        raw.difficulty,
-      ].filter(Boolean),
+      tags: [...(base.tags ?? []), raw.age_group, raw.difficulty].filter(
+        Boolean,
+      ),
     },
   };
 

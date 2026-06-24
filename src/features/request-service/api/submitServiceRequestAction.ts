@@ -4,6 +4,7 @@ import {
   serviceRequestSchema,
   type ServiceRequestFormValues,
 } from "@/src/features/services/schemas/serviceRequestSchema";
+import { postFormToApi } from "@/src/lib/postFormToApi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -26,8 +27,9 @@ export async function submitServiceRequestAction(
 
   const data = parsed.data;
 
-  try {
-    const response = await fetch(`${API_URL}/service-requests`, {
+  return postFormToApi(
+    `${API_URL}/service-requests`,
+    {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -43,28 +45,10 @@ export async function submitServiceRequestAction(
         target_group_id: Number(data.targetGroup),
         request_details: data.details,
       }),
-    });
-
-    const json = (await response.json()) as {
-      success?: boolean;
-      message?: string;
-    };
-
-    if (!response.ok || !json.success) {
-      return {
-        success: false,
-        message: json.message ?? "تعذر إرسال الطلب، حاول مرة أخرى",
-      };
-    }
-
-    return {
-      success: true,
-      message: json.message ?? "تم إرسال طلبك بنجاح",
-    };
-  } catch {
-    return {
-      success: false,
-      message: "تعذر إرسال الطلب، حاول مرة أخرى",
-    };
-  }
+    },
+    {
+      successMessage: "تم إرسال طلبك بنجاح",
+      fallbackErrorMessage: "تعذر إرسال الطلب، حاول مرة أخرى",
+    },
+  );
 }

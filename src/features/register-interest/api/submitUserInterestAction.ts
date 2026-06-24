@@ -4,6 +4,7 @@ import {
   interestSchema,
   type InterestFormValues,
 } from "@/src/features/register-interest/schemas/interestSchema";
+import { postFormToApi } from "@/src/lib/postFormToApi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,32 +40,8 @@ export async function submitUserInterestAction(
     formData.append("parternes_type_id", data.parternes_type_id);
   }
 
-  try {
-    const response = await fetch(`${API_URL}/user-interests`, {
-      method: "POST",
-      body: formData,
-    });
-
-    const json = (await response.json()) as {
-      success?: boolean;
-      message?: string;
-    };
-
-    if (!response.ok || !json.success) {
-      return {
-        success: false,
-        message: json.message ?? "تعذر إرسال الطلب، حاول مرة أخرى",
-      };
-    }
-
-    return {
-      success: true,
-      message: json.message ?? "تم إرسال طلبك بنجاح",
-    };
-  } catch {
-    return {
-      success: false,
-      message: "تعذر إرسال الطلب، حاول مرة أخرى",
-    };
-  }
+  return postFormToApi(`${API_URL}/user-interests`, { method: "POST", body: formData }, {
+    successMessage: "تم إرسال طلبك بنجاح",
+    fallbackErrorMessage: "تعذر إرسال الطلب، حاول مرة أخرى",
+  });
 }

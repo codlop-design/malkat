@@ -12,6 +12,7 @@ import { SubmitButton } from "@/src/components/SubmitButton";
 import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
 import type { LookupOption } from "@/src/features/register-interest/types";
 import { submitPartnershipRequestAction } from "@/src/features/partnership-request/api/submitPartnershipRequestAction";
+import { submitFormWithNetworkCheck } from "@/src/lib/submitFormWithNetworkCheck";
 import {
   partnershipSchema,
   type PartnershipFormValues,
@@ -56,7 +57,9 @@ export default function PartnershipForm({
   });
 
   async function onSubmit(values: PartnershipFormValues) {
-    const result = await submitPartnershipRequestAction(values);
+    const result = await submitFormWithNetworkCheck(() =>
+      submitPartnershipRequestAction(values),
+    );
 
     if (!result.success) {
       toast.error(result.message);

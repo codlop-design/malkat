@@ -12,11 +12,20 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseStagesClient } from "@/src/features/products/api/getCourseStagesClient";
-import type { CourseStage } from "@/src/features/products/data/courseStages";
+import CourseLessonTextDrawer from "@/src/features/products/components/detail/CourseLessonTextDrawer";
+import type { CourseLesson, CourseStage } from "@/src/features/products/data/courseStages";
 import {
   courseLessonQuizHref,
   productDetailHref,
 } from "@/src/features/products/types";
+
+function isTextLesson(lesson: CourseLesson): boolean {
+  return lesson.type === "text" && Boolean(lesson.description);
+}
+
+function canStartLearning(lesson: CourseLesson): boolean {
+  return !lesson.isLocked && (Boolean(lesson.fileUrl) || isTextLesson(lesson));
+}
 
 type CourseStagesSectionProps = {
   slug: string;
@@ -31,6 +40,10 @@ export default function CourseStagesSection({
   const [stages, setStages] = useState<CourseStage[]>(initialStages ?? []);
   const [requiresAuth, setRequiresAuth] = useState(initialStages === null);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTextLesson, setActiveTextLesson] = useState<CourseLesson | null>(
+    null,
+  );
+  const [isTextDrawerOpen, setIsTextDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
@@ -161,7 +174,18 @@ export default function CourseStagesSection({
                         </div>
 
                         <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
-                          {isUnlocked && lesson.fileUrl ? (
+                          {canStartLearning(lesson) && isTextLesson(lesson) ? (
+                            <Button
+                              type="button"
+                              className="h-10 min-w-30 px-4"
+                              onClick={() => {
+                                setActiveTextLesson(lesson);
+                                setIsTextDrawerOpen(true);
+                              }}
+                            >
+                              بدء التعلم
+                            </Button>
+                          ) : canStartLearning(lesson) && lesson.fileUrl ? (
                             <Button asChild className="h-10 min-w-30 px-4">
                               <a
                                 href={lesson.fileUrl}
@@ -215,6 +239,17 @@ export default function CourseStagesSection({
           </AccordionItem>
         ))}
       </Accordion>
+
+      <CourseLessonTextDrawer
+        lesson={activeTextLesson}
+        open={isTextDrawerOpen}
+        onOpenChange={(open) => {
+          setIsTextDrawerOpen(open);
+          if (!open) {
+            setActiveTextLesson(null);
+          }
+        }}
+      />
     </section>
   );
 }

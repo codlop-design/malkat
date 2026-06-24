@@ -10,6 +10,7 @@ import PhoneInput from "@/src/components/PhoneInput";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { submitContactAction } from "@/src/features/contact/api/submitContactAction";
+import { submitFormWithNetworkCheck } from "@/src/lib/submitFormWithNetworkCheck";
 import {
   contactSchema,
   type ContactFormValues,
@@ -56,7 +57,9 @@ export default function ContactForm({
   });
 
   async function onSubmit(values: ContactFormValues) {
-    const result = await submitContactAction(values);
+    const result = await submitFormWithNetworkCheck(() =>
+      submitContactAction(values),
+    );
 
     if (!result.success) {
       toast.error(result.message);

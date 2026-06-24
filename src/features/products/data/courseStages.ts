@@ -4,6 +4,7 @@ export type CourseLesson = {
   title: string;
   subtitle: string;
   type: string;
+  description: string | null;
   isLocked: boolean;
   hasQuiz: boolean;
   isPassed: boolean;
