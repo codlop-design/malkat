@@ -36,11 +36,19 @@ function getAnswerState(
   isSelected: boolean,
   isCorrect: boolean,
 ): "default" | "selected" | "correct" | "wrong" {
-  if (!isSubmitted || !isSelected) {
+  if (!isSubmitted) {
     return isSelected ? "selected" : "default";
   }
 
-  return isCorrect ? "correct" : "wrong";
+  if (isCorrect) {
+    return "correct";
+  }
+
+  if (isSelected) {
+    return "wrong";
+  }
+
+  return "default";
 }
 
 const answerStateClasses: Record<
@@ -281,18 +289,18 @@ export default function CourseQuizContent({
                                 className="size-4 accent-primary disabled:opacity-70"
                               />
                               <span className="flex-1">{answer.text}</span>
-                              {isSubmitted && isSelected ? (
+                              {isSubmitted ? (
                                 answer.isCorrect ? (
                                   <Check
                                     className="size-5 shrink-0 text-[#22A06B]"
                                     aria-label="إجابة صحيحة"
                                   />
-                                ) : (
+                                ) : isSelected ? (
                                   <X
                                     className="size-5 shrink-0 text-[#E34949]"
                                     aria-label="إجابة خاطئة"
                                   />
-                                )
+                                ) : null
                               ) : null}
                             </label>
                           );
