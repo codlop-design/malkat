@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Check, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -60,6 +61,11 @@ const answerStateClasses: Record<
   correct: "border-[#22A06B] bg-[#E8F7EF] ring-1 ring-[#22A06B]/20",
   wrong: "border-[#E34949] bg-[#FDEDED] ring-1 ring-[#E34949]/20",
 };
+
+function shouldShowAnswerText(text: string): boolean {
+  const trimmed = text.trim();
+  return trimmed.length > 0 && trimmed !== "-";
+}
 
 export default function CourseQuizContent({
   slug,
@@ -286,9 +292,22 @@ export default function CourseQuizContent({
                                 onChange={() =>
                                   handleSelectAnswer(question.id, answer.id)
                                 }
-                                className="size-4 accent-primary disabled:opacity-70"
+                                className="size-4 shrink-0 accent-primary disabled:opacity-70"
                               />
-                              <span className="flex-1">{answer.text}</span>
+                              {answer.image ? (
+                                <Image
+                                  src={answer.image}
+                                  alt=""
+                                  width={100}
+                                  height={100}
+                                  className="size-[100px] shrink-0 rounded-xl object-cover"
+                                />
+                              ) : null}
+                              {shouldShowAnswerText(answer.text) ? (
+                                <span className="flex-1">{answer.text}</span>
+                              ) : (
+                                <span className="flex-1" />
+                              )}
                               {isSubmitted ? (
                                 answer.isCorrect ? (
                                   <Check

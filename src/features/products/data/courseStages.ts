@@ -22,6 +22,7 @@ export type CourseStage = {
 export type CourseQuizAnswer = {
   id: number;
   text: string;
+  image: string | null;
   isCorrect: boolean;
 };
 

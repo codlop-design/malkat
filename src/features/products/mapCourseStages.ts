@@ -56,6 +56,7 @@ export function mapCourseQuizResponse(
     answers: question.answers.map((answer) => ({
       id: answer.id,
       text: answer.answer,
+      image: answer.image ?? null,
       isCorrect: answer.is_correct ?? false,
     })),
   }));
