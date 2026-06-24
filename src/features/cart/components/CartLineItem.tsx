@@ -52,7 +52,9 @@ export default function CartLineItem({
                 <AvatarImage src={item.instructorAvatar} />
                 <AvatarFallback>{item.instructorName.charAt(0)}</AvatarFallback>
               </Avatar>
-              <p className="text-sm text-muted-foreground">{item.instructorName}</p>
+              <p className="text-sm text-muted-foreground">
+                {item.instructorName}
+              </p>
             </div>
           ) : null}
           <p className="line-clamp-2 text-sm text-muted-foreground">
@@ -108,7 +110,7 @@ export default function CartLineItem({
       {href ? (
         <Link
           href={href}
-          className="block rounded-lg no-underline transition-colors hover:bg-[#FAFAFA] hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="block rounded-lg no-underline! transition-colors hover:bg-[#FAFAFA] hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           {content}
         </Link>
@@ -116,7 +118,7 @@ export default function CartLineItem({
         content
       )}
 
-      {(showActions || canAdjustQuantity) ? (
+      {showActions || canAdjustQuantity ? (
         <div
           className={`flex w-full items-center ${showActions ? "justify-between" : ""}`}
         >
@@ -149,4 +151,3 @@ export default function CartLineItem({
     </div>
   );
 }
-
