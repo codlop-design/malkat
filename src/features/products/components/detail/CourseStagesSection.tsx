@@ -109,12 +109,12 @@ export default function CourseStagesSection({
           <AccordionItem
             key={stage.id}
             value={`stage-${stage.id}`}
-            className="overflow-hidden rounded-xl border border-[#E8E8E8] bg-white px-4"
+            className="rounded-xl border border-[#E8E8E8] bg-white px-4"
           >
             <AccordionTrigger className="py-4 text-base font-medium text-black hover:no-underline">
               {stage.title}
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent allowDynamicHeight>
               {stage.lessons.length === 0 ? (
                 <p className="pb-2 text-sm text-[#717171]">
                   لا توجد دروس في هذه المرحلة بعد.

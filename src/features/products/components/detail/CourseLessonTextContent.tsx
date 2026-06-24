@@ -5,7 +5,7 @@ type CourseLessonTextContentProps = {
 };
 
 const contentClassName =
-  "prose prose-sm max-w-none text-[#454545] md:prose-base [&_a]:text-primary [&_strong]:text-black [&_li]:my-1 [&_p]:my-2";
+  "prose prose-sm max-w-none overflow-x-auto break-words text-[#454545] md:prose-base [&_*]:max-w-full [&_a]:text-primary [&_img]:h-auto [&_img]:max-w-full [&_li]:my-1 [&_p]:my-2 [&_strong]:text-black";
 
 export default function CourseLessonTextContent({
   title,
