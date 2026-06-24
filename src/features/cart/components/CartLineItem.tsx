@@ -108,7 +108,7 @@ export default function CartLineItem({
       {href ? (
         <Link
           href={href}
-          className="block rounded-lg transition-colors hover:bg-[#FAFAFA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="block rounded-lg no-underline transition-colors hover:bg-[#FAFAFA] hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           {content}
         </Link>
