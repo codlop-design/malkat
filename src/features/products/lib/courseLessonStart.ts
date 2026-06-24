@@ -32,3 +32,21 @@ export function getLessonStartMode(lesson: CourseLesson): LessonStartMode {
 
   return "none";
 }
+
+export function isExternalLessonHref(href: string): boolean {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
+export function buildNextLessonHref(
+  returnTo: string,
+  lesson: CourseLesson,
+): string {
+  const mode = getLessonStartMode(lesson);
+
+  if (mode === "file" && lesson.fileUrl) {
+    return lesson.fileUrl;
+  }
+
+  const separator = returnTo.includes("?") ? "&" : "?";
+  return `${returnTo}${separator}openLesson=${lesson.id}`;
+}

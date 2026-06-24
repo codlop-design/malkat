@@ -21,7 +21,6 @@ import type {
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import {
   categoryListingHref,
-  courseLessonQuizHref,
   productDetailHref,
 } from "@/src/features/products/types";
 
@@ -63,8 +62,9 @@ export default function CourseQuizContent({
   const stageTitle = searchParams.get("stage") ?? "المرحلة الأولى";
   const returnTo =
     searchParams.get("returnTo") ?? productDetailHref("courses", slug);
-  const nextLessonId = searchParams.get("nextLessonId");
+  const nextLessonTarget = searchParams.get("nextLessonTarget");
   const nextLessonFile = searchParams.get("nextLessonFile");
+  const nextLessonId = searchParams.get("nextLessonId");
 
   const { user, isAuthenticated, isAuthReady } = useAuth();
   const userName = user?.name ?? "بك";
@@ -110,14 +110,21 @@ export default function CourseQuizContent({
     quiz.questions.every((question) => selections[question.id] != null);
 
   const nextLessonHref = useMemo(() => {
-    if (nextLessonFile) return nextLessonFile;
+    if (nextLessonTarget) {
+      return nextLessonTarget;
+    }
+
+    if (nextLessonFile) {
+      return nextLessonFile;
+    }
 
     if (nextLessonId) {
-      return `${courseLessonQuizHref(slug, Number(nextLessonId))}?stage=${encodeURIComponent(stageTitle)}&returnTo=${encodeURIComponent(returnTo)}`;
+      const separator = returnTo.includes("?") ? "&" : "?";
+      return `${returnTo}${separator}openLesson=${nextLessonId}`;
     }
 
     return null;
-  }, [nextLessonFile, nextLessonId, returnTo, slug, stageTitle]);
+  }, [nextLessonFile, nextLessonId, nextLessonTarget, returnTo]);
 
   const breadcrumbs = useMemo(
     () => [

@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+
 import CourseStagesSection from "@/src/features/products/components/detail/CourseStagesSection";
 import ProductDetailExtendedSections from "@/src/features/products/components/detail/ProductDetailExtendedSections";
 import ProductDetailMainCard from "@/src/features/products/components/detail/ProductDetailMainCard";
@@ -53,7 +55,9 @@ export default function ProductDetailPageContent({
         />
 
         {showCourseStages ? (
-          <CourseStagesSection slug={data.slug} initialStages={courseStages} />
+          <Suspense fallback={null}>
+            <CourseStagesSection slug={data.slug} initialStages={courseStages} />
+          </Suspense>
         ) : null}
 
         <ProductReviewsSection

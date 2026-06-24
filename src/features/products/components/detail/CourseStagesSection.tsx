@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   Accordion,
@@ -14,7 +15,10 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseStagesClient } from "@/src/features/products/api/getCourseStagesClient";
 import CourseLessonTextContent from "@/src/features/products/components/detail/CourseLessonTextContent";
 import type { CourseStage } from "@/src/features/products/data/courseStages";
-import { getLessonStartMode } from "@/src/features/products/lib/courseLessonStart";
+import {
+  buildNextLessonHref,
+  getLessonStartMode,
+} from "@/src/features/products/lib/courseLessonStart";
 import {
   courseLessonQuizHref,
   productDetailHref,
@@ -29,11 +33,71 @@ export default function CourseStagesSection({
   slug,
   initialStages,
 }: CourseStagesSectionProps) {
+  const searchParams = useSearchParams();
+  const openLessonParam = searchParams.get("openLesson");
+  const parsedOpenLessonId = useMemo(() => {
+    if (!openLessonParam) return null;
+    const id = Number(openLessonParam);
+    return Number.isNaN(id) ? null : id;
+  }, [openLessonParam]);
+
   const { isAuthenticated, isAuthReady } = useAuth();
   const [stages, setStages] = useState<CourseStage[]>(initialStages ?? []);
   const [requiresAuth, setRequiresAuth] = useState(initialStages === null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [expandedLessonId, setExpandedLessonId] = useState<number | null>(null);
+  const [manualOpenStages, setManualOpenStages] = useState<string[]>([]);
+  const [manualExpandedLessonId, setManualExpandedLessonId] = useState<
+    number | null | undefined
+  >(undefined);
+
+  const defaultOpenStage = useMemo(() => {
+    if (stages.length === 0) return null;
+    return `stage-${stages[0].id}`;
+  }, [stages]);
+
+  const openLessonStage = useMemo(() => {
+    if (parsedOpenLessonId == null || stages.length === 0) return null;
+
+    const stage = stages.find((item) =>
+      item.lessons.some((lesson) => lesson.id === parsedOpenLessonId),
+    );
+
+    return stage ? `stage-${stage.id}` : null;
+  }, [parsedOpenLessonId, stages]);
+
+  const openStages = useMemo(() => {
+    if (parsedOpenLessonId != null && openLessonStage) {
+      return [...new Set([...manualOpenStages, openLessonStage])];
+    }
+
+    if (manualOpenStages.length > 0) {
+      return manualOpenStages;
+    }
+
+    return defaultOpenStage ? [defaultOpenStage] : [];
+  }, [
+    defaultOpenStage,
+    manualOpenStages,
+    openLessonStage,
+    parsedOpenLessonId,
+  ]);
+
+  const urlExpandedLessonId = useMemo(() => {
+    if (parsedOpenLessonId == null || stages.length === 0) return null;
+
+    const lesson = stages
+      .flatMap((stage) => stage.lessons)
+      .find((item) => item.id === parsedOpenLessonId);
+
+    if (!lesson || getLessonStartMode(lesson) !== "text") return null;
+
+    return parsedOpenLessonId;
+  }, [parsedOpenLessonId, stages]);
+
+  const expandedLessonId =
+    manualExpandedLessonId !== undefined
+      ? manualExpandedLessonId
+      : urlExpandedLessonId;
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
@@ -102,10 +166,11 @@ export default function CourseStagesSection({
 
       <Accordion
         type="multiple"
-        defaultValue={[`stage-${stages[0]?.id}`]}
+        value={openStages}
+        onValueChange={setManualOpenStages}
         className="flex flex-col gap-3"
       >
-        {stages.map((stage) => (
+        {stages.map((stage, stageIndex) => (
           <AccordionItem
             key={stage.id}
             value={`stage-${stage.id}`}
@@ -125,17 +190,20 @@ export default function CourseStagesSection({
                     const isUnlocked = !lesson.isLocked;
                     const startMode = getLessonStartMode(lesson);
                     const isTextExpanded = expandedLessonId === lesson.id;
-                    const nextLesson = stage.lessons[lessonIndex + 1];
+                    const nextLesson =
+                      stage.lessons[lessonIndex + 1] ??
+                      stages[stageIndex + 1]?.lessons[0];
+                    const returnTo = productDetailHref("courses", slug);
                     const quizQuery = new URLSearchParams({
                       stage: stage.title,
-                      returnTo: productDetailHref("courses", slug),
+                      returnTo,
                     });
 
                     if (nextLesson) {
-                      quizQuery.set("nextLessonId", String(nextLesson.id));
-                      if (nextLesson.fileUrl) {
-                        quizQuery.set("nextLessonFile", nextLesson.fileUrl);
-                      }
+                      quizQuery.set(
+                        "nextLessonTarget",
+                        buildNextLessonHref(returnTo, nextLesson),
+                      );
                     }
 
                     const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
@@ -178,9 +246,15 @@ export default function CourseStagesSection({
                                 type="button"
                                 className="h-10 min-w-30 px-4"
                                 onClick={() => {
-                                  setExpandedLessonId((current) =>
-                                    current === lesson.id ? null : lesson.id,
-                                  );
+                                  setManualExpandedLessonId((current) => {
+                                    const activeId =
+                                      current !== undefined
+                                        ? current
+                                        : urlExpandedLessonId;
+                                    return activeId === lesson.id
+                                      ? null
+                                      : lesson.id;
+                                  });
                                 }}
                               >
                                 {isTextExpanded ? "إخفاء المحتوى" : "بدء التعلم"}
