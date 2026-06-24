@@ -271,23 +271,27 @@ export default function CourseQuizContent({
                       key={question.id}
                       className="rounded-2xl bg-[#EAF7F6] p-5 md:p-6"
                     >
-                      <p className="text-sm font-medium text-primary">
-                        السؤال {index + 1}
-                      </p>
-                      {question.image ? (
-                        <Image
-                          src={question.image}
-                          alt=""
-                          width={100}
-                          height={100}
-                          className={`mt-3 ${quizImageClassName}`}
-                        />
-                      ) : null}
-                      {shouldShowQuizText(question.text) ? (
-                        <p className="mt-3 text-base font-bold text-black md:text-lg">
-                          {question.text}
+                      <div className="flex items-start gap-4">
+                        <p className="shrink-0 text-sm font-medium text-primary">
+                          السؤال {index + 1}
                         </p>
-                      ) : null}
+                        <div className="flex min-w-0 flex-col gap-3">
+                          {question.image ? (
+                            <Image
+                              src={question.image}
+                              alt=""
+                              width={100}
+                              height={100}
+                              className={quizImageClassName}
+                            />
+                          ) : null}
+                          {shouldShowQuizText(question.text) ? (
+                            <p className="text-base font-bold text-black md:text-lg">
+                              {question.text}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
 
                       <div className="mt-5 flex flex-col gap-3">
                         {question.answers.map((answer) => {
