@@ -18,6 +18,7 @@ type ProductDetailMediaProps = {
   category: CatalogSectionKey;
   slug: string;
   cartPayload: AddToCartPayload;
+  showAddToCart?: boolean;
 };
 
 export default function ProductDetailMedia({
@@ -27,6 +28,7 @@ export default function ProductDetailMedia({
   category,
   slug,
   cartPayload,
+  showAddToCart = true,
 }: ProductDetailMediaProps) {
   const shareUrl = productDetailHref(category, slug);
 
@@ -52,12 +54,14 @@ export default function ProductDetailMedia({
           className="size-10 rounded-full bg-white/90 text-[#454545] shadow-sm hover:bg-white"
         />
       </div>
-      <AddToCartButton
-        payload={cartPayload}
-        label={cartLabel}
-        iconSize={22}
-        className="absolute bottom-4 inset-e-4 z-10 size-11 lg:hidden"
-      />
+      {showAddToCart ? (
+        <AddToCartButton
+          payload={cartPayload}
+          label={cartLabel}
+          iconSize={22}
+          className="absolute bottom-4 inset-e-4 z-10 size-11 lg:hidden"
+        />
+      ) : null}
     </div>
   );
 }

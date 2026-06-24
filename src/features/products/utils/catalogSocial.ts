@@ -2,6 +2,7 @@ import type {
   CatalogRate,
   CatalogReviewApiItem,
   CatalogSocialFields,
+  CoursePurchaseFields,
 } from "@/src/features/products/types/catalogApi";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
 import type { ProductReview } from "@/src/features/products/data/productDetail";
@@ -139,5 +140,11 @@ export function resolveDetailSocialFields(item: CatalogSocialFields) {
   return {
     isFavourite: item.is_favourite ?? false,
     isRated: item.is_rated ?? false,
+  };
+}
+
+export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
+  return {
+    isBought: item.is_bought === true,
   };
 }

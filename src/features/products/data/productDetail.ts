@@ -68,6 +68,7 @@ export type ProductDetailMeta = {
   reviews: ProductReview[];
   isFavourite?: boolean;
   isRated?: boolean;
+  isBought?: boolean;
   bookMeta?: ProductBookMeta;
   courseMeta?: ProductCourseMeta;
   sessionMeta?: ProductSessionMeta;

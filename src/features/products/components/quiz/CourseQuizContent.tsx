@@ -84,31 +84,33 @@ export default function CourseQuizContent({
   const { user, isAuthenticated, isAuthReady } = useAuth();
   const userName = user?.name ?? "بك";
 
-  const [quiz, setQuiz] = useState<CourseQuiz | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const quizCacheKey = `${slug}:${lessonId}`;
+  const [quizState, setQuizState] = useState<{
+    key: string;
+    quiz: CourseQuiz | null;
+  }>({ key: "", quiz: null });
+  const hasLoadedQuiz =
+    isAuthenticated && quizState.key === quizCacheKey;
+  const quiz = hasLoadedQuiz ? quizState.quiz : null;
+  const isQuizLoading =
+    isAuthReady && isAuthenticated && !hasLoadedQuiz;
   const [selections, setSelections] = useState<Record<number, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [result, setResult] = useState<CourseQuizSubmitResult | null>(null);
 
   useEffect(() => {
-    if (!isAuthReady) return;
-
-    if (!isAuthenticated) {
-      setIsLoading(false);
-      return;
-    }
+    if (!isAuthReady || !isAuthenticated) return;
+    if (quizState.key === quizCacheKey) return;
 
     let cancelled = false;
 
     async function loadQuiz() {
-      setIsLoading(true);
       const nextQuiz = await getCourseQuizClient(slug, lessonId);
 
       if (cancelled) return;
 
-      setQuiz(nextQuiz);
-      setIsLoading(false);
+      setQuizState({ key: quizCacheKey, quiz: nextQuiz });
     }
 
     void loadQuiz();
@@ -116,7 +118,14 @@ export default function CourseQuizContent({
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, isAuthReady, lessonId, slug]);
+  }, [
+    isAuthenticated,
+    isAuthReady,
+    lessonId,
+    quizCacheKey,
+    quizState.key,
+    slug,
+  ]);
 
   const totalQuestions = quiz?.questions.length ?? 0;
 
@@ -214,7 +223,7 @@ export default function CourseQuizContent({
       <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
         <div className="container" dir="rtl">
           <div className="rounded-2xl border border-[#E8E8E8] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:p-8">
-            {!isAuthReady || isLoading ? (
+            {!isAuthReady || isQuizLoading ? (
               <p className="text-sm text-[#717171]">جاري تحميل الاختبار...</p>
             ) : !isAuthenticated ? (
               <div>

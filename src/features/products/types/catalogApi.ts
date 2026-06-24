@@ -130,7 +130,11 @@ export interface BookDetailsApi extends CatalogSocialFields {
   contents: unknown[];
 }
 
-export interface CourseDetailsApi extends CatalogSocialFields {
+export interface CoursePurchaseFields {
+  is_bought?: boolean;
+}
+
+export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFields {
   title: string;
   overview: string;
   image: string;

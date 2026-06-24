@@ -5,6 +5,7 @@ import type {
 } from "@/src/features/products/data/productDetail";
 import {
   buildDetailRatingMeta,
+  resolveCoursePurchaseFields,
   resolveDetailSocialFields,
 } from "@/src/features/products/utils/catalogSocial";
 import {
@@ -183,6 +184,7 @@ function mapCourseDetail(
       instructorBio: raw.contributor.overview ?? "",
       jobTitle: raw.contributor.job_title ?? "",
     },
+    ...resolveCoursePurchaseFields(raw),
     ...buildRatingMeta(raw.rate, raw.rating),
     ...resolveDetailSocialFields(raw),
   };

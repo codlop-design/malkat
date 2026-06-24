@@ -29,6 +29,7 @@ export default function ProductDetailMainCard({
 }: ProductDetailMainCardProps) {
   const { category, data } = product;
   const imageFirst = category === "books" || category === "guides";
+  const showAddToCart = !(category === "courses" && detail.isBought);
 
   return (
     <div className="rounded-2xl border border-[#E8E8E8] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:p-8">
@@ -42,6 +43,7 @@ export default function ProductDetailMainCard({
               category={category}
               slug={data.slug}
               cartPayload={cartPayload}
+              showAddToCart={showAddToCart}
             />
           </div>
         ) : null}
@@ -87,6 +89,7 @@ export default function ProductDetailMainCard({
               category={category}
               slug={data.slug}
               cartPayload={cartPayload}
+              showAddToCart={showAddToCart}
             />
             {category === "courses" && detail.courseFeatures ? (
               <ul className="mt-6 flex flex-col gap-3">
@@ -101,7 +104,7 @@ export default function ProductDetailMainCard({
                 ))}
               </ul>
             ) : null}
-            {category === "courses" ? (
+            {category === "courses" && showAddToCart ? (
               <AddToCartButton
                 payload={cartPayload}
                 label={CART_LABEL[category]}
