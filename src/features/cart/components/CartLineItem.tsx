@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { BookOpen, Clock, Trash } from "lucide-react";
 
 import QuantityControl from "@/src/components/QuantityControl";
@@ -15,6 +16,7 @@ import type { StoredCartItem } from "@/src/features/cart/types/cart-types";
 
 type CartLineItemProps = {
   item: StoredCartItem;
+  href?: string;
   onQuantityChange?: (quantity: number) => void;
   onRemove?: () => void;
   showActions?: boolean;
@@ -22,14 +24,15 @@ type CartLineItemProps = {
 
 export default function CartLineItem({
   item,
+  href,
   onQuantityChange,
   onRemove,
   showActions = true,
 }: CartLineItemProps) {
   const canAdjustQuantity = isQuantityAdjustableCategory(item.category);
 
-  return (
-    <div className="space-y-4 border-t border-[#E5E5E5] pt-4">
+  const content = (
+    <>
       <div className="flex items-center gap-2">
         <Image
           src={item.image}
@@ -97,6 +100,21 @@ export default function CartLineItem({
           </span>
         ) : null}
       </div>
+    </>
+  );
+
+  return (
+    <div className="space-y-4 border-t border-[#E5E5E5] pt-4">
+      {href ? (
+        <Link
+          href={href}
+          className="block rounded-lg transition-colors hover:bg-[#FAFAFA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
 
       {(showActions || canAdjustQuantity) ? (
         <div

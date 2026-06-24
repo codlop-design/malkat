@@ -273,11 +273,11 @@ export default function CourseQuizContent({
                       key={question.id}
                       className="rounded-2xl bg-[#EAF7F6] p-5 md:p-6"
                     >
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-center gap-4">
                         {question.image ? (
                           <Image
                             src={question.image}
-                            alt=""
+                            alt={question.text}
                             width={100}
                             height={100}
                             className={quizImageClassName}

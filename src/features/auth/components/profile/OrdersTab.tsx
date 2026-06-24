@@ -23,7 +23,10 @@ import {
 } from "@/src/components/ui/accordion";
 import CartLineItem from "@/src/features/cart/components/CartLineItem";
 import type { StoredCartItem } from "@/src/features/cart/types/cart-types";
-import type { CatalogSectionKey } from "@/src/features/products/types";
+import {
+  productDetailHref,
+  type CatalogSectionKey,
+} from "@/src/features/products/types";
 import { getCategoryIcon } from "@/src/features/cart/data/categoryIcons";
 
 export type OrdersTabHandle = {
@@ -61,7 +64,10 @@ function formatDate(value?: string): string | null {
   });
 }
 
-function toStoredCartItem(raw: unknown): StoredCartItem | null {
+function toStoredCartItem(
+  raw: unknown,
+  category: CatalogSectionKey,
+): StoredCartItem | null {
   if (!raw || typeof raw !== "object") return null;
   const record = raw as Record<string, unknown>;
   const product = record.product as Record<string, unknown> | undefined;
@@ -88,9 +94,7 @@ function toStoredCartItem(raw: unknown): StoredCartItem | null {
 
   return {
     id: String(record.id ?? `${slug}-${Math.random()}`),
-    category: (typeof record.type === "string"
-      ? record.type
-      : "books") as CatalogSectionKey,
+    category,
     slug,
     title,
     description: overview,
@@ -184,12 +188,13 @@ function OrderRow({ order }: { order: OrderListItem }) {
                     </AccordionTrigger>
                     <AccordionContent className="h-full! space-y-2 pb-3 pt-0">
                       {section.items.map((raw: unknown) => {
-                        const item = toStoredCartItem(raw);
+                        const item = toStoredCartItem(raw, section.key);
                         if (!item) return null;
                         return (
                           <CartLineItem
                             key={item.id}
                             item={item}
+                            href={productDetailHref(section.key, item.slug)}
                             showActions={false}
                           />
                         );
