@@ -38,5 +38,7 @@ export async function loadProductDetailPageData(
     notFound();
   }
 
+  console.log(detailView);
+
   return { category, detailView, related, courseStages };
 }

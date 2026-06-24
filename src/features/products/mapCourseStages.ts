@@ -20,8 +20,9 @@ function mapLesson(
     id: lesson.id,
     number: index + 1,
     title: lesson.title,
-    subtitle: lesson.subtitle ?? lesson.description ?? "",
+    subtitle: lesson.subtitle ?? "",
     type: lesson.type ?? "file",
+    description: lesson.description ?? null,
     isLocked: lesson.is_locked,
     hasQuiz: lesson.has_quiz !== false,
     isPassed: Boolean(

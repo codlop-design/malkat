@@ -4,6 +4,7 @@ import {
   partnershipSchema,
   type PartnershipFormValues,
 } from "@/src/features/partnership-request/schemas/partnershipSchema";
+import { postFormToApi } from "@/src/lib/postFormToApi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -38,36 +39,19 @@ export async function submitPartnershipRequestAction(
   formData.append("organization_about", data.aboutEntity);
   formData.append("partnership_details", data.partnershipDetails);
 
-  try {
-    const response = await fetch(`${API_URL}/partnership-requests`, {
+  return postFormToApi(
+    `${API_URL}/partnership-requests`,
+    {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Accept-Language": "ar",
       },
       body: formData,
-    });
-
-    const json = (await response.json()) as {
-      success?: boolean;
-      message?: string;
-    };
-
-    if (!response.ok || !json.success) {
-      return {
-        success: false,
-        message: json.message ?? "تعذر إرسال الطلب، حاول مرة أخرى",
-      };
-    }
-
-    return {
-      success: true,
-      message: json.message ?? "تم إرسال طلب الشراكة بنجاح",
-    };
-  } catch {
-    return {
-      success: false,
-      message: "تعذر إرسال الطلب، حاول مرة أخرى",
-    };
-  }
+    },
+    {
+      successMessage: "تم إرسال طلب الشراكة بنجاح",
+      fallbackErrorMessage: "تعذر إرسال الطلب، حاول مرة أخرى",
+    },
+  );
 }

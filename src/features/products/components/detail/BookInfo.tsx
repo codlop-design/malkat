@@ -43,7 +43,9 @@ export default function BookInfo({ data, detail }: BookInfoProps) {
             label="عدد الصفحات"
             value={String(meta.pageCount)}
           />
-          <MetaItem icon={BookOpen} label="نوع الملف" value={meta.fileType} />
+          {meta.fileType ? (
+            <MetaItem icon={BookOpen} label="نوع الملف" value={meta.fileType} />
+          ) : null}
           <MetaItem icon={Languages} label="اللغة" value={meta.language} />
         </div>
       ) : null}

@@ -9,6 +9,7 @@ import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { mapLookupOptions } from "@/src/features/request-service/lib/mapLookupOptions";
 import { submitServiceRequestAction } from "@/src/features/request-service/api/submitServiceRequestAction";
+import { submitFormWithNetworkCheck } from "@/src/lib/submitFormWithNetworkCheck";
 import type { ServiceRequestFormOptions } from "@/src/features/request-service/types";
 import {
   serviceRequestSchema,
@@ -50,7 +51,9 @@ export default function ServiceRequestForm({
   });
 
   async function onSubmit(values: ServiceRequestFormValues) {
-    const result = await submitServiceRequestAction(values);
+    const result = await submitFormWithNetworkCheck(() =>
+      submitServiceRequestAction(values),
+    );
 
     if (!result.success) {
       toast.error(result.message);

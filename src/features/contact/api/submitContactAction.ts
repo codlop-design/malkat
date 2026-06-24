@@ -4,8 +4,10 @@ import {
   contactSchema,
   type ContactFormValues,
 } from "@/src/features/contact/schemas/contactSchema";
+import { postFormToApi } from "@/src/lib/postFormToApi";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "http://localhost:3000";
 
 export type ContactActionResult = {
   success: boolean;
@@ -33,32 +35,8 @@ export async function submitContactAction(
   formData.append("organization_type_id", parsed.data.organization_type_id);
   formData.append("message", parsed.data.message);
 
-  try {
-    const response = await fetch(`${API_URL}/contact-us`, {
-      method: "POST",
-      body: formData,
-    });
-
-    const json = (await response.json()) as {
-      success?: boolean;
-      message?: string;
-    };
-
-    if (!response.ok || !json.success) {
-      return {
-        success: false,
-        message: json.message ?? "تعذر إرسال الرسالة، حاول مرة أخرى",
-      };
-    }
-
-    return {
-      success: true,
-      message: json.message ?? "تم إرسال رسالتك بنجاح",
-    };
-  } catch {
-    return {
-      success: false,
-      message: "تعذر إرسال الرسالة، حاول مرة أخرى",
-    };
-  }
+  return postFormToApi(`${API_URL}/contact-us`, { method: "POST", body: formData }, {
+    successMessage: "تم إرسال رسالتك بنجاح",
+    fallbackErrorMessage: "تعذر إرسال الرسالة، حاول مرة أخرى",
+  });
 }

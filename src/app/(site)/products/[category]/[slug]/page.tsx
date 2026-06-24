@@ -11,7 +11,5 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const { category, slug } = await params;
   const pageData = await loadProductDetailPageData(category, slug);
 
-  console.log(pageData);
-
   return <ProductDetailPageView {...pageData} />;
 }

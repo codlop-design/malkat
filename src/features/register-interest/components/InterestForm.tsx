@@ -9,6 +9,7 @@ import { InputField } from "@/src/components/InputField";
 import { SelectField } from "@/src/components/SelectField";
 import { SubmitButton } from "@/src/components/SubmitButton";
 import { submitUserInterestAction } from "@/src/features/register-interest/api/submitUserInterestAction";
+import { submitFormWithNetworkCheck } from "@/src/lib/submitFormWithNetworkCheck";
 import { mapLookupOptions } from "@/src/features/register-interest/lib/mapLookupOptions";
 import {
   interestSchema,
@@ -77,7 +78,9 @@ export default function InterestForm({
   const partnershipTypeOptions = mapLookupOptions(partnershipTypes);
 
   async function onSubmit(values: InterestFormValues) {
-    const result = await submitUserInterestAction(values);
+    const result = await submitFormWithNetworkCheck(() =>
+      submitUserInterestAction(values),
+    );
 
     if (!result.success) {
       toast.error(result.message);
