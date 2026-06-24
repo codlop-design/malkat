@@ -2,13 +2,13 @@ import { Download } from "lucide-react";
 
 import { Button } from "@/src/components/ui/button";
 import type { CourseQuizSubmitResult } from "@/src/features/products/data/courseStages";
-import { isExternalLessonHref } from "@/src/features/products/lib/courseLessonStart";
 
 type QuizResultModalProps = {
   userName: string;
   stageTitle: string;
   result: CourseQuizSubmitResult;
   nextLessonHref?: string | null;
+  onGoToNextLesson?: () => void;
   onRetake: () => void;
   onBack: () => void;
 };
@@ -18,6 +18,7 @@ export default function QuizResultModal({
   stageTitle,
   result,
   nextLessonHref,
+  onGoToNextLesson,
   onRetake,
   onBack,
 }: QuizResultModalProps) {
@@ -68,15 +69,12 @@ export default function QuizResultModal({
               النجاح: {result.score}%
             </p>
             {nextLessonHref ? (
-              <Button asChild className="mt-8 h-12 min-w-52 px-8">
-                <a
-                  href={nextLessonHref}
-                  {...(isExternalLessonHref(nextLessonHref)
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                >
-                  الانتقال للفصل التالي
-                </a>
+              <Button
+                type="button"
+                className="mt-8 h-12 min-w-52 px-8"
+                onClick={onGoToNextLesson}
+              >
+                الانتقال للفصل التالي
               </Button>
             ) : (
               <Button type="button" className="mt-8 h-12 min-w-52 px-8" onClick={onBack}>

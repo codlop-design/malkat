@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Accordion,
@@ -17,6 +17,7 @@ import CourseLessonTextContent from "@/src/features/products/components/detail/C
 import type { CourseStage } from "@/src/features/products/data/courseStages";
 import {
   buildNextLessonHref,
+  getLessonContentMode,
   getLessonStartMode,
 } from "@/src/features/products/lib/courseLessonStart";
 import {
@@ -89,10 +90,12 @@ export default function CourseStagesSection({
       .flatMap((stage) => stage.lessons)
       .find((item) => item.id === parsedOpenLessonId);
 
-    if (!lesson || getLessonStartMode(lesson) !== "text") return null;
+    if (!lesson || getLessonContentMode(lesson) !== "text") return null;
 
     return parsedOpenLessonId;
   }, [parsedOpenLessonId, stages]);
+
+  const openedLessonFileRef = useRef<number | null>(null);
 
   const expandedLessonId =
     manualExpandedLessonId !== undefined
@@ -127,6 +130,20 @@ export default function CourseStagesSection({
       cancelled = true;
     };
   }, [isAuthenticated, isAuthReady, slug]);
+
+  useEffect(() => {
+    if (parsedOpenLessonId == null || stages.length === 0) return;
+    if (openedLessonFileRef.current === parsedOpenLessonId) return;
+
+    const lesson = stages
+      .flatMap((stage) => stage.lessons)
+      .find((item) => item.id === parsedOpenLessonId);
+
+    if (!lesson?.fileUrl || getLessonContentMode(lesson) !== "file") return;
+
+    openedLessonFileRef.current = parsedOpenLessonId;
+    window.open(lesson.fileUrl, "_blank", "noopener,noreferrer");
+  }, [parsedOpenLessonId, stages]);
 
   if (!isAuthReady) {
     return (

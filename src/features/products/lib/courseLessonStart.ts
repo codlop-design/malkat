@@ -2,11 +2,7 @@ import type { CourseLesson } from "@/src/features/products/data/courseStages";
 
 export type LessonStartMode = "text" | "file" | "none";
 
-export function getLessonStartMode(lesson: CourseLesson): LessonStartMode {
-  if (lesson.isLocked) {
-    return "none";
-  }
-
+function resolveLessonContentMode(lesson: CourseLesson): LessonStartMode {
   const hasDescription = Boolean(lesson.description?.trim());
   const hasFile = Boolean(lesson.fileUrl);
 
@@ -33,6 +29,18 @@ export function getLessonStartMode(lesson: CourseLesson): LessonStartMode {
   return "none";
 }
 
+export function getLessonContentMode(lesson: CourseLesson): LessonStartMode {
+  return resolveLessonContentMode(lesson);
+}
+
+export function getLessonStartMode(lesson: CourseLesson): LessonStartMode {
+  if (lesson.isLocked) {
+    return "none";
+  }
+
+  return resolveLessonContentMode(lesson);
+}
+
 export function isExternalLessonHref(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
 }
@@ -41,12 +49,20 @@ export function buildNextLessonHref(
   returnTo: string,
   lesson: CourseLesson,
 ): string {
-  const mode = getLessonStartMode(lesson);
+  const mode = resolveLessonContentMode(lesson);
+  const separator = returnTo.includes("?") ? "&" : "?";
 
   if (mode === "file" && lesson.fileUrl) {
     return lesson.fileUrl;
   }
 
-  const separator = returnTo.includes("?") ? "&" : "?";
+  if (mode === "text") {
+    return `${returnTo}${separator}openLesson=${lesson.id}`;
+  }
+
+  if (lesson.fileUrl) {
+    return lesson.fileUrl;
+  }
+
   return `${returnTo}${separator}openLesson=${lesson.id}`;
 }

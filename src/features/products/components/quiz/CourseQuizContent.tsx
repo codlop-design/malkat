@@ -23,6 +23,7 @@ import {
   categoryListingHref,
   productDetailHref,
 } from "@/src/features/products/types";
+import { isExternalLessonHref } from "@/src/features/products/lib/courseLessonStart";
 
 type CourseQuizContentProps = {
   slug: string;
@@ -175,6 +176,17 @@ export default function CourseQuizContent({
     setResult(submitResult);
   }
 
+  function handleGoToNextLesson() {
+    if (!nextLessonHref) return;
+
+    if (isExternalLessonHref(nextLessonHref)) {
+      window.open(nextLessonHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    router.push(nextLessonHref);
+  }
+
   function handleRetake() {
     setSelections({});
     setIsSubmitted(false);
@@ -314,6 +326,7 @@ export default function CourseQuizContent({
           stageTitle={stageTitle}
           result={result}
           nextLessonHref={nextLessonHref}
+          onGoToNextLesson={handleGoToNextLesson}
           onRetake={handleRetake}
           onBack={() => router.push(returnTo)}
         />
