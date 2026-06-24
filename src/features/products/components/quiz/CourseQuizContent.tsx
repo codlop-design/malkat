@@ -62,10 +62,13 @@ const answerStateClasses: Record<
   wrong: "border-[#E34949] bg-[#FDEDED] ring-1 ring-[#E34949]/20",
 };
 
-function shouldShowAnswerText(text: string): boolean {
+function shouldShowQuizText(text: string): boolean {
   const trimmed = text.trim();
   return trimmed.length > 0 && trimmed !== "-";
 }
+
+const quizImageClassName =
+  "size-[100px] shrink-0 rounded-xl object-cover";
 
 export default function CourseQuizContent({
   slug,
@@ -271,9 +274,20 @@ export default function CourseQuizContent({
                       <p className="text-sm font-medium text-primary">
                         السؤال {index + 1}
                       </p>
-                      <p className="mt-3 text-base font-bold text-black md:text-lg">
-                        {question.text}
-                      </p>
+                      {question.image ? (
+                        <Image
+                          src={question.image}
+                          alt=""
+                          width={100}
+                          height={100}
+                          className={`mt-3 ${quizImageClassName}`}
+                        />
+                      ) : null}
+                      {shouldShowQuizText(question.text) ? (
+                        <p className="mt-3 text-base font-bold text-black md:text-lg">
+                          {question.text}
+                        </p>
+                      ) : null}
 
                       <div className="mt-5 flex flex-col gap-3">
                         {question.answers.map((answer) => {
@@ -309,10 +323,10 @@ export default function CourseQuizContent({
                                   alt=""
                                   width={100}
                                   height={100}
-                                  className="size-[100px] shrink-0 rounded-xl object-cover"
+                                  className={quizImageClassName}
                                 />
                               ) : null}
-                              {shouldShowAnswerText(answer.text) ? (
+                              {shouldShowQuizText(answer.text) ? (
                                 <span className="flex-1">{answer.text}</span>
                               ) : (
                                 <span className="flex-1" />
