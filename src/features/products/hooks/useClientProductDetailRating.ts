@@ -34,9 +34,10 @@ export function useClientProductDetailRating({
         return;
       }
 
-      onDetailUpdated((current) =>
-        applyProductDetailRatingUpdate(current, refreshed.detail),
-      );
+      onDetailUpdated((current) => ({
+        ...applyProductDetailRatingUpdate(current, refreshed.detail),
+        isBought: refreshed.detail.isBought,
+      }));
     })();
 
     return () => {

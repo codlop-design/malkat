@@ -29,7 +29,7 @@ export default function ProductDetailMainCard({
 }: ProductDetailMainCardProps) {
   const { category, data } = product;
   const imageFirst = category === "books" || category === "guides";
-  const showAddToCart = !(category === "courses" && detail.isBought);
+  const showAddToCart = detail.isBought !== true;
 
   return (
     <div className="rounded-2xl border border-[#E8E8E8] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:p-8">
@@ -68,7 +68,7 @@ export default function ProductDetailMainCard({
             detail={detail}
           />
 
-          {category !== "courses" ? (
+          {category !== "courses" && showAddToCart ? (
             <AddToCartButton
               payload={cartPayload}
               label={CART_LABEL[category]}

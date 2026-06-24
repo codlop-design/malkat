@@ -22,12 +22,23 @@ export async function fetchProductDetailRatingUpdate(
 
   if (isDetailRatingEqual(currentRating, freshRating)) {
     if (freshRating.isRated && !currentRating.isRated) {
-      return mergeDetailRatingFields(current, freshRating);
+      return {
+        ...mergeDetailRatingFields(current, freshRating),
+        isBought: refreshed.detail.isBought,
+      };
     }
+
+    if (current.isBought !== refreshed.detail.isBought) {
+      return { ...current, isBought: refreshed.detail.isBought };
+    }
+
     return null;
   }
 
-  return mergeDetailRatingFields(current, freshRating);
+  return {
+    ...mergeDetailRatingFields(current, freshRating),
+    isBought: refreshed.detail.isBought,
+  };
 }
 
 export function applyProductDetailRatingUpdate(
@@ -39,10 +50,21 @@ export function applyProductDetailRatingUpdate(
 
   if (isDetailRatingEqual(currentRating, freshRating)) {
     if (freshRating.isRated && !currentRating.isRated) {
-      return mergeDetailRatingFields(current, freshRating);
+      return {
+        ...mergeDetailRatingFields(current, freshRating),
+        isBought: refreshed.isBought,
+      };
     }
+
+    if (current.isBought !== refreshed.isBought) {
+      return { ...current, isBought: refreshed.isBought };
+    }
+
     return current;
   }
 
-  return mergeDetailRatingFields(current, freshRating);
+  return {
+    ...mergeDetailRatingFields(current, freshRating),
+    isBought: refreshed.isBought,
+  };
 }

@@ -52,10 +52,7 @@ function getAnswerState(
   return "default";
 }
 
-const answerStateClasses: Record<
-  ReturnType<typeof getAnswerState>,
-  string
-> = {
+const answerStateClasses: Record<ReturnType<typeof getAnswerState>, string> = {
   default: "border-[#E8E8E8] bg-white",
   selected: "border-primary bg-white ring-1 ring-primary/20",
   correct: "border-[#22A06B] bg-[#E8F7EF] ring-1 ring-[#22A06B]/20",
@@ -67,8 +64,7 @@ function shouldShowQuizText(text: string): boolean {
   return trimmed.length > 0 && trimmed !== "-";
 }
 
-const quizImageClassName =
-  "size-[100px] shrink-0 rounded-xl object-cover";
+const quizImageClassName = "size-[100px] shrink-0 rounded-xl object-cover";
 
 export default function CourseQuizContent({
   slug,
@@ -92,11 +88,9 @@ export default function CourseQuizContent({
     key: string;
     quiz: CourseQuiz | null;
   }>({ key: "", quiz: null });
-  const hasLoadedQuiz =
-    isAuthenticated && quizState.key === quizCacheKey;
+  const hasLoadedQuiz = isAuthenticated && quizState.key === quizCacheKey;
   const quiz = hasLoadedQuiz ? quizState.quiz : null;
-  const isQuizLoading =
-    isAuthReady && isAuthenticated && !hasLoadedQuiz;
+  const isQuizLoading = isAuthReady && isAuthenticated && !hasLoadedQuiz;
   const [selections, setSelections] = useState<Record<number, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -157,7 +151,10 @@ export default function CourseQuizContent({
     () => [
       { label: "الرئيسية", href: "/" },
       { label: "المنتجات", href: "/products" },
-      { label: CATEGORY_META.courses.label, href: categoryListingHref("courses") },
+      {
+        label: CATEGORY_META.courses.label,
+        href: categoryListingHref("courses"),
+      },
       { label: "تفاصيل البرنامج", href: returnTo },
       { label: stageTitle },
     ],
@@ -176,10 +173,12 @@ export default function CourseQuizContent({
   async function handleSubmit() {
     if (!quiz || !allAnswered || isSubmitted) return;
 
-    const payload: CourseQuizAnswerPayload[] = quiz.questions.map((question) => ({
-      question_id: question.id,
-      answer_id: selections[question.id],
-    }));
+    const payload: CourseQuizAnswerPayload[] = quiz.questions.map(
+      (question) => ({
+        question_id: question.id,
+        answer_id: selections[question.id],
+      }),
+    );
 
     setIsSubmitting(true);
     const submitResult = await submitCourseQuizClient(slug, lessonId, payload);
@@ -221,7 +220,10 @@ export default function CourseQuizContent({
 
   return (
     <>
-      <PageHeader title={CATEGORY_META.courses.label} breadcrumbs={breadcrumbs} />
+      <PageHeader
+        title={CATEGORY_META.courses.label}
+        breadcrumbs={breadcrumbs}
+      />
 
       <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
         <div className="container" dir="rtl">
@@ -272,19 +274,19 @@ export default function CourseQuizContent({
                       className="rounded-2xl bg-[#EAF7F6] p-5 md:p-6"
                     >
                       <div className="flex items-start gap-4">
-                        <p className="shrink-0 text-sm font-medium text-primary">
-                          السؤال {index + 1}
-                        </p>
+                        {question.image ? (
+                          <Image
+                            src={question.image}
+                            alt=""
+                            width={100}
+                            height={100}
+                            className={quizImageClassName}
+                          />
+                        ) : null}
                         <div className="flex min-w-0 flex-col gap-3">
-                          {question.image ? (
-                            <Image
-                              src={question.image}
-                              alt=""
-                              width={100}
-                              height={100}
-                              className={quizImageClassName}
-                            />
-                          ) : null}
+                          <p className="shrink-0 text-sm font-medium text-primary">
+                            السؤال {index + 1}
+                          </p>
                           {shouldShowQuizText(question.text) ? (
                             <p className="text-base font-bold text-black md:text-lg">
                               {question.text}
