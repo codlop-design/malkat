@@ -6,6 +6,7 @@ export type CourseLesson = {
   type: string;
   description: string | null;
   isLocked: boolean;
+  lockedMessage: string | null;
   hasQuiz: boolean;
   isPassed: boolean;
   fileUrl: string | null;

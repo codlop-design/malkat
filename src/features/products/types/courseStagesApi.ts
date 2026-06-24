@@ -4,6 +4,7 @@ export interface CourseStageLessonApi {
   subtitle?: string | null;
   type?: string;
   is_locked: boolean;
+  locked_message?: string | null;
   description?: string | null;
   file?: string | null;
   has_quiz: boolean;

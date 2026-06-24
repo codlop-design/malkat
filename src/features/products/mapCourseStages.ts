@@ -24,7 +24,8 @@ function mapLesson(
     type: lesson.type ?? "file",
     description: lesson.description ?? null,
     isLocked: lesson.is_locked,
-    hasQuiz: lesson.has_quiz !== false,
+    lockedMessage: lesson.locked_message ?? null,
+    hasQuiz: lesson.has_quiz === true,
     isPassed: Boolean(
       lesson.is_passed ??
         (lesson as { quiz_passed?: boolean }).quiz_passed ??
