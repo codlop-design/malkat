@@ -82,6 +82,8 @@ export function mapActivityItem(item: ActivityApiItem): ActivityCardProps {
     imageSrc: item.image,
     ageRange: item.age_group,
     activityType: item.participant_type,
+    contributorName: item.contributor?.name ?? "",
+    contributorAvatar: item.contributor?.image ?? "",
     ...resolveCatalogSocialFields(item),
   };
 }
@@ -95,6 +97,8 @@ export function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
     imageSrc: item.image,
     pages: `${item.page_count} صفحة`,
     tags: [isFreePrice(item.price) ? "مجاني" : item.price],
+    contributorName: item.contributor?.name ?? "",
+    contributorAvatar: item.contributor?.image ?? "",
     ...resolveCatalogSocialFields(item),
   };
 }

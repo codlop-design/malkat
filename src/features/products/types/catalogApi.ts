@@ -82,6 +82,7 @@ export interface ActivityApiItem extends CatalogSocialFields {
   overview: string;
   age_group: string;
   participant_type: string;
+  contributor?: ProductContributor | null;
   rate_average?: number;
 }
 

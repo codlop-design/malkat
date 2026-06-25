@@ -3,6 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
+
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
@@ -107,6 +113,28 @@ export function CatalogCardMetaRow({
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="flex flex-wrap items-center gap-2">{children}</div>
       <RatingBadge rating={rating} count={ratingCount} />
+    </div>
+  );
+}
+
+export function CatalogCardContributorRow({
+  name,
+  image,
+}: {
+  name?: string;
+  image?: string;
+}) {
+  if (!name?.trim()) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Avatar className="size-8 shrink-0">
+        {image ? <AvatarImage src={image} alt="" /> : null}
+        <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+      </Avatar>
+      <span className="text-sm text-[#454545]">{name}</span>
     </div>
   );
 }

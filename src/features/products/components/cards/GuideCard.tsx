@@ -1,4 +1,5 @@
 import CardMedia, {
+  CatalogCardContributorRow,
   CatalogCardMetaRow,
 } from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
@@ -17,6 +18,8 @@ export type GuideCardProps = CatalogItemBase & {
   href?: string;
   tags?: string[];
   pages?: string;
+  contributorName?: string;
+  contributorAvatar?: string;
   rating?: number;
 };
 
@@ -29,6 +32,8 @@ export default function GuideCard({
   href: hrefProp,
   tags = ["للآباء", "مجاني"],
   pages = "42 صفحة",
+  contributorName = "",
+  contributorAvatar = "",
   rating,
   ratingCount,
   isFavourite = false,
@@ -76,6 +81,10 @@ export default function GuideCard({
             </span>
           ))}
         </CatalogCardMetaRow>
+        <CatalogCardContributorRow
+          name={contributorName}
+          image={contributorAvatar}
+        />
         <h3 className="text-base font-bold text-black">{title}</h3>
         <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
