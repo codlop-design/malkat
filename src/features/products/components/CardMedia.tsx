@@ -105,8 +105,8 @@ export function CatalogCardMetaRow({
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
-      <RatingBadge rating={rating} count={ratingCount} />
       <div className="flex flex-wrap items-center gap-2">{children}</div>
+      <RatingBadge rating={rating} count={ratingCount} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/src/components/ui/button";
@@ -70,12 +70,16 @@ export default function ProductReviewsSection({
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isRated, setIsRated] = useState(Boolean(detail.isRated));
+  const [ratedLocally, setRatedLocally] = useState(false);
+  const [trackedSlug, setTrackedSlug] = useState(slug);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    setIsRated(Boolean(detail.isRated));
-  }, [detail.isRated]);
+  if (trackedSlug !== slug) {
+    setTrackedSlug(slug);
+    setRatedLocally(false);
+  }
+
+  const isRated = Boolean(detail.isRated) || ratedLocally;
 
   async function refreshDetailFromApi() {
     const next = await fetchProductDetailRatingUpdate(category, slug, detail);
@@ -120,7 +124,7 @@ export default function ProductReviewsSection({
       }
 
       toast.success(result.message);
-      setIsRated(true);
+      setRatedLocally(true);
       setIsModalOpen(false);
       await refreshDetailFromApi();
       router.refresh();
