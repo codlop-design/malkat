@@ -1,82 +1,106 @@
 import type {
   CourseLesson,
   CourseQuiz,
-  CourseQuizLoadResult,
-  CourseQuizReview,
+  CourseQuizSnapshot,
+  CourseQuizSnapshotItem,
   CourseQuizSubmitResult,
   CourseStage,
 } from "@/src/features/products/data/courseStages";
 import type {
   CourseQuizApiPayload,
+  CourseQuizSnapshotApiPayload,
   CourseQuizSnapshotItemApi,
-  CourseQuizSnapshotPayload,
   CourseQuizSubmitApiResponse,
   CourseStageApi,
   CourseStageLessonApi,
   CourseStagesApiResponse,
 } from "@/src/features/products/types/courseStagesApi";
 
-export function isCourseQuizSnapshotPayload(
+function isQuizSnapshotPayload(
   data: unknown,
-): data is CourseQuizSnapshotPayload {
+): data is CourseQuizSnapshotApiPayload {
   return (
     typeof data === "object" &&
     data != null &&
     "snapshot" in data &&
-    Array.isArray((data as CourseQuizSnapshotPayload).snapshot)
+    Array.isArray((data as CourseQuizSnapshotApiPayload).snapshot)
   );
 }
 
-export function mapSnapshotToReview(
-  snapshot: CourseQuizSnapshotItemApi[],
-  message: string,
-  options?: { passingPercentage?: number; title?: string },
-): { quiz: CourseQuiz; review: CourseQuizReview } {
-  const selections: Record<number, number> = {};
-  let correctAnswers = 0;
-
-  const questions = snapshot.map((item) => {
-    selections[item.question_id] = item.user_answer_id;
-    if (item.is_correct) {
-      correctAnswers += 1;
-    }
-
-    return {
-      id: item.question_id,
-      text: item.question_text,
+function mapQuizSnapshotItem(
+  item: CourseQuizSnapshotItemApi,
+): CourseQuizSnapshotItem {
+  return {
+    questionId: item.question_id,
+    questionText: item.question_text,
+    userAnswerId: item.user_answer_id,
+    correctAnswerId: item.correct_answer_id,
+    isCorrect: item.is_correct,
+    answers: item.answers.map((answer) => ({
+      id: answer.id,
+      text: answer.answer_text,
       image: null,
-      answers: item.answers.map((answer) => ({
-        id: answer.id,
-        text: answer.answer_text,
-        image: null,
-        isCorrect: answer.is_correct,
-      })),
-    };
-  });
+      isCorrect: answer.is_correct,
+    })),
+  };
+}
 
-  const totalQuestions = questions.length;
+export function mapQuizSnapshotResponse(
+  payload: CourseQuizSnapshotApiPayload,
+  message = "",
+  fallbackTitle = "اختبار الدرس",
+): CourseQuizSnapshot {
+  const items = payload.snapshot.map(mapQuizSnapshotItem);
+
+  return {
+    message,
+    title: payload.title ?? fallbackTitle,
+    passingPercentage: payload.passing_percentage ?? 50,
+    items,
+  };
+}
+
+export function quizFromSnapshot(snapshot: CourseQuizSnapshot): CourseQuiz {
+  return {
+    id: 0,
+    title: snapshot.title,
+    totalQuestions: snapshot.items.length,
+    passingPercentage: snapshot.passingPercentage,
+    questions: snapshot.items.map((item) => ({
+      id: item.questionId,
+      text: item.questionText,
+      image: null,
+      answers: item.answers,
+    })),
+  };
+}
+
+export function selectionsFromSnapshot(
+  snapshot: CourseQuizSnapshot,
+): Record<number, number> {
+  return Object.fromEntries(
+    snapshot.items.map((item) => [item.questionId, item.userAnswerId]),
+  );
+}
+
+export function resultFromSnapshot(
+  snapshot: CourseQuizSnapshot,
+  options?: { passed?: boolean; message?: string },
+): CourseQuizSubmitResult {
+  const totalQuestions = snapshot.items.length;
+  const correctAnswers = snapshot.items.filter((item) => item.isCorrect).length;
   const score =
     totalQuestions > 0
       ? Math.round((correctAnswers / totalQuestions) * 100)
       : 0;
-  const passingPercentage = options?.passingPercentage ?? 50;
 
   return {
-    quiz: {
-      id: 0,
-      title: options?.title ?? "مراجعة الاختبار",
-      totalQuestions,
-      passingPercentage,
-      questions,
-    },
-    review: {
-      message,
-      selections,
-      correctAnswers,
-      totalQuestions,
-      passed: true,
-      score,
-    },
+    passed: options?.passed ?? score >= snapshot.passingPercentage,
+    score,
+    correctAnswers,
+    totalQuestions,
+    passingPercentage: snapshot.passingPercentage,
+    message: options?.message ?? snapshot.message,
   };
 }
 
@@ -136,63 +160,24 @@ export function mapCourseQuizResponse(
   };
 }
 
-export function mapCourseQuizLoadResponse(
-  data: unknown,
-  message = "",
-): CourseQuizLoadResult | null {
-  if (!data || typeof data !== "object") {
-    return null;
-  }
-
-  if (isCourseQuizSnapshotPayload(data)) {
-    const { quiz, review } = mapSnapshotToReview(data.snapshot, message, {
-      passingPercentage: data.passing_percentage,
-      title: data.title,
-    });
-
-    return { quiz, review };
-  }
-
-  if (!("questions" in data) || !Array.isArray((data as CourseQuizApiPayload).questions)) {
-    return null;
-  }
-
-  return {
-    quiz: mapCourseQuizResponse(data as CourseQuizApiPayload),
-    review: null,
-  };
-}
-
 export function mapCourseQuizSubmitResponse(
   payload: CourseQuizSubmitApiResponse,
-): CourseQuizSubmitResult {
+): CourseQuizSubmitResult | null {
   const data = payload.data;
 
-  if (data && isCourseQuizSnapshotPayload(data)) {
-    const { review } = mapSnapshotToReview(data.snapshot, payload.message ?? "", {
-      passingPercentage: data.passing_percentage,
-      title: data.title,
-    });
-
-    return {
-      passed: review.passed,
-      score: review.score,
-      correctAnswers: review.correctAnswers,
-      totalQuestions: review.totalQuestions,
-      passingPercentage: data.passing_percentage ?? 50,
-      message: review.message,
-    };
+  if (!data || isQuizSnapshotPayload(data)) {
+    return null;
   }
 
   return {
-    passed: data?.passed ?? false,
-    score: data?.score ?? 0,
-    correctAnswers: data?.correct_answers ?? 0,
-    totalQuestions: data?.total_questions ?? 0,
-    passingPercentage: data?.passing_percentage ?? 0,
+    passed: data.passed ?? false,
+    score: data.score ?? 0,
+    correctAnswers: data.correct_answers ?? 0,
+    totalQuestions: data.total_questions ?? 0,
+    passingPercentage: data.passing_percentage ?? 0,
     message: payload.message ?? "",
-    stagePassed: data?.stage_passed,
-    certificateUrl: data?.certificate_url ?? null,
+    stagePassed: data.stage_passed,
+    certificateUrl: data.certificate_url ?? null,
   };
 }
 

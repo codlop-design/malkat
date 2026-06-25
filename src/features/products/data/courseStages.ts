@@ -53,16 +53,18 @@ export type CourseQuizSubmitResult = {
   certificateUrl?: string | null;
 };
 
-export type CourseQuizReview = {
-  message: string;
-  selections: Record<number, number>;
-  correctAnswers: number;
-  totalQuestions: number;
-  passed: boolean;
-  score: number;
+export type CourseQuizSnapshotItem = {
+  questionId: number;
+  questionText: string;
+  userAnswerId: number;
+  correctAnswerId: number;
+  isCorrect: boolean;
+  answers: CourseQuizAnswer[];
 };
 
-export type CourseQuizLoadResult = {
-  quiz: CourseQuiz;
-  review: CourseQuizReview | null;
+export type CourseQuizSnapshot = {
+  message: string;
+  title: string;
+  passingPercentage: number;
+  items: CourseQuizSnapshotItem[];
 };
