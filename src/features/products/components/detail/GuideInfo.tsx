@@ -31,9 +31,7 @@ export default function GuideInfo({ data, detail }: GuideInfoProps) {
         ))}
       </div>
       {meta ? (
-        <p className="mt-4 text-sm text-[#454545]">
-          {meta.forWhom} · {guide.pages}
-        </p>
+        <p className="mt-4 text-sm text-[#454545]">{guide.pages}</p>
       ) : null}
       <InstructorRow contributor={detail.contributor} title="مُعد الدليل" />
     </>
