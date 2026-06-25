@@ -51,6 +51,13 @@ export function courseLessonQuizHref(slug: string, lessonId: number): string {
   return `/products/courses/${slug}/lessons/${lessonId}/quiz`;
 }
 
+export function courseLessonDescriptionHref(
+  slug: string,
+  lessonId: number,
+): string {
+  return `/products/courses/${slug}/lessons/${lessonId}/description`;
+}
+
 export function resolveProductHref(
   category: CatalogSectionKey,
   slug: string,

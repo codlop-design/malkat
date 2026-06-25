@@ -23,6 +23,7 @@ import type {
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import {
   categoryListingHref,
+  courseLessonDescriptionHref,
   productDetailHref,
 } from "@/src/features/products/types";
 import { isExternalLessonHref } from "@/src/features/products/lib/courseLessonStart";
@@ -185,12 +186,12 @@ export default function CourseQuizContent({
     }
 
     if (nextLessonId) {
-      const separator = returnTo.includes("?") ? "&" : "?";
-      return `${returnTo}${separator}openLesson=${nextLessonId}`;
+      const params = new URLSearchParams({ returnTo });
+      return `${courseLessonDescriptionHref(slug, Number(nextLessonId))}?${params.toString()}`;
     }
 
     return null;
-  }, [nextLessonFile, nextLessonId, nextLessonTarget, returnTo]);
+  }, [nextLessonFile, nextLessonId, nextLessonTarget, returnTo, slug]);
 
   const breadcrumbs = useMemo(
     () => [

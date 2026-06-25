@@ -13,7 +13,6 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseStagesClient } from "@/src/features/products/api/getCourseStagesClient";
-import CourseLessonTextContent from "@/src/features/products/components/detail/CourseLessonTextContent";
 import type { CourseStage } from "@/src/features/products/data/courseStages";
 import {
   buildNextLessonHref,
@@ -21,6 +20,7 @@ import {
   getLessonStartMode,
 } from "@/src/features/products/lib/courseLessonStart";
 import {
+  courseLessonDescriptionHref,
   courseLessonQuizHref,
   productDetailHref,
 } from "@/src/features/products/types";
@@ -48,9 +48,6 @@ export default function CourseStagesSection({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [manualOpenStages, setManualOpenStages] = useState<
     string[] | undefined
-  >(undefined);
-  const [manualExpandedLessonId, setManualExpandedLessonId] = useState<
-    number | null | undefined
   >(undefined);
 
   const apiOpenStages = useMemo(
@@ -82,24 +79,7 @@ export default function CourseStagesSection({
     return defaultOpenStages;
   }, [defaultOpenStages, openLessonStage, parsedOpenLessonId]);
 
-  const urlExpandedLessonId = useMemo(() => {
-    if (parsedOpenLessonId == null || stages.length === 0) return null;
-
-    const lesson = stages
-      .flatMap((stage) => stage.lessons)
-      .find((item) => item.id === parsedOpenLessonId);
-
-    if (!lesson || getLessonContentMode(lesson) !== "text") return null;
-
-    return parsedOpenLessonId;
-  }, [parsedOpenLessonId, stages]);
-
   const openedLessonFileRef = useRef<number | null>(null);
-
-  const expandedLessonId =
-    manualExpandedLessonId !== undefined
-      ? manualExpandedLessonId
-      : urlExpandedLessonId;
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated) return;
@@ -206,7 +186,6 @@ export default function CourseStagesSection({
                   {stage.lessons.map((lesson, lessonIndex) => {
                     const isUnlocked = !lesson.isLocked;
                     const startMode = getLessonStartMode(lesson);
-                    const isTextExpanded = expandedLessonId === lesson.id;
                     const nextLesson =
                       stage.lessons[lessonIndex + 1] ??
                       stages[stageIndex + 1]?.lessons[0];
@@ -219,9 +198,15 @@ export default function CourseStagesSection({
                     if (nextLesson) {
                       quizQuery.set(
                         "nextLessonTarget",
-                        buildNextLessonHref(returnTo, nextLesson),
+                        buildNextLessonHref(slug, returnTo, nextLesson),
                       );
                     }
+
+                    const lessonDescriptionQuery = new URLSearchParams({
+                      returnTo,
+                      stage: stage.title,
+                    });
+                    const lessonDescriptionHref = `${courseLessonDescriptionHref(slug, lesson.id)}?${lessonDescriptionQuery.toString()}`;
 
                     const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
                     const reviewQuery = new URLSearchParams(quizQuery);
@@ -262,24 +247,10 @@ export default function CourseStagesSection({
 
                           <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
                             {startMode === "text" ? (
-                              <Button
-                                type="button"
-                                className="h-10 min-w-30 px-4"
-                                onClick={() => {
-                                  setManualExpandedLessonId((current) => {
-                                    const activeId =
-                                      current !== undefined
-                                        ? current
-                                        : urlExpandedLessonId;
-                                    return activeId === lesson.id
-                                      ? null
-                                      : lesson.id;
-                                  });
-                                }}
-                              >
-                                {isTextExpanded
-                                  ? "إخفاء المحتوى"
-                                  : "بدء التعلم"}
+                              <Button asChild className="h-10 min-w-30 px-4">
+                                <Link href={lessonDescriptionHref}>
+                                  بدء التعلم
+                                </Link>
                               </Button>
                             ) : startMode === "file" ? (
                               <Button asChild className="h-10 min-w-30 px-4">
@@ -338,16 +309,6 @@ export default function CourseStagesSection({
                             ) : null}
                           </div>
                         </div>
-
-                        {startMode === "text" &&
-                        isTextExpanded &&
-                        lesson.description ? (
-                          <CourseLessonTextContent
-                            title={lesson.title}
-                            subtitle={lesson.subtitle}
-                            content={lesson.description}
-                          />
-                        ) : null}
                       </li>
                     );
                   })}

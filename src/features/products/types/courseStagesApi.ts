@@ -92,3 +92,15 @@ export interface CourseQuizSubmitApiResponse {
     certificate_url?: string | null;
   };
 }
+
+export interface CourseLessonDescriptionApi {
+  id: number;
+  title: string;
+  description: string;
+}
+
+export interface CourseLessonDescriptionApiResponse {
+  success?: boolean;
+  message?: string;
+  data?: CourseLessonDescriptionApi;
+}

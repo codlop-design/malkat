@@ -1,3 +1,9 @@
+export type CourseLessonDescription = {
+  id: number;
+  title: string;
+  description: string;
+};
+
 export type CourseLesson = {
   id: number;
   number: number;

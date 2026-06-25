@@ -1,5 +1,6 @@
 import type {
   CourseLesson,
+  CourseLessonDescription,
   CourseQuiz,
   CourseQuizLoadResult,
   CourseQuizReview,
@@ -11,6 +12,7 @@ import type {
   CourseQuizApiResponse,
   CourseQuizSnapshotPayload,
   CourseQuizSubmitApiResponse,
+  CourseLessonDescriptionApi,
   CourseStageApi,
   CourseStageLessonApi,
   CourseStagesApiResponse,
@@ -165,6 +167,16 @@ export function parseCourseQuizApiResponse(
   return {
     mode: "active",
     quiz: mapCourseQuizResponse(payload.data),
+  };
+}
+
+export function mapCourseLessonDescriptionResponse(
+  payload: CourseLessonDescriptionApi,
+): CourseLessonDescription {
+  return {
+    id: payload.id,
+    title: payload.title,
+    description: payload.description ?? "",
   };
 }
 

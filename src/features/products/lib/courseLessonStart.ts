@@ -1,4 +1,5 @@
 import type { CourseLesson } from "@/src/features/products/data/courseStages";
+import { courseLessonDescriptionHref } from "@/src/features/products/types";
 
 export type LessonStartMode = "text" | "file" | "none";
 
@@ -6,7 +7,7 @@ function resolveLessonContentMode(lesson: CourseLesson): LessonStartMode {
   const hasDescription = Boolean(lesson.description?.trim());
   const hasFile = Boolean(lesson.fileUrl);
 
-  if (lesson.type === "text" && hasDescription) {
+  if (lesson.type === "text") {
     return "text";
   }
 
@@ -46,19 +47,22 @@ export function isExternalLessonHref(href: string): boolean {
 }
 
 export function buildNextLessonHref(
+  slug: string,
   returnTo: string,
   lesson: CourseLesson,
 ): string {
   const mode = resolveLessonContentMode(lesson);
-  const separator = returnTo.includes("?") ? "&" : "?";
 
   if (mode === "file" && lesson.fileUrl) {
     return lesson.fileUrl;
   }
 
   if (mode === "text") {
-    return `${returnTo}${separator}openLesson=${lesson.id}`;
+    const params = new URLSearchParams({ returnTo });
+    return `${courseLessonDescriptionHref(slug, lesson.id)}?${params.toString()}`;
   }
+
+  const separator = returnTo.includes("?") ? "&" : "?";
 
   if (lesson.fileUrl) {
     return lesson.fileUrl;
