@@ -18,14 +18,24 @@ export default function InstructorRow({
   if (!name) return null;
 
   return (
-    <div className="mt-5 flex items-center gap-3">
-      <Avatar className="size-10">
+    <div className="mt-5 flex items-start gap-3">
+      <Avatar className="size-10 shrink-0">
         {contributor?.image ? (
           <AvatarImage src={contributor.image} alt="" />
         ) : null}
         <AvatarFallback>{name.charAt(0)}</AvatarFallback>
       </Avatar>
-      <span className="text-sm font-medium text-black">{name}</span>
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-black">{name}</p>
+        {contributor?.jobTitle?.trim() ? (
+          <p className="mt-1 text-sm text-[#717171]">{contributor.jobTitle}</p>
+        ) : null}
+        {contributor?.bio?.trim() ? (
+          <p className="mt-2 text-sm leading-relaxed text-[#454545]">
+            {contributor.bio}
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

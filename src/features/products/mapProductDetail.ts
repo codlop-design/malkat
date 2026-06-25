@@ -326,7 +326,12 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
 
   const detail: ProductDetailMeta = {
     longDescription: raw.description || raw.overview,
-    contributor: raw.contributor,
+    contributor: {
+      name: raw.contributor.name,
+      image: raw.contributor.image,
+      jobTitle: raw.contributor.job_title ?? "",
+      bio: raw.contributor.overview ?? "",
+    },
     accordions: buildGuideAccordions(raw),
     guideMeta: {
       forWhom: raw.for_whom,

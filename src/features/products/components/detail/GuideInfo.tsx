@@ -35,7 +35,10 @@ export default function GuideInfo({ data, detail }: GuideInfoProps) {
           {meta.forWhom} · {guide.pages}
         </p>
       ) : null}
-      <InstructorRow contributor={detail.contributor} />
+      <div className="mt-6">
+        <h3 className="text-base font-bold text-black">مُعد الدليل</h3>
+        <InstructorRow contributor={detail.contributor} />
+      </div>
     </>
   );
 }

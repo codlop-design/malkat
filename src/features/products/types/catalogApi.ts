@@ -209,7 +209,7 @@ export interface EvidenceDetailsApi extends CatalogSocialFields {
   is_free: boolean;
   description: string;
   rate_average?: number;
-  contributor: ProductContributor;
+  contributor: CourseContributor;
 }
 
 export type ProductDetailsApiPayload =

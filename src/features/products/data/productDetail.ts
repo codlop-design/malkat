@@ -51,6 +51,8 @@ export type ProductGuideMeta = {
 export type ProductContributorDisplay = {
   name: string;
   image: string;
+  jobTitle?: string;
+  bio?: string;
 };
 
 export type ProductDetailMeta = {
