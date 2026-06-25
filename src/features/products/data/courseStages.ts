@@ -1,9 +1,3 @@
-export type CourseLessonDescription = {
-  id: number;
-  title: string;
-  description: string;
-};
-
 export type CourseLesson = {
   id: number;
   number: number;
@@ -73,4 +67,10 @@ export type CourseQuizSubmitResult = {
   message: string;
   stagePassed?: boolean;
   certificateUrl?: string | null;
+};
+
+export type CourseLessonDescription = {
+  id: number;
+  title: string;
+  description: string;
 };

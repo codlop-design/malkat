@@ -23,7 +23,6 @@ import type {
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import {
   categoryListingHref,
-  courseLessonDescriptionHref,
   productDetailHref,
 } from "@/src/features/products/types";
 import { isExternalLessonHref } from "@/src/features/products/lib/courseLessonStart";
@@ -70,7 +69,9 @@ function shouldShowQuizText(text: string): boolean {
 
 const quizImageClassName = "size-[100px] shrink-0 rounded-xl object-cover";
 
-function reviewToQuiz(review: CourseQuizLoadResult & { mode: "review" }): CourseQuiz {
+function reviewToQuiz(
+  review: CourseQuizLoadResult & { mode: "review" },
+): CourseQuiz {
   return {
     id: 0,
     title: review.review.title,
@@ -118,12 +119,11 @@ export default function CourseQuizContent({
   const review =
     loadState.data?.mode === "review" ? loadState.data.review : null;
   const isReviewMode = review != null;
-  const quiz =
-    isReviewMode
-      ? reviewToQuiz({ mode: "review", review })
-      : loadState.data?.mode === "active"
-        ? loadState.data.quiz
-        : null;
+  const quiz = isReviewMode
+    ? reviewToQuiz({ mode: "review", review })
+    : loadState.data?.mode === "active"
+      ? loadState.data.quiz
+      : null;
 
   const isQuizLoading =
     !hasServerReview && isAuthReady && isAuthenticated && !hasLoadedQuiz;
@@ -132,7 +132,9 @@ export default function CourseQuizContent({
     hasServerReview ? hasServerReview.review.selections : {},
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(() => Boolean(hasServerReview));
+  const [isSubmitted, setIsSubmitted] = useState(() =>
+    Boolean(hasServerReview),
+  );
   const [result, setResult] = useState<CourseQuizSubmitResult | null>(null);
 
   useEffect(() => {
@@ -186,12 +188,12 @@ export default function CourseQuizContent({
     }
 
     if (nextLessonId) {
-      const params = new URLSearchParams({ returnTo });
-      return `${courseLessonDescriptionHref(slug, Number(nextLessonId))}?${params.toString()}`;
+      const separator = returnTo.includes("?") ? "&" : "?";
+      return `${returnTo}${separator}openLesson=${nextLessonId}`;
     }
 
     return null;
-  }, [nextLessonFile, nextLessonId, nextLessonTarget, returnTo, slug]);
+  }, [nextLessonFile, nextLessonId, nextLessonTarget, returnTo]);
 
   const breadcrumbs = useMemo(
     () => [
@@ -310,8 +312,8 @@ export default function CourseQuizContent({
                       </p>
                     ) : null}
                     <p className="text-sm text-[#454545]">
-                      لقد حصلت على {review.correctAnswers}/{review.totalQuestions}{" "}
-                      · نسبة النجاح: {review.score}%
+                      لقد حصلت على {review.correctAnswers}/
+                      {review.totalQuestions} · نسبة النجاح: {review.score}%
                     </p>
                   </div>
                 ) : (

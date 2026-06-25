@@ -2,6 +2,7 @@ type CourseLessonTextContentProps = {
   title: string;
   subtitle?: string;
   content: string;
+  className?: string;
 };
 
 const contentClassName =
@@ -11,9 +12,15 @@ export default function CourseLessonTextContent({
   title,
   subtitle,
   content,
+  className,
 }: CourseLessonTextContentProps) {
   return (
-    <div className="mt-4 rounded-xl border border-[#E8E8E8] bg-white p-4 md:p-6">
+    <div
+      className={
+        className ??
+        "mt-4 rounded-xl border border-[#E8E8E8] bg-white p-4 md:p-6"
+      }
+    >
       <div className="mb-4 border-b border-[#E8E8E8] pb-4">
         <h3 className="text-base font-bold text-black md:text-lg">{title}</h3>
         {subtitle ? (

@@ -202,12 +202,16 @@ export default function CourseStagesSection({
                       );
                     }
 
-                    const lessonDescriptionQuery = new URLSearchParams({
-                      returnTo,
+                    const lessonQuery = new URLSearchParams({
                       stage: stage.title,
+                      returnTo,
                     });
-                    const lessonDescriptionHref = `${courseLessonDescriptionHref(slug, lesson.id)}?${lessonDescriptionQuery.toString()}`;
 
+                    if (lesson.subtitle) {
+                      lessonQuery.set("subtitle", lesson.subtitle);
+                    }
+
+                    const descriptionHref = `${courseLessonDescriptionHref(slug, lesson.id)}?${lessonQuery.toString()}`;
                     const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
                     const reviewQuery = new URLSearchParams(quizQuery);
                     reviewQuery.set("review", "1");
@@ -248,9 +252,7 @@ export default function CourseStagesSection({
                           <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
                             {startMode === "text" ? (
                               <Button asChild className="h-10 min-w-30 px-4">
-                                <Link href={lessonDescriptionHref}>
-                                  بدء التعلم
-                                </Link>
+                                <Link href={descriptionHref}>بدء التعلم</Link>
                               </Button>
                             ) : startMode === "file" ? (
                               <Button asChild className="h-10 min-w-30 px-4">

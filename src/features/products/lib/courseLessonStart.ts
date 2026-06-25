@@ -47,7 +47,7 @@ export function isExternalLessonHref(href: string): boolean {
 }
 
 export function buildNextLessonHref(
-  slug: string,
+  courseSlug: string,
   returnTo: string,
   lesson: CourseLesson,
 ): string {
@@ -59,14 +59,13 @@ export function buildNextLessonHref(
 
   if (mode === "text") {
     const params = new URLSearchParams({ returnTo });
-    return `${courseLessonDescriptionHref(slug, lesson.id)}?${params.toString()}`;
+    return `${courseLessonDescriptionHref(courseSlug, lesson.id)}?${params.toString()}`;
   }
-
-  const separator = returnTo.includes("?") ? "&" : "?";
 
   if (lesson.fileUrl) {
     return lesson.fileUrl;
   }
 
+  const separator = returnTo.includes("?") ? "&" : "?";
   return `${returnTo}${separator}openLesson=${lesson.id}`;
 }
