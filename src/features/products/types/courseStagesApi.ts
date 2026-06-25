@@ -57,7 +57,7 @@ export interface CourseQuizApiPayload {
 export interface CourseQuizApiResponse {
   success?: boolean;
   message?: string;
-  data?: CourseQuizApiPayload | CourseQuizSnapshotApiPayload;
+  data?: CourseQuizApiPayload | CourseQuizSnapshotPayload;
 }
 
 export interface CourseQuizSnapshotAnswerApi {
@@ -75,24 +75,20 @@ export interface CourseQuizSnapshotItemApi {
   answers: CourseQuizSnapshotAnswerApi[];
 }
 
-export interface CourseQuizSnapshotApiPayload {
+export interface CourseQuizSnapshotPayload {
   snapshot: CourseQuizSnapshotItemApi[];
-  title?: string;
-  passing_percentage?: number;
 }
 
 export interface CourseQuizSubmitApiResponse {
   success?: boolean;
   message?: string;
-  data?:
-    | {
-        score: number;
-        correct_answers: number;
-        total_questions: number;
-        passed: boolean;
-        passing_percentage: number;
-        stage_passed?: boolean;
-        certificate_url?: string | null;
-      }
-    | CourseQuizSnapshotApiPayload;
+  data?: {
+    score: number;
+    correct_answers: number;
+    total_questions: number;
+    passed: boolean;
+    passing_percentage: number;
+    stage_passed?: boolean;
+    certificate_url?: string | null;
+  };
 }

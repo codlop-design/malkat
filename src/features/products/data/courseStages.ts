@@ -42,6 +42,22 @@ export type CourseQuiz = {
   questions: CourseQuizQuestion[];
 };
 
+export type CourseQuizReview = {
+  message: string;
+  title: string;
+  questions: CourseQuizQuestion[];
+  selections: Record<number, number>;
+  correctAnswers: number;
+  totalQuestions: number;
+  score: number;
+  passed: boolean;
+  passingPercentage: number;
+};
+
+export type CourseQuizLoadResult =
+  | { mode: "active"; quiz: CourseQuiz }
+  | { mode: "review"; review: CourseQuizReview };
+
 export type CourseQuizSubmitResult = {
   passed: boolean;
   score: number;
@@ -51,20 +67,4 @@ export type CourseQuizSubmitResult = {
   message: string;
   stagePassed?: boolean;
   certificateUrl?: string | null;
-};
-
-export type CourseQuizSnapshotItem = {
-  questionId: number;
-  questionText: string;
-  userAnswerId: number;
-  correctAnswerId: number;
-  isCorrect: boolean;
-  answers: CourseQuizAnswer[];
-};
-
-export type CourseQuizSnapshot = {
-  message: string;
-  title: string;
-  passingPercentage: number;
-  items: CourseQuizSnapshotItem[];
 };

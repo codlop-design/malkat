@@ -9,10 +9,8 @@ type QuizResultModalProps = {
   result: CourseQuizSubmitResult;
   nextLessonHref?: string | null;
   onGoToNextLesson?: () => void;
-  onReview?: () => void;
   onRetake: () => void;
   onBack: () => void;
-  canRetake?: boolean;
 };
 
 export default function QuizResultModal({
@@ -21,10 +19,8 @@ export default function QuizResultModal({
   result,
   nextLessonHref,
   onGoToNextLesson,
-  onReview,
   onRetake,
   onBack,
-  canRetake = true,
 }: QuizResultModalProps) {
   const firstName = userName.split(" ")[0] || userName;
 
@@ -55,7 +51,11 @@ export default function QuizResultModal({
                 </a>
               </Button>
             ) : (
-              <Button type="button" className="mt-8 h-12 min-w-48 px-8" onClick={onBack}>
+              <Button
+                type="button"
+                className="mt-8 h-12 min-w-48 px-8"
+                onClick={onBack}
+              >
                 العودة إلى البرنامج
               </Button>
             )}
@@ -69,34 +69,26 @@ export default function QuizResultModal({
               لقد اجتزت الاختبار بنجاح
             </p>
             <p className="mt-2 text-sm text-[#717171]">
-              لقد حصلت على {result.correctAnswers}/{result.totalQuestions} · نسبة
-              النجاح: {result.score}%
+              لقد حصلت على {result.correctAnswers}/{result.totalQuestions} ·
+              نسبة النجاح: {result.score}%
             </p>
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              {onReview ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-12 min-w-48 px-8"
-                  onClick={onReview}
-                >
-                  مراجعة الإجابات
-                </Button>
-              ) : null}
-              {nextLessonHref ? (
-                <Button
-                  type="button"
-                  className="h-12 min-w-52 px-8"
-                  onClick={onGoToNextLesson}
-                >
-                  الانتقال للفصل التالي
-                </Button>
-              ) : (
-                <Button type="button" className="h-12 min-w-52 px-8" onClick={onBack}>
-                  العودة إلى البرنامج
-                </Button>
-              )}
-            </div>
+            {nextLessonHref ? (
+              <Button
+                type="button"
+                className="mt-8 h-12 min-w-52 px-8"
+                onClick={onGoToNextLesson}
+              >
+                الانتقال للفصل التالي
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                className="mt-8 h-12 min-w-52 px-8"
+                onClick={onBack}
+              >
+                العودة إلى البرنامج
+              </Button>
+            )}
           </>
         ) : (
           <>
@@ -109,15 +101,13 @@ export default function QuizResultModal({
             <p className="mt-2 text-sm text-[#717171]">
               الحد الأدنى للنجاح: {result.passingPercentage}%
             </p>
-            {canRetake ? (
-              <Button type="button" className="mt-8 h-12 min-w-48 px-8" onClick={onRetake}>
-                إعادة الاختبار
-              </Button>
-            ) : onReview ? (
-              <Button type="button" className="mt-8 h-12 min-w-48 px-8" onClick={onReview}>
-                مراجعة الإجابات
-              </Button>
-            ) : null}
+            <Button
+              type="button"
+              className="mt-8 h-12 min-w-48 px-8"
+              onClick={onRetake}
+            >
+              إعادة الاختبار
+            </Button>
           </>
         )}
       </div>

@@ -1,48 +1,16 @@
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import {
-  mapCourseQuizResponse,
   mapCourseQuizSubmitResponse,
-  mapQuizSnapshotResponse,
+  parseCourseQuizApiResponse,
 } from "@/src/features/products/mapCourseStages";
 import type {
-  CourseQuiz,
-  CourseQuizSnapshot,
+  CourseQuizLoadResult,
   CourseQuizSubmitResult,
 } from "@/src/features/products/data/courseStages";
 import type {
-  CourseQuizApiPayload,
   CourseQuizApiResponse,
-  CourseQuizSnapshotApiPayload,
   CourseQuizSubmitApiResponse,
 } from "@/src/features/products/types/courseStagesApi";
-
-export type CourseQuizLoadResult =
-  | { kind: "quiz"; quiz: CourseQuiz }
-  | { kind: "snapshot"; snapshot: CourseQuizSnapshot };
-
-export type CourseQuizSubmitClientResult =
-  | { kind: "result"; result: CourseQuizSubmitResult }
-  | { kind: "snapshot"; snapshot: CourseQuizSnapshot };
-
-function isQuizSnapshotPayload(
-  data: unknown,
-): data is CourseQuizSnapshotApiPayload {
-  return (
-    typeof data === "object" &&
-    data != null &&
-    "snapshot" in data &&
-    Array.isArray((data as CourseQuizSnapshotApiPayload).snapshot)
-  );
-}
-
-function isQuizQuestionsPayload(data: unknown): data is CourseQuizApiPayload {
-  return (
-    typeof data === "object" &&
-    data != null &&
-    "questions" in data &&
-    Array.isArray((data as CourseQuizApiPayload).questions)
-  );
-}
 
 export async function getCourseQuizClient(
   slug: string,
@@ -53,29 +21,23 @@ export async function getCourseQuizClient(
     { validateStatus: () => true },
   );
 
-  if (status >= 400 || data?.success === false || !data?.data) {
+  console.log("[CourseQuiz] load response", {
+    slug,
+    lessonId,
+    status,
+    raw: data,
+  });
+
+  if (status >= 400 || (data?.success === false && !data?.data)) {
+    console.warn("[CourseQuiz] load failed", { slug, lessonId, status, raw: data });
     return null;
   }
 
-  if (isQuizSnapshotPayload(data.data)) {
-    return {
-      kind: "snapshot",
-      snapshot: mapQuizSnapshotResponse(
-        data.data,
-        data.message ?? "",
-        `اختبار الدرس ${lessonId}`,
-      ),
-    };
-  }
+  const mapped = parseCourseQuizApiResponse(data ?? {});
 
-  if (!isQuizQuestionsPayload(data.data)) {
-    return null;
-  }
+  console.log("[CourseQuiz] load mapped", mapped);
 
-  return {
-    kind: "quiz",
-    quiz: mapCourseQuizResponse(data.data),
-  };
+  return mapped;
 }
 
 export type CourseQuizAnswerPayload = {
@@ -87,10 +49,17 @@ export async function submitCourseQuizClient(
   slug: string,
   lessonId: number,
   answers: CourseQuizAnswerPayload[],
-): Promise<CourseQuizSubmitClientResult | null> {
+): Promise<CourseQuizSubmitResult | null> {
   await ensureCsrfCookie();
 
   const requestBody = { answers };
+
+  console.log("[CourseQuiz] submit request", {
+    slug,
+    lessonId,
+    url: `/courses/${slug}/lessons/${lessonId}/quiz/submit`,
+    body: requestBody,
+  });
 
   const { data, status } = await apiClient.post<CourseQuizSubmitApiResponse>(
     `/courses/${slug}/lessons/${lessonId}/quiz/submit`,
@@ -98,25 +67,19 @@ export async function submitCourseQuizClient(
     { validateStatus: () => true },
   );
 
-  if (status >= 400 || data?.success === false || !data?.data) {
+  console.log("[CourseQuiz] submit response", {
+    status,
+    raw: data,
+  });
+
+  if (status >= 400 || data?.success === false) {
+    console.warn("[CourseQuiz] submit failed", { status, raw: data });
     return null;
   }
 
-  if (isQuizSnapshotPayload(data.data)) {
-    return {
-      kind: "snapshot",
-      snapshot: mapQuizSnapshotResponse(
-        data.data,
-        data.message ?? "",
-        `اختبار الدرس ${lessonId}`,
-      ),
-    };
-  }
+  const mapped = mapCourseQuizSubmitResponse(data ?? {});
 
-  const result = mapCourseQuizSubmitResponse(data);
-  if (!result) {
-    return null;
-  }
+  console.log("[CourseQuiz] submit mapped", mapped);
 
-  return { kind: "result", result };
+  return mapped;
 }

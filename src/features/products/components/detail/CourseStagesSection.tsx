@@ -224,6 +224,9 @@ export default function CourseStagesSection({
                     }
 
                     const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
+                    const reviewQuery = new URLSearchParams(quizQuery);
+                    reviewQuery.set("review", "1");
+                    const reviewQuizHref = `${courseLessonQuizHref(slug, lesson.id)}?${reviewQuery.toString()}`;
 
                     return (
                       <li
@@ -300,9 +303,20 @@ export default function CourseStagesSection({
 
                             {lesson.hasQuiz && isUnlocked ? (
                               lesson.isPassed ? (
-                                <span className="inline-flex h-10 items-center rounded-xl bg-[#E8F7EF] px-4 text-sm font-medium text-[#22A06B]">
-                                  اجتزت الاختبار ✓
-                                </span>
+                                <>
+                                  <span className="inline-flex h-10 items-center rounded-xl bg-[#E8F7EF] px-4 text-sm font-medium text-[#22A06B]">
+                                    اجتزت الاختبار ✓
+                                  </span>
+                                  <Button
+                                    asChild
+                                    variant="outline"
+                                    className="h-10 min-w-30 border-primary px-4 text-primary hover:bg-[#E0F5F3]"
+                                  >
+                                    <Link href={reviewQuizHref}>
+                                      مراجعة الاختبار
+                                    </Link>
+                                  </Button>
+                                </>
                               ) : (
                                 <Button
                                   asChild
