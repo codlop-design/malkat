@@ -329,8 +329,9 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
     contributor: {
       name: raw.contributor.name,
       image: raw.contributor.image,
-      jobTitle: raw.contributor.job_title ?? "",
-      bio: raw.contributor.overview ?? "",
+      jobTitle: raw.contributor.job_title,
+      overview: raw.contributor.overview,
+      typeLabel: raw.contributor.type_label,
     },
     accordions: buildGuideAccordions(raw),
     guideMeta: {

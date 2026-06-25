@@ -8,6 +8,13 @@ export interface CourseContributor extends ProductContributor {
   overview?: string;
 }
 
+export interface GuideContributor extends ProductContributor {
+  id?: number;
+  job_title?: string;
+  overview?: string;
+  type_label?: string;
+}
+
 export interface ServiceContributor extends ProductContributor {
   id?: number;
 }
@@ -209,7 +216,7 @@ export interface EvidenceDetailsApi extends CatalogSocialFields {
   is_free: boolean;
   description: string;
   rate_average?: number;
-  contributor: CourseContributor;
+  contributor: GuideContributor;
 }
 
 export type ProductDetailsApiPayload =

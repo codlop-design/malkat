@@ -52,7 +52,8 @@ export type ProductContributorDisplay = {
   name: string;
   image: string;
   jobTitle?: string;
-  bio?: string;
+  overview?: string;
+  typeLabel?: string;
 };
 
 export type ProductDetailMeta = {
