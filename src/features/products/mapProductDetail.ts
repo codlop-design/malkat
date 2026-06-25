@@ -1,5 +1,6 @@
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import type {
+  ProductAccordionItem,
   ProductDetailMeta,
   ProductChapter,
 } from "@/src/features/products/data/productDetail";
@@ -286,6 +287,23 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
   return { product, detail };
 }
 
+function buildGuideAccordions(raw: EvidenceDetailsApi): ProductAccordionItem[] {
+  return [
+    {
+      title: "ماذا يقدم هذا الدليل؟",
+      content: raw.description || raw.overview,
+    },
+    {
+      title: "لمن هذا الدليل؟",
+      content: raw.for_whom,
+    },
+    {
+      title: "الفئة المستهدفة",
+      content: raw.target,
+    },
+  ].filter((item) => Boolean(item.content?.trim()));
+}
+
 function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
   const priceLabel = raw.is_free ? "مجاني" : raw.price_label;
 
@@ -309,16 +327,7 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
   const detail: ProductDetailMeta = {
     longDescription: raw.description || raw.overview,
     contributor: raw.contributor,
-    accordions: [
-      {
-        title: "ماذا يقدم هذا الدليل؟",
-        content: raw.description || raw.overview,
-      },
-      {
-        title: "الفئة المستهدفة",
-        content: `${raw.for_whom}. ${raw.target}`,
-      },
-    ],
+    accordions: buildGuideAccordions(raw),
     guideMeta: {
       forWhom: raw.for_whom,
       target: raw.target,
