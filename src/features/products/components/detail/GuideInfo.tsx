@@ -1,9 +1,5 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/src/components/ui/avatar";
 import type { GuideCardProps } from "@/src/features/products/components/cards/GuideCard";
+import InstructorRow from "@/src/features/products/components/detail/InstructorRow";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 
@@ -17,7 +13,6 @@ export default function GuideInfo({ data, detail }: GuideInfoProps) {
 
   const guide = data as GuideCardProps;
   const meta = detail.guideMeta;
-  const contributor = detail.contributor;
 
   return (
     <>
@@ -40,32 +35,7 @@ export default function GuideInfo({ data, detail }: GuideInfoProps) {
           {meta.forWhom} · {guide.pages}
         </p>
       ) : null}
-      {contributor?.name ? (
-        <div className="mt-6">
-          <h3 className="text-base font-bold text-black">مُعد الدليل</h3>
-          <div className="mt-3 flex items-start gap-3">
-            <Avatar className="size-12 shrink-0">
-              {contributor.image ? (
-                <AvatarImage src={contributor.image} alt="" />
-              ) : null}
-              <AvatarFallback>{contributor.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="font-medium text-black">{contributor.name}</p>
-              {contributor.jobTitle ? (
-                <p className="mt-1 text-sm text-[#717171]">
-                  {contributor.jobTitle}
-                </p>
-              ) : null}
-              {contributor.overview ? (
-                <p className="mt-2 text-sm leading-relaxed text-[#454545]">
-                  {contributor.overview}
-                </p>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <InstructorRow contributor={detail.contributor} title="مُعد الدليل" />
     </>
   );
 }

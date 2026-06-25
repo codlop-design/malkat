@@ -1,6 +1,7 @@
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
 import type {
   ProductAccordionItem,
+  ProductContributorDisplay,
   ProductDetailMeta,
   ProductChapter,
 } from "@/src/features/products/data/productDetail";
@@ -32,6 +33,24 @@ export type ProductDetailView = {
   product: CatalogProduct;
   detail: ProductDetailMeta;
 };
+
+function mapContributorDisplay(
+  contributor: {
+    name: string;
+    image: string;
+    job_title?: string;
+    overview?: string;
+    type_label?: string;
+  },
+): ProductContributorDisplay {
+  return {
+    name: contributor.name,
+    image: contributor.image,
+    jobTitle: contributor.job_title,
+    overview: contributor.overview,
+    typeLabel: contributor.type_label,
+  };
+}
 
 function buildRatingMeta(
   rate?: CatalogRate | null,
@@ -106,7 +125,7 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
 
   const detail: ProductDetailMeta = {
     longDescription: raw.description || raw.overview,
-    contributor: raw.contributor,
+    contributor: mapContributorDisplay(raw.contributor),
     accordions: [
       { title: "الوصف التفصيلي", content: raw.description || raw.overview },
       { title: "أهداف الكتاب", content: raw.goals },
@@ -221,10 +240,7 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
 
   const detail: ProductDetailMeta = {
     longDescription: raw.description || raw.overview,
-    contributor: {
-      name: raw.contributor.name,
-      image: raw.contributor.image,
-    },
+    contributor: mapContributorDisplay(raw.contributor),
     accordions: [
       {
         title: "ماذا تشمل الخدمة؟",
@@ -264,10 +280,7 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
 
   const detail: ProductDetailMeta = {
     longDescription: raw.overview || raw.description,
-    contributor: {
-      name: raw.contributor.name,
-      image: raw.contributor.image,
-    },
+    contributor: mapContributorDisplay(raw.contributor),
     accordions: [
       {
         title: "ماذا سيتعلم الطفل؟",
@@ -326,13 +339,7 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
 
   const detail: ProductDetailMeta = {
     longDescription: raw.description || raw.overview,
-    contributor: {
-      name: raw.contributor.name,
-      image: raw.contributor.image,
-      jobTitle: raw.contributor.job_title,
-      overview: raw.contributor.overview,
-      typeLabel: raw.contributor.type_label,
-    },
+    contributor: mapContributorDisplay(raw.contributor),
     accordions: buildGuideAccordions(raw),
     guideMeta: {
       forWhom: raw.for_whom,

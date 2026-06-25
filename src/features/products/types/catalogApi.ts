@@ -1,6 +1,9 @@
 export interface ProductContributor {
   name: string;
   image: string;
+  job_title?: string;
+  overview?: string;
+  type_label?: string;
 }
 
 export interface CourseContributor extends ProductContributor {
