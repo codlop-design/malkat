@@ -263,7 +263,7 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
   };
 
   const detail: ProductDetailMeta = {
-    longDescription: raw.description || raw.overview,
+    longDescription: raw.overview || raw.description,
     contributor: {
       name: raw.contributor.name,
       image: raw.contributor.image,
