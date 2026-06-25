@@ -1,4 +1,6 @@
-import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
+import CardMedia, {
+  CatalogCardMetaRow,
+} from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
@@ -60,7 +62,7 @@ export default function GuideCard({
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
-        <div className="flex flex-wrap items-center gap-2">
+        <CatalogCardMetaRow rating={rating} ratingCount={ratingCount}>
           {tags.map((tag) => (
             <span
               key={tag}
@@ -73,13 +75,12 @@ export default function GuideCard({
               {tag}
             </span>
           ))}
-        </div>
+        </CatalogCardMetaRow>
         <h3 className="text-base font-bold text-black">{title}</h3>
         <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
-        <div className="mt-auto flex items-center justify-between pt-1">
-          <RatingBadge rating={rating} count={ratingCount} />
+        <div className="mt-auto flex justify-end pt-1">
           <span className="text-sm text-[#717171]">{pages}</span>
         </div>
       </div>

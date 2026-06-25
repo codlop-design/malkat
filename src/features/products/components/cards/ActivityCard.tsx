@@ -1,5 +1,7 @@
 import { Zap } from "lucide-react";
-import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
+import CardMedia, {
+  CatalogCardMetaRow,
+} from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
@@ -63,19 +65,19 @@ export default function ActivityCard({
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
-        <div className="flex flex-wrap items-center gap-2">
+        <CatalogCardMetaRow rating={rating} ratingCount={ratingCount}>
           <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
             {ageRange}
           </span>
           <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
             {activityType}
           </span>
-        </div>
+        </CatalogCardMetaRow>
         <h3 className="text-base font-bold text-black">{title}</h3>
         <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="mt-auto flex flex-wrap gap-2">
           {skillTags.map((tag) => (
             <span
               key={tag}
@@ -88,9 +90,6 @@ export default function ActivityCard({
               {tag}
             </span>
           ))}
-        </div>
-        <div className="mt-auto flex items-center justify-start pt-1">
-          <RatingBadge rating={rating} count={ratingCount} />
         </div>
       </div>
     </ProductCard>

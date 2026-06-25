@@ -1,4 +1,6 @@
-import CardMedia, { RatingBadge } from "@/src/features/products/components/CardMedia";
+import CardMedia, {
+  CatalogCardMetaRow,
+} from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import type { CatalogItemBase } from "@/src/features/products/types/catalogItem";
@@ -68,7 +70,7 @@ export default function BookCard(props: BookCardProps) {
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
-        <div className="flex flex-wrap items-center gap-2">
+        <CatalogCardMetaRow rating={rating} ratingCount={ratingCount}>
           {free ? (
             <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">
               مجاني
@@ -80,7 +82,7 @@ export default function BookCard(props: BookCardProps) {
           <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
             {level}
           </span>
-        </div>
+        </CatalogCardMetaRow>
         <div>
           <h3 className="text-base font-bold text-black">{title}</h3>
           <p className="mt-1 text-sm text-[#717171]">{author}</p>
@@ -88,9 +90,6 @@ export default function BookCard(props: BookCardProps) {
         <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
-        <div className="mt-auto flex items-center justify-start pt-1">
-          <RatingBadge rating={rating} count={ratingCount} />
-        </div>
       </div>
     </ProductCard>
   );

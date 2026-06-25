@@ -84,12 +84,29 @@ export function RatingBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-lg bg-[#E8F4FC] px-2 py-1 text-sm font-medium text-[#1F1F1F]">
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-[#E8F4FC] px-2 py-1 text-sm font-medium text-[#1F1F1F]">
       <StarIcon />
       {rating}
       {count != null && count > 0 ? (
         <span className="text-xs text-[#717171]">({count})</span>
       ) : null}
     </span>
+  );
+}
+
+export function CatalogCardMetaRow({
+  rating,
+  ratingCount,
+  children,
+}: {
+  rating?: number;
+  ratingCount?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <RatingBadge rating={rating} count={ratingCount} />
+      <div className="flex flex-wrap items-center gap-2">{children}</div>
+    </div>
   );
 }
