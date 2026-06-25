@@ -12,10 +12,7 @@ import type {
   CourseStagesApiResponse,
 } from "@/src/features/products/types/courseStagesApi";
 
-function mapLesson(
-  lesson: CourseStageLessonApi,
-  index: number,
-): CourseLesson {
+function mapLesson(lesson: CourseStageLessonApi, index: number): CourseLesson {
   return {
     id: lesson.id,
     number: index + 1,
@@ -28,8 +25,8 @@ function mapLesson(
     hasQuiz: lesson.has_quiz === true,
     isPassed: Boolean(
       lesson.is_passed ??
-        (lesson as { quiz_passed?: boolean }).quiz_passed ??
-        (lesson as { is_quiz_passed?: boolean }).is_quiz_passed,
+      (lesson as { quiz_passed?: boolean }).quiz_passed ??
+      (lesson as { is_quiz_passed?: boolean }).is_quiz_passed,
     ),
     fileUrl: lesson.file ?? null,
   };
@@ -42,6 +39,7 @@ export function mapCourseStagesResponse(
     id: stage.id,
     number: stageIndex + 1,
     title: stage.title,
+    isActive: stage.is_active === true,
     lessons: (stage.lessons ?? []).map(mapLesson),
   }));
 }

@@ -16,6 +16,7 @@ export type CourseStage = {
   id: number;
   number: number;
   title: string;
+  isActive: boolean;
   lessons: CourseLesson[];
 };
 

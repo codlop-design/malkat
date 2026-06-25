@@ -46,15 +46,20 @@ export default function CourseStagesSection({
   const [stages, setStages] = useState<CourseStage[]>(initialStages ?? []);
   const [requiresAuth, setRequiresAuth] = useState(initialStages === null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [manualOpenStages, setManualOpenStages] = useState<string[]>([]);
+  const [manualOpenStages, setManualOpenStages] = useState<
+    string[] | undefined
+  >(undefined);
   const [manualExpandedLessonId, setManualExpandedLessonId] = useState<
     number | null | undefined
   >(undefined);
 
-  const defaultOpenStage = useMemo(() => {
-    if (stages.length === 0) return null;
-    return `stage-${stages[0].id}`;
-  }, [stages]);
+  const apiOpenStages = useMemo(
+    () =>
+      stages
+        .filter((stage) => stage.isActive)
+        .map((stage) => `stage-${stage.id}`),
+    [stages],
+  );
 
   const openLessonStage = useMemo(() => {
     if (parsedOpenLessonId == null || stages.length === 0) return null;
@@ -66,22 +71,16 @@ export default function CourseStagesSection({
     return stage ? `stage-${stage.id}` : null;
   }, [parsedOpenLessonId, stages]);
 
+  const defaultOpenStages =
+    manualOpenStages !== undefined ? manualOpenStages : apiOpenStages;
+
   const openStages = useMemo(() => {
     if (parsedOpenLessonId != null && openLessonStage) {
-      return [...new Set([...manualOpenStages, openLessonStage])];
+      return [...new Set([...defaultOpenStages, openLessonStage])];
     }
 
-    if (manualOpenStages.length > 0) {
-      return manualOpenStages;
-    }
-
-    return defaultOpenStage ? [defaultOpenStage] : [];
-  }, [
-    defaultOpenStage,
-    manualOpenStages,
-    openLessonStage,
-    parsedOpenLessonId,
-  ]);
+    return defaultOpenStages;
+  }, [defaultOpenStages, openLessonStage, parsedOpenLessonId]);
 
   const urlExpandedLessonId = useMemo(() => {
     if (parsedOpenLessonId == null || stages.length === 0) return null;
@@ -119,6 +118,7 @@ export default function CourseStagesSection({
       } else if (nextStages.length > 0) {
         setRequiresAuth(false);
         setStages(nextStages);
+        setManualOpenStages(undefined);
       }
 
       setIsRefreshing(false);
@@ -274,7 +274,9 @@ export default function CourseStagesSection({
                                   });
                                 }}
                               >
-                                {isTextExpanded ? "إخفاء المحتوى" : "بدء التعلم"}
+                                {isTextExpanded
+                                  ? "إخفاء المحتوى"
+                                  : "بدء التعلم"}
                               </Button>
                             ) : startMode === "file" ? (
                               <Button asChild className="h-10 min-w-30 px-4">

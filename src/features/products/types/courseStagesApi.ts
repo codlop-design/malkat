@@ -14,6 +14,7 @@ export interface CourseStageLessonApi {
 export interface CourseStageApi {
   id: number;
   title: string;
+  is_active?: boolean;
   lessons: CourseStageLessonApi[];
 }
 
