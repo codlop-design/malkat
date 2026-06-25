@@ -191,14 +191,18 @@ export default function CourseQuizContent({
         passed: false,
         score: 0,
         correctAnswers: 0,
-        totalQuestions: quiz.totalQuestions,
+        totalQuestions,
         passingPercentage: quiz.passingPercentage,
         message: "تعذر إرسال الإجابات. حاول مرة أخرى.",
       });
       return;
     }
 
-    setResult(submitResult);
+    setResult({
+      ...submitResult,
+      totalQuestions,
+      correctAnswers: Math.min(submitResult.correctAnswers, totalQuestions),
+    });
   }
 
   function handleGoToNextLesson() {
@@ -252,7 +256,7 @@ export default function CourseQuizContent({
               <>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-sm text-[#454545]">
-                    يتكون الإختبار التقييمي من {quiz.totalQuestions} أسئلة
+                    يتكون الإختبار التقييمي من {totalQuestions} أسئلة
                   </p>
                   <p className="text-sm text-[#454545]">
                     لتجاوز الاختبار عليك الحصول على {quiz.passingPercentage}%

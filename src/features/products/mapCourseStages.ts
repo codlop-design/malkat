@@ -62,7 +62,7 @@ export function mapCourseQuizResponse(
   return {
     id: payload.id ?? 0,
     title: payload.title,
-    totalQuestions: payload.questions_count || questions.length,
+    totalQuestions: questions.length,
     passingPercentage: payload.passing_percentage,
     questions,
   };
