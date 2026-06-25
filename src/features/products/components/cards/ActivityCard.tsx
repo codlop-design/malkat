@@ -72,13 +72,10 @@ export default function ActivityCard({
           </span>
         </div>
         <h3 className="text-base font-bold text-black">{title}</h3>
-        <p className="line-clamp-2 text-sm leading-relaxed text-[#454545]">
+        <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
-        <div className="flex">
-          <RatingBadge rating={rating} count={ratingCount} />
-        </div>
-        <div className="mt-auto flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {skillTags.map((tag) => (
             <span
               key={tag}
@@ -91,6 +88,9 @@ export default function ActivityCard({
               {tag}
             </span>
           ))}
+        </div>
+        <div className="mt-auto flex items-center justify-start pt-1">
+          <RatingBadge rating={rating} count={ratingCount} />
         </div>
       </div>
     </ProductCard>

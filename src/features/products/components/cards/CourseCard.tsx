@@ -75,20 +75,17 @@ export default function CourseCard({
         cartPayload={cartPayload}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <RatingBadge rating={rating} count={ratingCount} />
-          <div className="flex flex-wrap items-center gap-2">
-            {free ? (
-              <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">
-                مجانية
-              </span>
-            ) : null}
-            {online ? (
-              <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
-                أونلاين
-              </span>
-            ) : null}
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {free ? (
+            <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">
+              مجانية
+            </span>
+          ) : null}
+          {online ? (
+            <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
+              أونلاين
+            </span>
+          ) : null}
         </div>
         <div className="flex items-center gap-2">
           <div className="relative size-8 shrink-0 overflow-hidden rounded-full">
@@ -113,9 +110,12 @@ export default function CourseCard({
           </span>
         </div>
         <h3 className="text-base font-bold text-black">{title}</h3>
-        <p className="line-clamp-3 text-sm leading-relaxed text-[#454545]">
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
+        <div className="mt-auto flex items-center justify-start pt-1">
+          <RatingBadge rating={rating} count={ratingCount} />
+        </div>
       </div>
     </ProductCard>
   );

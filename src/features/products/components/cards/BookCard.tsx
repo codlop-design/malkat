@@ -85,10 +85,10 @@ export default function BookCard(props: BookCardProps) {
           <h3 className="text-base font-bold text-black">{title}</h3>
           <p className="mt-1 text-sm text-[#717171]">{author}</p>
         </div>
-        <p className="line-clamp-3 text-sm leading-relaxed text-[#454545]">
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
-        <div className="mt-auto flex items-center justify-between pt-1">
+        <div className="mt-auto flex items-center justify-start pt-1">
           <RatingBadge rating={rating} count={ratingCount} />
         </div>
       </div>
