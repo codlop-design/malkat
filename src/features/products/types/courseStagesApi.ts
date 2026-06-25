@@ -54,22 +54,49 @@ export interface CourseQuizApiPayload {
   questions: CourseQuizQuestionApi[];
 }
 
+export interface CourseQuizSnapshotAnswerApi {
+  id: number;
+  answer_text: string;
+  is_correct: boolean;
+}
+
+export interface CourseQuizSnapshotItemApi {
+  question_id: number;
+  question_text: string;
+  user_answer_id: number;
+  correct_answer_id: number;
+  is_correct: boolean;
+  answers: CourseQuizSnapshotAnswerApi[];
+}
+
+export interface CourseQuizSnapshotPayload {
+  snapshot: CourseQuizSnapshotItemApi[];
+  passing_percentage?: number;
+  title?: string;
+}
+
+export type CourseQuizApiData =
+  | CourseQuizApiPayload
+  | CourseQuizSnapshotPayload;
+
 export interface CourseQuizApiResponse {
   success?: boolean;
   message?: string;
-  data?: CourseQuizApiPayload;
+  data?: CourseQuizApiData;
 }
 
 export interface CourseQuizSubmitApiResponse {
   success?: boolean;
   message?: string;
-  data?: {
-    score: number;
-    correct_answers: number;
-    total_questions: number;
-    passed: boolean;
-    passing_percentage: number;
-    stage_passed?: boolean;
-    certificate_url?: string | null;
-  };
+  data?:
+    | {
+        score: number;
+        correct_answers: number;
+        total_questions: number;
+        passed: boolean;
+        passing_percentage: number;
+        stage_passed?: boolean;
+        certificate_url?: string | null;
+      }
+    | CourseQuizSnapshotPayload;
 }

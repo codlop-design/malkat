@@ -1,16 +1,84 @@
 import type {
   CourseLesson,
   CourseQuiz,
+  CourseQuizLoadResult,
+  CourseQuizReview,
   CourseQuizSubmitResult,
   CourseStage,
 } from "@/src/features/products/data/courseStages";
 import type {
   CourseQuizApiPayload,
+  CourseQuizSnapshotItemApi,
+  CourseQuizSnapshotPayload,
   CourseQuizSubmitApiResponse,
   CourseStageApi,
   CourseStageLessonApi,
   CourseStagesApiResponse,
 } from "@/src/features/products/types/courseStagesApi";
+
+export function isCourseQuizSnapshotPayload(
+  data: unknown,
+): data is CourseQuizSnapshotPayload {
+  return (
+    typeof data === "object" &&
+    data != null &&
+    "snapshot" in data &&
+    Array.isArray((data as CourseQuizSnapshotPayload).snapshot)
+  );
+}
+
+export function mapSnapshotToReview(
+  snapshot: CourseQuizSnapshotItemApi[],
+  message: string,
+  options?: { passingPercentage?: number; title?: string },
+): { quiz: CourseQuiz; review: CourseQuizReview } {
+  const selections: Record<number, number> = {};
+  let correctAnswers = 0;
+
+  const questions = snapshot.map((item) => {
+    selections[item.question_id] = item.user_answer_id;
+    if (item.is_correct) {
+      correctAnswers += 1;
+    }
+
+    return {
+      id: item.question_id,
+      text: item.question_text,
+      image: null,
+      answers: item.answers.map((answer) => ({
+        id: answer.id,
+        text: answer.answer_text,
+        image: null,
+        isCorrect: answer.is_correct,
+      })),
+    };
+  });
+
+  const totalQuestions = questions.length;
+  const score =
+    totalQuestions > 0
+      ? Math.round((correctAnswers / totalQuestions) * 100)
+      : 0;
+  const passingPercentage = options?.passingPercentage ?? 50;
+
+  return {
+    quiz: {
+      id: 0,
+      title: options?.title ?? "مراجعة الاختبار",
+      totalQuestions,
+      passingPercentage,
+      questions,
+    },
+    review: {
+      message,
+      selections,
+      correctAnswers,
+      totalQuestions,
+      passed: true,
+      score,
+    },
+  };
+}
 
 function mapLesson(lesson: CourseStageLessonApi, index: number): CourseLesson {
   return {
@@ -68,10 +136,53 @@ export function mapCourseQuizResponse(
   };
 }
 
+export function mapCourseQuizLoadResponse(
+  data: unknown,
+  message = "",
+): CourseQuizLoadResult | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  if (isCourseQuizSnapshotPayload(data)) {
+    const { quiz, review } = mapSnapshotToReview(data.snapshot, message, {
+      passingPercentage: data.passing_percentage,
+      title: data.title,
+    });
+
+    return { quiz, review };
+  }
+
+  if (!("questions" in data) || !Array.isArray((data as CourseQuizApiPayload).questions)) {
+    return null;
+  }
+
+  return {
+    quiz: mapCourseQuizResponse(data as CourseQuizApiPayload),
+    review: null,
+  };
+}
+
 export function mapCourseQuizSubmitResponse(
   payload: CourseQuizSubmitApiResponse,
 ): CourseQuizSubmitResult {
   const data = payload.data;
+
+  if (data && isCourseQuizSnapshotPayload(data)) {
+    const { review } = mapSnapshotToReview(data.snapshot, payload.message ?? "", {
+      passingPercentage: data.passing_percentage,
+      title: data.title,
+    });
+
+    return {
+      passed: review.passed,
+      score: review.score,
+      correctAnswers: review.correctAnswers,
+      totalQuestions: review.totalQuestions,
+      passingPercentage: data.passing_percentage ?? 50,
+      message: review.message,
+    };
+  }
 
   return {
     passed: data?.passed ?? false,

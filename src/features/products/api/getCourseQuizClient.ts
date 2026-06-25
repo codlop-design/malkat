@@ -1,10 +1,12 @@
 import { apiClient, ensureCsrfCookie } from "@/src/lib/apiClient";
 import {
-  mapCourseQuizResponse,
+  isCourseQuizSnapshotPayload,
+  mapCourseQuizLoadResponse,
   mapCourseQuizSubmitResponse,
+  mapSnapshotToReview,
 } from "@/src/features/products/mapCourseStages";
 import type {
-  CourseQuiz,
+  CourseQuizLoadResult,
   CourseQuizSubmitResult,
 } from "@/src/features/products/data/courseStages";
 import type {
@@ -15,7 +17,7 @@ import type {
 export async function getCourseQuizClient(
   slug: string,
   lessonId: number,
-): Promise<CourseQuiz | null> {
+): Promise<CourseQuizLoadResult | null> {
   const { data, status } = await apiClient.get<CourseQuizApiResponse>(
     `/courses/${slug}/lessons/${lessonId}/quiz`,
     { validateStatus: () => true },
@@ -33,7 +35,7 @@ export async function getCourseQuizClient(
     return null;
   }
 
-  const mapped = mapCourseQuizResponse(data.data);
+  const mapped = mapCourseQuizLoadResponse(data.data, data.message ?? "");
 
   console.log("[CourseQuiz] load mapped", mapped);
 
@@ -75,6 +77,26 @@ export async function submitCourseQuizClient(
   if (status >= 400 || data?.success === false) {
     console.warn("[CourseQuiz] submit failed", { status, raw: data });
     return null;
+  }
+
+  if (data?.data && isCourseQuizSnapshotPayload(data.data)) {
+    const { review } = mapSnapshotToReview(
+      data.data.snapshot,
+      data.message ?? "",
+      {
+        passingPercentage: data.data.passing_percentage,
+        title: data.data.title,
+      },
+    );
+
+    return {
+      passed: review.passed,
+      score: review.score,
+      correctAnswers: review.correctAnswers,
+      totalQuestions: review.totalQuestions,
+      passingPercentage: data.data.passing_percentage ?? 50,
+      message: review.message,
+    };
   }
 
   const mapped = mapCourseQuizSubmitResponse(data ?? {});

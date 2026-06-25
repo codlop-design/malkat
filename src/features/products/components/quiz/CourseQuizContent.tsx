@@ -17,6 +17,7 @@ import {
 import QuizResultModal from "@/src/features/products/components/quiz/QuizResultModal";
 import type {
   CourseQuiz,
+  CourseQuizLoadResult,
   CourseQuizSubmitResult,
 } from "@/src/features/products/data/courseStages";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
@@ -87,9 +88,12 @@ export default function CourseQuizContent({
   const [quizState, setQuizState] = useState<{
     key: string;
     quiz: CourseQuiz | null;
-  }>({ key: "", quiz: null });
+    review: CourseQuizLoadResult["review"];
+  }>({ key: "", quiz: null, review: null });
   const hasLoadedQuiz = isAuthenticated && quizState.key === quizCacheKey;
   const quiz = hasLoadedQuiz ? quizState.quiz : null;
+  const isReviewMode = hasLoadedQuiz && quizState.review != null;
+  const reviewMessage = quizState.review?.message ?? "";
   const isQuizLoading = isAuthReady && isAuthenticated && !hasLoadedQuiz;
   const [selections, setSelections] = useState<Record<number, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,11 +107,34 @@ export default function CourseQuizContent({
     let cancelled = false;
 
     async function loadQuiz() {
-      const nextQuiz = await getCourseQuizClient(slug, lessonId);
+      const loadResult = await getCourseQuizClient(slug, lessonId);
 
       if (cancelled) return;
 
-      setQuizState({ key: quizCacheKey, quiz: nextQuiz });
+      if (!loadResult) {
+        setQuizState({ key: quizCacheKey, quiz: null, review: null });
+        return;
+      }
+
+      setQuizState({
+        key: quizCacheKey,
+        quiz: loadResult.quiz,
+        review: loadResult.review,
+      });
+
+      if (loadResult.review) {
+        const { review } = loadResult;
+        setSelections(review.selections);
+        setIsSubmitted(true);
+        setResult({
+          passed: review.passed,
+          score: review.score,
+          correctAnswers: review.correctAnswers,
+          totalQuestions: review.totalQuestions,
+          passingPercentage: loadResult.quiz.passingPercentage,
+          message: review.message,
+        });
+      }
     }
 
     void loadQuiz();
@@ -162,7 +189,7 @@ export default function CourseQuizContent({
   );
 
   function handleSelectAnswer(questionId: number, answerId: number) {
-    if (isSubmitted) return;
+    if (isSubmitted || isReviewMode) return;
 
     setSelections((current) => ({
       ...current,
@@ -217,6 +244,8 @@ export default function CourseQuizContent({
   }
 
   function handleRetake() {
+    if (isReviewMode) return;
+
     setSelections({});
     setIsSubmitted(false);
     setResult(null);
@@ -254,6 +283,18 @@ export default function CourseQuizContent({
               </div>
             ) : (
               <>
+                {isReviewMode && reviewMessage ? (
+                  <div className="mb-6 rounded-xl bg-[#E8F7EF] px-4 py-3 text-sm text-[#22A06B]">
+                    {reviewMessage}
+                    {result ? (
+                      <span className="mt-1 block text-[#454545]">
+                        لقد حصلت على {result.correctAnswers}/{result.totalQuestions} ·
+                        نسبة النجاح: {result.score}%
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
+
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-sm text-[#454545]">
                     يتكون الإختبار التقييمي من {totalQuestions} أسئلة
@@ -362,7 +403,27 @@ export default function CourseQuizContent({
                   ))}
                 </div>
 
-                {!isSubmitted ? (
+                {isReviewMode ? (
+                  <div className="mt-8 flex flex-wrap justify-end gap-3">
+                    {nextLessonHref ? (
+                      <Button
+                        type="button"
+                        className="h-11 min-w-40 px-8"
+                        onClick={handleGoToNextLesson}
+                      >
+                        الانتقال للفصل التالي
+                      </Button>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 min-w-40 px-8"
+                      onClick={() => router.push(returnTo)}
+                    >
+                      العودة إلى البرنامج
+                    </Button>
+                  </div>
+                ) : !isSubmitted ? (
                   <div className="mt-8 flex justify-end">
                     <Button
                       type="button"
@@ -380,7 +441,7 @@ export default function CourseQuizContent({
         </div>
       </div>
 
-      {isSubmitted && result ? (
+      {isSubmitted && result && !isReviewMode ? (
         <QuizResultModal
           userName={userName}
           stageTitle={stageTitle}

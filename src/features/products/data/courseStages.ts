@@ -52,3 +52,17 @@ export type CourseQuizSubmitResult = {
   stagePassed?: boolean;
   certificateUrl?: string | null;
 };
+
+export type CourseQuizReview = {
+  message: string;
+  selections: Record<number, number>;
+  correctAnswers: number;
+  totalQuestions: number;
+  passed: boolean;
+  score: number;
+};
+
+export type CourseQuizLoadResult = {
+  quiz: CourseQuiz;
+  review: CourseQuizReview | null;
+};
