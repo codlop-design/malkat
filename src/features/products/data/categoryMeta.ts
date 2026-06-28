@@ -24,7 +24,7 @@ export function isCatalogSectionKey(value: string): value is CatalogSectionKey {
 export const CATEGORY_DETAIL_LABEL: Record<CatalogSectionKey, string> = {
   books: "تفاصيل الكتاب",
   activities: "تفاصيل النشاط",
-  courses: "تفاصيل الدورة",
+  courses: "تفاصيل البرنامج",
   services: "تفاصيل الخدمة",
   guides: "تفاصيل الدليل",
 };
