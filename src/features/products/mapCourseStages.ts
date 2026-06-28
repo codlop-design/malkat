@@ -78,9 +78,13 @@ export function mapCourseQuizSubmitResponse(
   const data = payload.data;
 
   return {
+    id: data?.id,
     passed: data?.passed ?? false,
     score: data?.score ?? 0,
     correctAnswers: data?.correct_answers ?? 0,
+    wrongAnswers:
+      data?.wrong_answers ??
+      Math.max(0, (data?.total_questions ?? 0) - (data?.correct_answers ?? 0)),
     totalQuestions: data?.total_questions ?? 0,
     passingPercentage: data?.passing_percentage ?? 0,
     message: payload.message ?? "",

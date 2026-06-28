@@ -28,11 +28,13 @@ import {
 type CourseStagesSectionProps = {
   slug: string;
   initialStages: CourseStage[] | null;
+  isPurchased?: boolean;
 };
 
 export default function CourseStagesSection({
   slug,
   initialStages,
+  isPurchased = false,
 }: CourseStagesSectionProps) {
   const searchParams = useSearchParams();
   const openLessonParam = searchParams.get("openLesson");
@@ -179,7 +181,9 @@ export default function CourseStagesSection({
             <AccordionContent allowDynamicHeight>
               {stage.lessons.length === 0 ? (
                 <p className="pb-2 text-sm text-[#717171]">
-                  لا توجد دروس في هذه المرحلة بعد.
+                  {isPurchased
+                    ? "لا توجد دروس في هذه المرحلة بعد."
+                    : "لم تقم بشراء البرنامج بعد. اطلب البرنامج للاطلاع على الدروس."}
                 </p>
               ) : (
                 <ul className="flex flex-col gap-3 pb-2">

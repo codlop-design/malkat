@@ -6,7 +6,32 @@ import type { CatalogProduct } from "@/src/features/products/data/catalogAccess"
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { useClientProductDetailRating } from "@/src/features/products/hooks/useClientProductDetailRating";
+import { resolveDetailIsBought } from "@/src/features/products/utils/catalogSocial";
 import { pickDetailRatingFields } from "@/src/features/products/utils/productDetailRating";
+
+function mergeDetailFromServer(
+  current: ProductDetailMeta,
+  incoming: ProductDetailMeta,
+): ProductDetailMeta {
+  const clientHasRicherReviews =
+    current.reviewCount > incoming.reviewCount ||
+    current.reviews.length > incoming.reviews.length;
+
+  const isBought = resolveDetailIsBought(current.isBought, incoming.isBought);
+
+  if (clientHasRicherReviews) {
+    return {
+      ...incoming,
+      ...pickDetailRatingFields(current),
+      isBought,
+    };
+  }
+
+  return {
+    ...incoming,
+    isBought,
+  };
+}
 
 export function useProductDetailLiveState(
   product: CatalogProduct,
@@ -28,17 +53,7 @@ export function useProductDetailLiveState(
       return;
     }
 
-    setLiveDetail((current) => {
-      const clientHasRicherReviews =
-        current.reviewCount > detail.reviewCount ||
-        current.reviews.length > detail.reviews.length;
-
-      if (clientHasRicherReviews) {
-        return { ...detail, ...pickDetailRatingFields(current) };
-      }
-
-      return detail;
-    });
+    setLiveDetail((current) => mergeDetailFromServer(current, detail));
   }, [detail, slug]);
 
   useClientProductDetailRating({

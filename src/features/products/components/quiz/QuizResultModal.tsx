@@ -95,11 +95,19 @@ export default function QuizResultModal({
             <h2 className="text-2xl font-bold text-black md:text-3xl">
               لا بأس، يمكنك المحاولة مرة أخرى 😕
             </h2>
+            {result.message ? (
+              <p className="mt-4 text-sm text-[#454545]">{result.message}</p>
+            ) : null}
             <p className="mt-4 text-sm text-[#454545]">
               لقد حصلت على {result.correctAnswers}/{result.totalQuestions}
             </p>
             <p className="mt-2 text-sm text-[#717171]">
-              الحد الأدنى للنجاح: {result.passingPercentage}%
+              إجابات صحيحة: {result.correctAnswers} · إجابات خاطئة:{" "}
+              {result.wrongAnswers}
+            </p>
+            <p className="mt-2 text-sm text-[#717171]">
+              نسبة النجاح: {result.score}% · الحد الأدنى للنجاح:{" "}
+              {result.passingPercentage}%
             </p>
             <Button
               type="button"

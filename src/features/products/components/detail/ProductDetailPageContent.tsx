@@ -56,7 +56,11 @@ export default function ProductDetailPageContent({
 
         {showCourseStages ? (
           <Suspense fallback={null}>
-            <CourseStagesSection slug={data.slug} initialStages={courseStages} />
+            <CourseStagesSection
+              slug={data.slug}
+              initialStages={courseStages}
+              isPurchased={liveDetail.isBought === true}
+            />
           </Suspense>
         ) : null}
 

@@ -7,6 +7,7 @@ import { applyProductDetailRatingUpdate } from "@/src/features/products/api/fetc
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import { resolveDetailIsBought } from "@/src/features/products/utils/catalogSocial";
 
 type UseClientProductDetailRatingOptions = {
   category: CatalogSectionKey;
@@ -36,7 +37,10 @@ export function useClientProductDetailRating({
 
       onDetailUpdated((current) => ({
         ...applyProductDetailRatingUpdate(current, refreshed.detail),
-        isBought: refreshed.detail.isBought,
+        isBought: resolveDetailIsBought(
+          current.isBought,
+          refreshed.detail.isBought,
+        ),
       }));
     })();
 

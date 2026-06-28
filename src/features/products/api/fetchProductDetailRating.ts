@@ -1,6 +1,7 @@
 import { getProductDetailsClient } from "@/src/features/products/api/getProductDetailsClient";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import { resolveDetailIsBought } from "@/src/features/products/utils/catalogSocial";
 import {
   isDetailRatingEqual,
   mergeDetailRatingFields,
@@ -21,15 +22,20 @@ export async function fetchProductDetailRatingUpdate(
   const freshRating = pickDetailRatingFields(refreshed.detail);
 
   if (isDetailRatingEqual(currentRating, freshRating)) {
+    const isBought = resolveDetailIsBought(
+      current.isBought,
+      refreshed.detail.isBought,
+    );
+
     if (freshRating.isRated && !currentRating.isRated) {
       return {
         ...mergeDetailRatingFields(current, freshRating),
-        isBought: refreshed.detail.isBought,
+        isBought,
       };
     }
 
-    if (current.isBought !== refreshed.detail.isBought) {
-      return { ...current, isBought: refreshed.detail.isBought };
+    if (current.isBought !== isBought) {
+      return { ...current, isBought };
     }
 
     return null;
@@ -37,7 +43,7 @@ export async function fetchProductDetailRatingUpdate(
 
   return {
     ...mergeDetailRatingFields(current, freshRating),
-    isBought: refreshed.detail.isBought,
+    isBought: resolveDetailIsBought(current.isBought, refreshed.detail.isBought),
   };
 }
 
@@ -49,15 +55,17 @@ export function applyProductDetailRatingUpdate(
   const freshRating = pickDetailRatingFields(refreshed);
 
   if (isDetailRatingEqual(currentRating, freshRating)) {
+    const isBought = resolveDetailIsBought(current.isBought, refreshed.isBought);
+
     if (freshRating.isRated && !currentRating.isRated) {
       return {
         ...mergeDetailRatingFields(current, freshRating),
-        isBought: refreshed.isBought,
+        isBought,
       };
     }
 
-    if (current.isBought !== refreshed.isBought) {
-      return { ...current, isBought: refreshed.isBought };
+    if (current.isBought !== isBought) {
+      return { ...current, isBought };
     }
 
     return current;
@@ -65,6 +73,6 @@ export function applyProductDetailRatingUpdate(
 
   return {
     ...mergeDetailRatingFields(current, freshRating),
-    isBought: refreshed.isBought,
+    isBought: resolveDetailIsBought(current.isBought, refreshed.isBought),
   };
 }

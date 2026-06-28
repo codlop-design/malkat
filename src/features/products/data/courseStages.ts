@@ -59,9 +59,11 @@ export type CourseQuizLoadResult =
   | { mode: "review"; review: CourseQuizReview };
 
 export type CourseQuizSubmitResult = {
+  id?: number;
   passed: boolean;
   score: number;
   correctAnswers: number;
+  wrongAnswers: number;
   totalQuestions: number;
   passingPercentage: number;
   message: string;

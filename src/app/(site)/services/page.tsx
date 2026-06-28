@@ -7,7 +7,11 @@ import {
 } from "@/src/features/services/api/getServicesList";
 import { getServiceTypes } from "@/src/features/services/api/getServiceTypes";
 import { ServicePageContent } from "@/src/features/services/types/servicePage";
-import { ServiceTypeApiItem } from "@/src/features/services/types";
+import {
+  parseServiceCategory,
+  parseServicePage,
+  ServiceTypeApiItem,
+} from "@/src/features/services/types";
 
 export const revalidate = 60;
 
@@ -17,11 +21,27 @@ type PageProps = {
 
 export default async function ServicesPage({ searchParams }: PageProps) {
   const { category, page } = await searchParams;
-  const [types, pageContent, result] = (await Promise.all([
+  const activeCategory = parseServiceCategory(category);
+  const pageNum = parseServicePage(page);
+
+  const [types, pageContent, result, allListResult] = (await Promise.all([
     getServiceTypes(),
     getServicePageContent(),
-    getServicesList(category ?? "all", parseInt(page ?? "1")),
-  ])) as [ServiceTypeApiItem[], ServicePageContent, ServicesListResult];
+    getServicesList(activeCategory, pageNum),
+    activeCategory === "all"
+      ? Promise.resolve(null)
+      : getServicesList("all", 1),
+  ])) as [
+    ServiceTypeApiItem[],
+    ServicePageContent,
+    ServicesListResult,
+    ServicesListResult | null,
+  ];
+
+  const allTotalCount =
+    activeCategory === "all"
+      ? (result?.pagination.total ?? 0)
+      : (allListResult?.pagination.total ?? 0);
 
   return (
     <>
@@ -35,6 +55,7 @@ export default async function ServicesPage({ searchParams }: PageProps) {
         types={types}
         pageContent={pageContent}
         result={result}
+        allTotalCount={allTotalCount}
       />
     </>
   );

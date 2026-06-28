@@ -239,6 +239,7 @@ export default function CourseQuizContent({
         passed: false,
         score: 0,
         correctAnswers: 0,
+        wrongAnswers: 0,
         totalQuestions,
         passingPercentage: quiz.passingPercentage,
         message: "تعذر إرسال الإجابات. حاول مرة أخرى.",

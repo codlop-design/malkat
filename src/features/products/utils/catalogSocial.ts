@@ -148,3 +148,18 @@ export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
     isBought: item.is_bought === true,
   };
 }
+
+export function resolveDetailIsBought(
+  current?: boolean,
+  incoming?: boolean,
+): boolean | undefined {
+  if (current === true || incoming === true) {
+    return true;
+  }
+
+  if (incoming === false) {
+    return false;
+  }
+
+  return current ?? incoming;
+}

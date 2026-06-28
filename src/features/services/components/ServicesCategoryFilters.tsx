@@ -8,13 +8,15 @@ import {
 type ServicesCategoryFiltersProps = {
   category?: string | null;
   types: ServiceTypeApiItem[];
+  allTotalCount: number;
 };
 
 export default function ServicesCategoryFilters({
   category,
   types,
+  allTotalCount,
 }: ServicesCategoryFiltersProps) {
-  const categories = mapServiceTypesToFilterCategories(types);
+  const categories = mapServiceTypesToFilterCategories(types, allTotalCount);
   const active = parseServiceCategory(category);
 
   return (

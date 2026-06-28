@@ -83,8 +83,10 @@ export interface CourseQuizSubmitApiResponse {
   success?: boolean;
   message?: string;
   data?: {
+    id?: number;
     score: number;
     correct_answers: number;
+    wrong_answers?: number;
     total_questions: number;
     passed: boolean;
     passing_percentage: number;

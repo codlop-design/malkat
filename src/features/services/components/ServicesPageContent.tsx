@@ -13,6 +13,7 @@ type ServicesPageContentProps = {
   types: ServiceTypeApiItem[];
   pageContent: ServicePageContent;
   result: ServicesListResult;
+  allTotalCount: number;
 };
 
 export default function ServicesPageContent({
@@ -20,12 +21,17 @@ export default function ServicesPageContent({
   pageContent,
   result,
   types,
+  allTotalCount,
 }: ServicesPageContentProps) {
   return (
     <>
       <ServicesIntroSection pageContent={pageContent} />
 
-      <ServicesCategoryFilters category={category} types={types} />
+      <ServicesCategoryFilters
+        category={category}
+        types={types}
+        allTotalCount={allTotalCount}
+      />
 
       <ServicesGrid category={category} result={result} />
 

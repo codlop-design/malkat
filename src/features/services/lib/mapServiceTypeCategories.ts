@@ -10,6 +10,7 @@ const FALLBACK_ICONS: Record<number, string> = {
 
 export function mapServiceTypesToFilterCategories(
   types: ServiceTypeApiItem[],
+  allTotalCount: number,
 ): CategoryFilterItem<string>[] {
   const items = types.map(({ id, icon, title, count }) => ({
     id: String(id),
@@ -18,10 +19,8 @@ export function mapServiceTypesToFilterCategories(
     count,
   }));
 
-  const allCount = items.reduce((sum, { count }) => sum + count, 0);
-
   return [
-    { id: "all", icon: "✨", label: "الكل", count: allCount },
+    { id: "all", icon: "✨", label: "الكل", count: allTotalCount },
     ...items,
   ];
 }
