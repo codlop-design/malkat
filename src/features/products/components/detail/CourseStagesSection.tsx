@@ -13,6 +13,7 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseStagesClient } from "@/src/features/products/api/getCourseStagesClient";
+import CourseCertificateSection from "@/src/features/products/components/detail/CourseCertificateSection";
 import type { CourseStage } from "@/src/features/products/data/courseStages";
 import {
   buildNextLessonHref,
@@ -324,6 +325,12 @@ export default function CourseStagesSection({
           </AccordionItem>
         ))}
       </Accordion>
+
+      <CourseCertificateSection
+        slug={slug}
+        stages={stages}
+        isAuthenticated={isAuthenticated}
+      />
     </section>
   );
 }

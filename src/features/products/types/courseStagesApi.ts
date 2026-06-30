@@ -106,3 +106,17 @@ export interface CourseLessonDescriptionApiResponse {
   message?: string;
   data?: CourseLessonDescriptionApi;
 }
+
+export interface CourseCertificateApi {
+  course_name: string;
+  user_name: string;
+  issued_at: string;
+  logo: string;
+}
+
+export interface CourseCertificateApiResponse {
+  success?: boolean;
+  message?: string;
+  earned?: boolean;
+  certificate?: CourseCertificateApi | null;
+}

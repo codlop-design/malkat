@@ -1,4 +1,5 @@
 import type {
+  CourseCertificateResult,
   CourseLesson,
   CourseQuiz,
   CourseQuizLoadResult,
@@ -7,6 +8,7 @@ import type {
   CourseStage,
 } from "@/src/features/products/data/courseStages";
 import type {
+  CourseCertificateApiResponse,
   CourseQuizApiPayload,
   CourseQuizApiResponse,
   CourseQuizSnapshotPayload,
@@ -169,6 +171,25 @@ export function parseCourseQuizApiResponse(
   return {
     mode: "active",
     quiz: mapCourseQuizResponse(payload.data),
+  };
+}
+
+export function mapCourseCertificateResponse(
+  payload: CourseCertificateApiResponse,
+): CourseCertificateResult {
+  const certificate = payload.certificate;
+
+  return {
+    earned: payload.earned === true,
+    message: payload.message ?? "",
+    certificate: certificate
+      ? {
+          courseName: certificate.course_name,
+          userName: certificate.user_name,
+          issuedAt: certificate.issued_at,
+          logo: certificate.logo,
+        }
+      : null,
   };
 }
 

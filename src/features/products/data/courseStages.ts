@@ -76,3 +76,16 @@ export type CourseLessonDescription = {
   title: string;
   description: string;
 };
+
+export type CourseCertificate = {
+  courseName: string;
+  userName: string;
+  issuedAt: string;
+  logo: string;
+};
+
+export type CourseCertificateResult = {
+  earned: boolean;
+  message: string;
+  certificate: CourseCertificate | null;
+};
