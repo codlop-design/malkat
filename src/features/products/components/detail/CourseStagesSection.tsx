@@ -328,8 +328,8 @@ export default function CourseStagesSection({
 
       <CourseCertificateSection
         slug={slug}
-        stages={stages}
         isAuthenticated={isAuthenticated}
+        isPurchased={isPurchased}
       />
     </section>
   );

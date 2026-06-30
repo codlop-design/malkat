@@ -1,34 +1,26 @@
 "use client";
 
 import { Award, Download, Eye, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/src/components/ui/button";
 import { getCourseCertificateClient } from "@/src/features/products/api/getCourseCertificateClient";
 import CourseCertificateView, {
   printCourseCertificate,
 } from "@/src/features/products/components/detail/CourseCertificateView";
-import type {
-  CourseCertificate,
-  CourseStage,
-} from "@/src/features/products/data/courseStages";
-import { areAllCourseQuizzesPassed } from "@/src/features/products/lib/areAllCourseQuizzesPassed";
+import type { CourseCertificate } from "@/src/features/products/data/courseStages";
 
 type CourseCertificateSectionProps = {
   slug: string;
-  stages: CourseStage[];
   isAuthenticated: boolean;
+  isPurchased?: boolean;
 };
 
 export default function CourseCertificateSection({
   slug,
-  stages,
   isAuthenticated,
+  isPurchased = false,
 }: CourseCertificateSectionProps) {
-  const allQuizzesPassed = useMemo(
-    () => areAllCourseQuizzesPassed(stages),
-    [stages],
-  );
   const [certificate, setCertificate] = useState<CourseCertificate | null>(
     null,
   );
@@ -36,7 +28,7 @@ export default function CourseCertificateSection({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || !allQuizzesPassed) {
+    if (!isAuthenticated || !isPurchased) {
       setCertificate(null);
       return;
     }
@@ -58,21 +50,9 @@ export default function CourseCertificateSection({
     return () => {
       cancelled = true;
     };
-  }, [allQuizzesPassed, isAuthenticated, slug, stages]);
+  }, [isAuthenticated, isPurchased, slug]);
 
-  if (!allQuizzesPassed) {
-    return null;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="mt-6 rounded-2xl border border-[#E8E8E8] bg-white px-5 py-4">
-        <p className="text-sm text-[#717171]">جاري التحقق من الشهادة...</p>
-      </div>
-    );
-  }
-
-  if (!certificate) {
+  if (!isAuthenticated || !isPurchased || isLoading || !certificate) {
     return null;
   }
 
