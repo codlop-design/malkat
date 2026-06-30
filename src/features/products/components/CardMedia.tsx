@@ -23,6 +23,7 @@ type CardMediaProps = {
   onFavouriteChange?: (isFavourite: boolean) => void;
   favouriteSyncMode?: "none" | "product";
   cartPayload?: AddToCartPayload;
+  isBought?: boolean;
 };
 
 export default function CardMedia({
@@ -34,6 +35,7 @@ export default function CardMedia({
   onFavouriteChange,
   favouriteSyncMode = "none",
   cartPayload,
+  isBought = false,
 }: CardMediaProps) {
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
@@ -55,7 +57,7 @@ export default function CardMedia({
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}
-      {cartPayload ? (
+      {cartPayload && !isBought ? (
         <AddToCartButton
           payload={cartPayload}
           label={cartLabel}

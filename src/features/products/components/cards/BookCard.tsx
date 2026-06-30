@@ -38,6 +38,7 @@ export default function BookCard(props: BookCardProps) {
     rating,
     ratingCount,
     isFavourite = false,
+    isBought = false,
     onFavouriteChange,
   } = props;
 
@@ -68,6 +69,7 @@ export default function BookCard(props: BookCardProps) {
         slug={slug}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
+        isBought={isBought}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <CatalogCardMetaRow rating={rating} ratingCount={ratingCount}>

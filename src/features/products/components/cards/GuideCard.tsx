@@ -37,6 +37,7 @@ export default function GuideCard({
   rating,
   ratingCount,
   isFavourite = false,
+  isBought = false,
   onFavouriteChange,
 }: GuideCardProps) {
   const href =
@@ -65,6 +66,7 @@ export default function GuideCard({
         slug={slug}
         onFavouriteChange={onFavouriteChange}
         cartPayload={cartPayload}
+        isBought={isBought}
       />
       <div className="flex flex-1 flex-col gap-3 p-4 text-right">
         <CatalogCardMetaRow rating={rating} ratingCount={ratingCount}>
