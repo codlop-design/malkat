@@ -1,29 +1,7 @@
 import type { CourseCertificate } from "@/src/features/products/data/courseStages";
 
-export const CERTIFICATE_TEMPLATE_PATH = "/certificates/template.png";
-
-const TEMPLATE_BG = "#f6f4ec";
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function formatCourseName(name: string): string {
+export function formatCertificateCourseName(name: string): string {
   return name.replace(/^برنامج\s+/u, "").trim() || name;
-}
-
-function resolveAssetUrl(path: string, origin: string): string {
-  if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://")) {
-    return path;
-  }
-
-  return `${origin}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
 export function buildCertificateStyles(): string {
@@ -43,7 +21,6 @@ export function buildCertificateStyles(): string {
     body {
       font-family: "Baloo Bhaijaan 2", Arial, sans-serif;
       background: #ececec;
-      color: #1f3552;
     }
 
     .page {
@@ -59,93 +36,180 @@ export function buildCertificateStyles(): string {
       width: min(100%, 1123px);
       aspect-ratio: 1123 / 794;
       overflow: hidden;
-      border-radius: 4px;
-      background-color: ${TEMPLATE_BG};
-      background-image: url("${CERTIFICATE_TEMPLATE_PATH}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      border-radius: 6px;
+      background-color: #f6f4ec;
+      background-image: radial-gradient(
+        circle at 1px 1px,
+        rgba(31, 53, 82, 0.05) 1px,
+        transparent 0
+      );
+      background-size: 18px 18px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    .cover {
-      position: absolute;
-      left: 0;
-      right: 0;
-      z-index: 1;
-      background: ${TEMPLATE_BG};
-    }
-
-    .cover-award {
-      top: 31.8%;
-      height: 5.2%;
-    }
-
-    .cover-name {
-      top: 39.8%;
-      left: 18%;
-      right: 18%;
-      height: 8.4%;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.94);
-    }
-
-    .cover-program {
-      top: 50.8%;
-      height: 7.4%;
-    }
-
-    .cover-competencies {
-      top: 59.8%;
-      height: 4.8%;
-    }
-
-    .field {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-      width: 88%;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      padding: 5% 6% 6%;
       direction: rtl;
+      color: #1f3552;
+    }
+
+    .watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .watermark img {
+      width: 42%;
+      max-width: 360px;
+      opacity: 0.05;
+      object-fit: contain;
+    }
+
+    .decor {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .decor-orange {
+      left: -4%;
+      bottom: -8%;
+      width: 28%;
+      height: 42%;
+    }
+
+    .decor-teal {
+      left: 16%;
+      bottom: -10%;
+      width: 22%;
+      height: 36%;
+    }
+
+    .decor-gold {
+      left: 2%;
+      top: 34%;
+      width: 8%;
+      height: 28%;
+      opacity: 0.85;
+    }
+
+    .certificate-header,
+    .certificate-body,
+    .certificate-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .certificate-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 72px;
+    }
+
+    .partner-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 34%;
+    }
+
+    .partner-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+    }
+
+    .partner-text {
+      font-size: clamp(11px, 1.1vw, 16px);
+      font-weight: 700;
+      line-height: 1.5;
+      color: #1f3552;
+    }
+
+    .main-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 42%;
+      margin-right: auto;
+    }
+
+    .main-brand-logo {
+      width: clamp(48px, 5vw, 72px);
+      height: clamp(48px, 5vw, 72px);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .main-brand-text {
+      text-align: right;
+    }
+
+    .main-brand-name {
+      font-size: clamp(22px, 2.4vw, 34px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: #1f3552;
+    }
+
+    .main-brand-tagline {
+      margin-top: 4px;
+      font-size: clamp(10px, 0.95vw, 14px);
+      font-weight: 500;
+      color: #5c6b7d;
+      line-height: 1.5;
+    }
+
+    .certificate-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2% 4%;
+      gap: clamp(14px, 2.2vw, 28px);
     }
 
     .award-line {
-      top: 32.4%;
-      font-size: clamp(13px, 1.45vw, 20px);
+      font-size: clamp(14px, 1.45vw, 21px);
       font-weight: 600;
+      line-height: 1.8;
       color: #1f3552;
-      line-height: 1.6;
-      white-space: nowrap;
     }
 
     .award-line .date {
       font-weight: 700;
     }
 
-    .name-box {
-      top: 41.2%;
-      width: min(64%, 520px);
-      min-height: clamp(42px, 5vw, 64px);
+    .name-pill {
+      width: min(68%, 560px);
+      min-height: clamp(48px, 5.5vw, 72px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 8px 28px;
+      padding: 10px 32px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.94);
-      font-size: clamp(20px, 2.35vw, 34px);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95);
+      font-size: clamp(22px, 2.5vw, 36px);
       font-weight: 700;
-      color: #1f3552;
       line-height: 1.3;
+      color: #1f3552;
     }
 
     .program-line {
-      top: 51.6%;
-      width: 86%;
-      font-size: clamp(15px, 1.75vw, 26px);
+      max-width: 92%;
+      font-size: clamp(16px, 1.8vw, 28px);
       font-weight: 700;
+      line-height: 1.75;
       color: #c9872a;
-      line-height: 1.65;
     }
 
     .program-line .program-name {
@@ -153,23 +217,38 @@ export function buildCertificateStyles(): string {
     }
 
     .competencies {
-      top: 60.2%;
-      width: 90%;
-      font-size: clamp(10px, 0.95vw, 15px);
+      max-width: 94%;
+      font-size: clamp(11px, 1vw, 16px);
       font-weight: 500;
+      line-height: 1.8;
       color: #1f3552;
-      line-height: 1.7;
+    }
+
+    .certificate-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 8px;
+    }
+
+    .signature-block {
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .signature-title {
+      font-size: clamp(12px, 1.05vw, 16px);
+      font-weight: 500;
+      color: #8a96a3;
+    }
+
+    .signature-line {
+      margin-top: 28px;
+      border-top: 2px dotted #b8c0c8;
     }
 
     @media print {
-      body {
-        background: #fff;
-      }
-
-      .page {
-        padding: 0;
-      }
-
+      body { background: #fff; }
+      .page { padding: 0; }
       .certificate {
         width: 100vw;
         height: 100vh;
@@ -182,32 +261,96 @@ export function buildCertificateStyles(): string {
   `;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function decorSvg(): string {
+  return `
+    <svg class="decor decor-orange" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M20 220C60 120 120 40 180 20C150 90 130 180 110 250C70 240 40 235 20 220Z" fill="#F0782E"/>
+      <path d="M0 260C30 180 70 110 120 70C90 130 70 200 55 260H0Z" fill="#E85D24"/>
+    </svg>
+    <svg class="decor decor-teal" viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M10 210C50 150 90 80 150 30C130 90 120 160 115 220C70 215 35 212 10 210Z" fill="#008075"/>
+      <path d="M40 220C70 170 100 120 160 80C130 130 110 180 100 220H40Z" fill="#00A896"/>
+    </svg>
+    <svg class="decor decor-gold" viewBox="0 0 60 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M30 0C10 40 5 90 15 130C22 160 35 175 45 180C35 150 28 110 30 70C32 40 35 15 30 0Z" fill="#C9A227"/>
+      <path d="M20 20C15 60 18 100 28 140" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `;
+}
+
+function partnerIconSvg(): string {
+  return `
+    <svg class="partner-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M24 4C14 12 8 22 8 32C8 38 12 42 18 42C20 34 22 26 24 18C26 26 28 34 30 42C36 42 40 38 40 32C40 22 34 12 24 4Z" fill="#008075"/>
+      <path d="M24 18V42" stroke="#C9A227" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `;
+}
+
 export function buildCertificateMarkup(certificate: CourseCertificate): string {
-  const courseName = escapeHtml(formatCourseName(certificate.courseName));
+  const courseName = escapeHtml(
+    formatCertificateCourseName(certificate.courseName),
+  );
   const userName = escapeHtml(certificate.userName);
   const issuedAt = escapeHtml(certificate.issuedAt);
+  const logo = certificate.logo
+    ? `<img class="main-brand-logo" src="${escapeHtml(certificate.logo)}" alt="" />`
+    : "";
+  const watermark = certificate.logo
+    ? `<div class="watermark"><img src="${escapeHtml(certificate.logo)}" alt="" /></div>`
+    : "";
 
   return `
     <div class="certificate">
-      <div class="cover cover-award" aria-hidden="true"></div>
-      <div class="cover cover-name" aria-hidden="true"></div>
-      <div class="cover cover-program" aria-hidden="true"></div>
-      <div class="cover cover-competencies" aria-hidden="true"></div>
+      ${watermark}
+      ${decorSvg()}
 
-      <p class="field award-line">
-        تم منح هذه الشهادة بتاريخ
-        <span class="date">${issuedAt}</span>
-        إلى
-      </p>
-      <div class="field name-box">${userName}</div>
-      <p class="field program-line">
-        لإتمام برنامج
-        <span class="program-name">${courseName}</span>
-        لتأسيس كفايات الأطفال
-      </p>
-      <p class="field competencies">
-        كفايات شرعية - كفايات قيمية - كفايات شخصية - كفايات ممتدة
-      </p>
+      <header class="certificate-header">
+        <div class="partner-brand">
+          ${partnerIconSvg()}
+          <p class="partner-text">شركة ازر للتعليم</p>
+        </div>
+        <div class="main-brand">
+          <div class="main-brand-text">
+            <p class="main-brand-name">ملكات</p>
+            <p class="main-brand-tagline">تأسيس كفايات الأطفال</p>
+          </div>
+          ${logo}
+        </div>
+      </header>
+
+      <main class="certificate-body">
+        <p class="award-line">
+          تم منح هذه الشهادة بتاريخ
+          <span class="date">${issuedAt}</span>
+          إلى
+        </p>
+        <div class="name-pill">${userName}</div>
+        <p class="program-line">
+          لإتمام برنامج
+          <span class="program-name">${courseName}</span>
+          لتأسيس كفايات الأطفال
+        </p>
+        <p class="competencies">
+          كفايات شرعية - كفايات قيمية - كفايات شخصية - كفايات ممتدة
+        </p>
+      </main>
+
+      <footer class="certificate-footer">
+        <div class="signature-block">
+          <p class="signature-title">المدير التنفيذي</p>
+          <div class="signature-line"></div>
+        </div>
+      </footer>
     </div>
   `;
 }
@@ -216,11 +359,7 @@ export function buildCertificatePrintHtml(
   certificate: CourseCertificate,
   origin: string,
 ): string {
-  const templateUrl = resolveAssetUrl(CERTIFICATE_TEMPLATE_PATH, origin);
-  const styles = buildCertificateStyles().replace(
-    `url("${CERTIFICATE_TEMPLATE_PATH}")`,
-    `url("${templateUrl}")`,
-  );
+  void origin;
 
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -231,7 +370,7 @@ export function buildCertificatePrintHtml(
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>${styles}</style>
+  <style>${buildCertificateStyles()}</style>
 </head>
 <body>
   <div class="page">
