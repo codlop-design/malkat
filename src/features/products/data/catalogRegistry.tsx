@@ -35,7 +35,7 @@ export type CatalogListItem = {
   description: string;
 } & Pick<
   CatalogItemBase,
-  "isFavourite" | "onFavouriteChange" | "isRated" | "rating" | "ratingCount"
+  "isFavourite" | "onFavouriteChange" | "isRated" | "isBought" | "rating" | "ratingCount"
 >;
 
 export type CatalogCardOptions = Pick<

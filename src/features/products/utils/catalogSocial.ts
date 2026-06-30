@@ -41,10 +41,14 @@ export function resolveCatalogRating(
 
 export function resolveCatalogSocialFields(
   item: CatalogSocialFields & { rate_average?: number | null },
-): Pick<CatalogItemBase, "isFavourite" | "isRated" | "rating" | "ratingCount"> {
+): Pick<
+  CatalogItemBase,
+  "isFavourite" | "isRated" | "isBought" | "rating" | "ratingCount"
+> {
   return {
     isFavourite: item.is_favourite ?? false,
     isRated: item.is_rated ?? false,
+    isBought: item.is_bought === true,
     ...resolveCatalogRating(item),
   };
 }
@@ -143,10 +147,14 @@ export function resolveDetailSocialFields(item: CatalogSocialFields) {
   };
 }
 
-export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
+export function resolvePurchaseFields(item: { is_bought?: boolean }) {
   return {
     isBought: item.is_bought === true,
   };
+}
+
+export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
+  return resolvePurchaseFields(item);
 }
 
 export function resolveDetailIsBought(

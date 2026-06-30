@@ -9,6 +9,7 @@ import {
   buildDetailRatingMeta,
   resolveCoursePurchaseFields,
   resolveDetailSocialFields,
+  resolvePurchaseFields,
 } from "@/src/features/products/utils/catalogSocial";
 import {
   mapActivityItem,
@@ -138,6 +139,7 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
     },
     ...buildRatingMeta(raw.rate),
     ...resolveDetailSocialFields(raw),
+    ...resolvePurchaseFields(raw),
   };
 
   return { product, detail };
@@ -255,6 +257,7 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
     },
     ...buildRatingMeta(raw.rate, raw.rate_average),
     ...resolveDetailSocialFields(raw),
+    ...resolvePurchaseFields(raw),
   };
 
   return { product, detail };
@@ -295,6 +298,7 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
     },
     ...buildRatingMeta(raw.rate, raw.rate_average),
     ...resolveDetailSocialFields(raw),
+    ...resolvePurchaseFields(raw),
   };
 
   return { product, detail };
@@ -348,6 +352,7 @@ function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
     },
     ...buildRatingMeta(raw.rate, raw.rate_average),
     ...resolveDetailSocialFields(raw),
+    ...resolvePurchaseFields(raw),
   };
 
   return { product, detail };

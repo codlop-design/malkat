@@ -12,6 +12,7 @@ import {
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
+import { useProductIsBought } from "@/src/features/products/hooks/useProductIsBought";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
 type CardMediaProps = {
@@ -23,6 +24,7 @@ type CardMediaProps = {
   onFavouriteChange?: (isFavourite: boolean) => void;
   favouriteSyncMode?: "none" | "product";
   cartPayload?: AddToCartPayload;
+  isBought?: boolean;
 };
 
 export default function CardMedia({
@@ -34,7 +36,10 @@ export default function CardMedia({
   onFavouriteChange,
   favouriteSyncMode = "none",
   cartPayload,
+  isBought = false,
 }: CardMediaProps) {
+  const purchased = useProductIsBought(category, slug, isBought);
+
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
       <Link href={href} className="absolute inset-0 z-1 block" tabIndex={-1}>
@@ -55,7 +60,7 @@ export default function CardMedia({
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}
-      {cartPayload ? (
+      {cartPayload && !purchased ? (
         <AddToCartButton
           payload={cartPayload}
           label={cartLabel}

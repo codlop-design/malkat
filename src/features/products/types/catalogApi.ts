@@ -44,6 +44,7 @@ export interface CatalogRate {
 export interface CatalogSocialFields {
   is_favourite?: boolean;
   is_rated?: boolean;
+  is_bought?: boolean;
   rate?: CatalogRate;
 }
 
