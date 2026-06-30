@@ -2,6 +2,8 @@ import type { CourseCertificate } from "@/src/features/products/data/courseStage
 
 export const CERTIFICATE_TEMPLATE_PATH = "/certificates/template.png";
 
+const TEMPLATE_BG = "#f6f4ec";
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -9,6 +11,10 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function formatCourseName(name: string): string {
+  return name.replace(/^برنامج\s+/u, "").trim() || name;
 }
 
 function resolveAssetUrl(path: string, origin: string): string {
@@ -54,7 +60,7 @@ export function buildCertificateStyles(): string {
       aspect-ratio: 1123 / 794;
       overflow: hidden;
       border-radius: 4px;
-      background-color: #f7f4ec;
+      background-color: ${TEMPLATE_BG};
       background-image: url("${CERTIFICATE_TEMPLATE_PATH}");
       background-size: cover;
       background-position: center;
@@ -62,62 +68,84 @@ export function buildCertificateStyles(): string {
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
     }
 
-    .overlay {
+    .cover {
       position: absolute;
-      inset: 34% 7% 24%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 12px 24px;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      background: ${TEMPLATE_BG};
+    }
+
+    .cover-award {
+      top: 31.8%;
+      height: 5.2%;
+    }
+
+    .cover-name {
+      top: 39.8%;
+      left: 18%;
+      right: 18%;
+      height: 8.4%;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .cover-program {
+      top: 50.8%;
+      height: 7.4%;
+    }
+
+    .cover-competencies {
+      top: 59.8%;
+      height: 4.8%;
+    }
+
+    .field {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      width: 88%;
       text-align: center;
       direction: rtl;
-      background: linear-gradient(
-        180deg,
-        rgba(247, 244, 236, 0) 0%,
-        rgba(247, 244, 236, 0.96) 12%,
-        rgba(247, 244, 236, 0.96) 88%,
-        rgba(247, 244, 236, 0) 100%
-      );
     }
 
     .award-line {
-      font-size: clamp(14px, 1.55vw, 22px);
+      top: 32.4%;
+      font-size: clamp(13px, 1.45vw, 20px);
       font-weight: 600;
       color: #1f3552;
-      line-height: 1.8;
+      line-height: 1.6;
+      white-space: nowrap;
     }
 
     .award-line .date {
-      display: inline-block;
-      min-width: 120px;
       font-weight: 700;
     }
 
     .name-box {
-      margin-top: 2.2%;
-      width: min(72%, 560px);
-      min-height: clamp(44px, 5.5vw, 72px);
+      top: 41.2%;
+      width: min(64%, 520px);
+      min-height: clamp(42px, 5vw, 64px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 24px;
+      padding: 8px 28px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      font-size: clamp(18px, 2.2vw, 32px);
+      background: rgba(255, 255, 255, 0.94);
+      font-size: clamp(20px, 2.35vw, 34px);
       font-weight: 700;
       color: #1f3552;
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     .program-line {
-      margin-top: 3.2%;
-      max-width: 88%;
-      font-size: clamp(16px, 1.85vw, 28px);
+      top: 51.6%;
+      width: 86%;
+      font-size: clamp(15px, 1.75vw, 26px);
       font-weight: 700;
       color: #c9872a;
-      line-height: 1.7;
+      line-height: 1.65;
     }
 
     .program-line .program-name {
@@ -125,12 +153,12 @@ export function buildCertificateStyles(): string {
     }
 
     .competencies {
-      margin-top: 1.4%;
-      max-width: 90%;
-      font-size: clamp(11px, 1.05vw, 16px);
+      top: 60.2%;
+      width: 90%;
+      font-size: clamp(10px, 0.95vw, 15px);
       font-weight: 500;
       color: #1f3552;
-      line-height: 1.8;
+      line-height: 1.7;
     }
 
     @media print {
@@ -155,28 +183,31 @@ export function buildCertificateStyles(): string {
 }
 
 export function buildCertificateMarkup(certificate: CourseCertificate): string {
-  const courseName = escapeHtml(certificate.courseName);
+  const courseName = escapeHtml(formatCourseName(certificate.courseName));
   const userName = escapeHtml(certificate.userName);
   const issuedAt = escapeHtml(certificate.issuedAt);
 
   return `
     <div class="certificate">
-      <div class="overlay">
-        <p class="award-line">
-          تم منح هذه الشهادة بتاريخ
-          <span class="date">${issuedAt}</span>
-          إلى
-        </p>
-        <div class="name-box">${userName}</div>
-        <p class="program-line">
-          لإتمام برنامج
-          <span class="program-name">${courseName}</span>
-          لتأسيس كفايات الأطفال
-        </p>
-        <p class="competencies">
-          كفايات شرعية - كفايات قيمية - كفايات شخصية - كفايات ممتدة
-        </p>
-      </div>
+      <div class="cover cover-award" aria-hidden="true"></div>
+      <div class="cover cover-name" aria-hidden="true"></div>
+      <div class="cover cover-program" aria-hidden="true"></div>
+      <div class="cover cover-competencies" aria-hidden="true"></div>
+
+      <p class="field award-line">
+        تم منح هذه الشهادة بتاريخ
+        <span class="date">${issuedAt}</span>
+        إلى
+      </p>
+      <div class="field name-box">${userName}</div>
+      <p class="field program-line">
+        لإتمام برنامج
+        <span class="program-name">${courseName}</span>
+        لتأسيس كفايات الأطفال
+      </p>
+      <p class="field competencies">
+        كفايات شرعية - كفايات قيمية - كفايات شخصية - كفايات ممتدة
+      </p>
     </div>
   `;
 }
