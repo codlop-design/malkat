@@ -98,7 +98,7 @@ export default function CourseCertificateSection({
 
       {isModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="relative w-full max-w-2xl">
+          <div className="relative w-full max-w-6xl">
             <button
               type="button"
               aria-label="إغلاق"
