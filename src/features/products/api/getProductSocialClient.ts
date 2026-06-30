@@ -9,40 +9,35 @@ type ProductDetailsApiResponse = {
   data?: ProductDetailsApiPayload;
 };
 
-function readIsFavourite(
+export type ProductSocialClientState = {
+  isFavourite: boolean;
+  isBought: boolean;
+};
+
+function readDetailSocialFields(
   category: CatalogSectionKey,
   payload: ProductDetailsApiPayload,
-): boolean {
+): { is_favourite?: boolean; is_bought?: boolean } | null {
   switch (category) {
     case "books":
-      return "book_details" in payload
-        ? (payload.book_details.is_favourite ?? false)
-        : false;
+      return "book_details" in payload ? payload.book_details : null;
     case "courses":
-      return "course_details" in payload
-        ? (payload.course_details.is_favourite ?? false)
-        : false;
+      return "course_details" in payload ? payload.course_details : null;
     case "services":
-      return "service_details" in payload
-        ? (payload.service_details.is_favourite ?? false)
-        : false;
+      return "service_details" in payload ? payload.service_details : null;
     case "activities":
-      return "activity_details" in payload
-        ? (payload.activity_details.is_favourite ?? false)
-        : false;
+      return "activity_details" in payload ? payload.activity_details : null;
     case "guides":
-      return "evidence_details" in payload
-        ? (payload.evidence_details.is_favourite ?? false)
-        : false;
+      return "evidence_details" in payload ? payload.evidence_details : null;
     default:
-      return false;
+      return null;
   }
 }
 
-export async function getProductIsFavouriteClient(
+export async function getProductSocialClient(
   category: CatalogSectionKey,
   slug: string,
-): Promise<boolean | null> {
+): Promise<ProductSocialClientState | null> {
   const endpoint = CATALOG_API_ENDPOINTS[category];
 
   const { data, status } = await apiClient.get<ProductDetailsApiResponse>(
@@ -54,5 +49,21 @@ export async function getProductIsFavouriteClient(
     return null;
   }
 
-  return readIsFavourite(category, data.data);
+  const fields = readDetailSocialFields(category, data.data);
+  if (!fields) {
+    return null;
+  }
+
+  return {
+    isFavourite: fields.is_favourite ?? false,
+    isBought: fields.is_bought === true,
+  };
+}
+
+export async function getProductIsFavouriteClient(
+  category: CatalogSectionKey,
+  slug: string,
+): Promise<boolean | null> {
+  const social = await getProductSocialClient(category, slug);
+  return social?.isFavourite ?? null;
 }

@@ -12,10 +12,10 @@ import {
 
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCatalogListClient } from "@/src/features/products/api/getCatalogListClient";
-import { getProductIsFavouriteClient } from "@/src/features/products/api/getProductSocialClient";
+import { getProductSocialClient } from "@/src/features/products/api/getProductSocialClient";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
-function favouriteKey(category: CatalogSectionKey, slug: string): string {
+function productKey(category: CatalogSectionKey, slug: string): string {
   return `${category}:${slug}`;
 }
 
@@ -28,6 +28,13 @@ type FavouritesContextValue = {
     slug: string,
     value: boolean,
   ) => void;
+  setProductBought: (
+    category: CatalogSectionKey,
+    slug: string,
+    value: boolean,
+  ) => void;
+  isProductBought: (category: CatalogSectionKey, slug: string) => boolean;
+  hasPurchase: (category: CatalogSectionKey, slug: string) => boolean;
   seedFavourites: (category: CatalogSectionKey, slugs: string[]) => void;
   syncCatalogList: (
     category: CatalogSectionKey,
@@ -49,6 +56,9 @@ type FavouritesProviderProps = {
 export function FavouritesProvider({ children }: FavouritesProviderProps) {
   const { isAuthenticated, isAuthReady } = useAuth();
   const [cache, setCache] = useState<Map<string, boolean>>(() => new Map());
+  const [purchaseCache, setPurchaseCache] = useState<Map<string, boolean>>(
+    () => new Map(),
+  );
   const [isReady, setIsReady] = useState(true);
   const syncCountRef = useRef(0);
   const inflightRef = useRef(new Map<string, Promise<void>>());
@@ -67,14 +77,14 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
 
   const hasFavourite = useCallback(
     (category: CatalogSectionKey, slug: string) => {
-      return cache.has(favouriteKey(category, slug));
+      return cache.has(productKey(category, slug));
     },
     [cache],
   );
 
   const isFavourite = useCallback(
     (category: CatalogSectionKey, slug: string) => {
-      return cache.get(favouriteKey(category, slug)) ?? false;
+      return cache.get(productKey(category, slug)) ?? false;
     },
     [cache],
   );
@@ -83,11 +93,36 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
     (category: CatalogSectionKey, slug: string, value: boolean) => {
       setCache((current) => {
         const next = new Map(current);
-        next.set(favouriteKey(category, slug), value);
+        next.set(productKey(category, slug), value);
         return next;
       });
     },
     [],
+  );
+
+  const setProductBought = useCallback(
+    (category: CatalogSectionKey, slug: string, value: boolean) => {
+      setPurchaseCache((current) => {
+        const next = new Map(current);
+        next.set(productKey(category, slug), value);
+        return next;
+      });
+    },
+    [],
+  );
+
+  const hasPurchase = useCallback(
+    (category: CatalogSectionKey, slug: string) => {
+      return purchaseCache.has(productKey(category, slug));
+    },
+    [purchaseCache],
+  );
+
+  const isProductBought = useCallback(
+    (category: CatalogSectionKey, slug: string) => {
+      return purchaseCache.get(productKey(category, slug)) ?? false;
+    },
+    [purchaseCache],
   );
 
   const seedFavourites = useCallback(
@@ -97,7 +132,7 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
       setCache((current) => {
         const next = new Map(current);
         for (const slug of slugs) {
-          next.set(favouriteKey(category, slug), true);
+          next.set(productKey(category, slug), true);
         }
         return next;
       });
@@ -110,6 +145,7 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
     async (category: CatalogSectionKey, page: number, search?: string) => {
       if (!isAuthenticated) {
         setCache(new Map());
+        setPurchaseCache(new Map());
         setIsReady(true);
         return;
       }
@@ -124,8 +160,18 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
           const next = new Map(current);
           for (const item of result.items) {
             next.set(
-              favouriteKey(category, item.slug),
+              productKey(category, item.slug),
               item.isFavourite ?? false,
+            );
+          }
+          return next;
+        });
+        setPurchaseCache((current) => {
+          const next = new Map(current);
+          for (const item of result.items) {
+            next.set(
+              productKey(category, item.slug),
+              item.isBought === true,
             );
           }
           return next;
@@ -141,7 +187,7 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
     async (category: CatalogSectionKey, slug: string) => {
       if (!isAuthenticated) return;
 
-      const key = favouriteKey(category, slug);
+      const key = productKey(category, slug);
       const existing = inflightRef.current.get(key);
       if (existing) {
         await existing;
@@ -151,12 +197,17 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
       const request = (async () => {
         beginSync();
         try {
-          const isFav = await getProductIsFavouriteClient(category, slug);
-          if (isFav === null) return;
+          const social = await getProductSocialClient(category, slug);
+          if (social === null) return;
 
           setCache((current) => {
             const next = new Map(current);
-            next.set(key, isFav);
+            next.set(key, social.isFavourite);
+            return next;
+          });
+          setPurchaseCache((current) => {
+            const next = new Map(current);
+            next.set(key, social.isBought);
             return next;
           });
         } finally {
@@ -180,6 +231,9 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
       isFavourite,
       hasFavourite,
       setFavourite,
+      setProductBought,
+      isProductBought,
+      hasPurchase,
       seedFavourites,
       syncCatalogList,
       syncProductFavourite,
@@ -191,6 +245,9 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
       isFavourite,
       hasFavourite,
       setFavourite,
+      setProductBought,
+      isProductBought,
+      hasPurchase,
       seedFavourites,
       syncCatalogList,
       syncProductFavourite,

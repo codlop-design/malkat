@@ -1,5 +1,11 @@
+"use client";
+
+import { useEffect } from "react";
+
 import Pagination from "@/src/components/Pagination";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import type { ServiceCardProps } from "@/src/features/products/components/cards/ServiceCard";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
 import ServiceListingCard from "@/src/features/services/components/ServiceListingCard";
 import {
@@ -18,8 +24,17 @@ export default function ServicesGridClient({
   pagination,
   category,
 }: ServicesGridClientProps) {
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { syncCatalogList } = useFavourites();
   const currentPage = pagination.current_page;
   const totalPages = Math.max(1, pagination.last_page);
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+
+    void syncCatalogList("services", currentPage);
+  }, [currentPage, isAuthReady, isAuthenticated, syncCatalogList]);
+
   return (
     <section className="bg-[#FAFAFA] pb-14 md:pb-20">
       <div className="container">

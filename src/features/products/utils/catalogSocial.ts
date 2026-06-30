@@ -147,10 +147,14 @@ export function resolveDetailSocialFields(item: CatalogSocialFields) {
   };
 }
 
-export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
+export function resolvePurchaseFields(item: { is_bought?: boolean }) {
   return {
     isBought: item.is_bought === true,
   };
+}
+
+export function resolveCoursePurchaseFields(item: CoursePurchaseFields) {
+  return resolvePurchaseFields(item);
 }
 
 export function resolveDetailIsBought(

@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getProductDetailsClient } from "@/src/features/products/api/getProductDetailsClient";
 import { applyProductDetailRatingUpdate } from "@/src/features/products/api/fetchProductDetailRating";
-import { useAuth } from "@/src/features/auth/context/AuthProvider";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import type { ProductDetailMeta } from "@/src/features/products/data/productDetail";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import { resolveDetailIsBought } from "@/src/features/products/utils/catalogSocial";
@@ -21,6 +22,7 @@ export function useClientProductDetailRating({
   onDetailUpdated,
 }: UseClientProductDetailRatingOptions) {
   const { isAuthReady } = useAuth();
+  const { setProductBought } = useFavourites();
 
   useEffect(() => {
     if (!isAuthReady) {
@@ -42,10 +44,12 @@ export function useClientProductDetailRating({
           refreshed.detail.isBought,
         ),
       }));
+
+      setProductBought(category, slug, refreshed.detail.isBought === true);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [category, slug, isAuthReady, onDetailUpdated]);
+  }, [category, slug, isAuthReady, onDetailUpdated, setProductBought]);
 }
