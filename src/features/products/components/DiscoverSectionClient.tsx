@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import CategoryFilters from "@/src/components/CategoryFilters";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
+import CourseBundleCard from "@/src/features/products/components/course-bundles/CourseBundleCard";
 import { buildProductCategories } from "@/src/features/products/data/categories";
 import ProductCarousel from "@/src/features/products/components/ProductCarousel";
 import {
@@ -14,6 +15,7 @@ import {
   type CatalogListItem,
 } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogListsBySection } from "@/src/features/products/api/catalogList.types";
+import type { CourseBundle } from "@/src/features/products/types/courseBundle";
 import {
   categoryFilterHref,
   categoryListingHref,
@@ -55,11 +57,13 @@ const SECTION_META: Record<
 
 type DiscoverSectionClientProps = {
   catalogItems: CatalogListsBySection;
+  courseBundles?: CourseBundle[];
   initialCategory?: string | null;
 };
 
 export default function DiscoverSectionClient({
   catalogItems,
+  courseBundles = [],
   initialCategory = null,
 }: DiscoverSectionClientProps) {
   const category = parseProductCategory(initialCategory);
@@ -102,6 +106,24 @@ export default function DiscoverSectionClient({
         ]),
       ) as Record<DiscoverSectionKey, SectionConfig>,
     [catalogItems],
+  );
+
+  const courseSectionItems = useMemo(
+    () => [
+      ...courseBundles.map((bundle) => ({
+        kind: "bundle" as const,
+        id: `bundle-${bundle.id}`,
+        slug: `bundle-${bundle.slug}`,
+        bundle,
+      })),
+      ...catalogItems.courses.items.map((item) => ({
+        kind: "course" as const,
+        id: item.id,
+        slug: item.slug,
+        item,
+      })),
+    ],
+    [catalogItems.courses.items, courseBundles],
   );
 
   useEffect(() => {
@@ -157,6 +179,34 @@ export default function DiscoverSectionClient({
             {visibleSections.map((key) => {
               const { title, viewAllHref, items, renderSlide } =
                 catalogSections[key];
+
+              if (key === "courses") {
+                return (
+                  <motion.div
+                    key={key}
+                    layout
+                    initial={false}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <ProductCarousel
+                      title={title}
+                      viewAllHref={viewAllHref}
+                      items={courseSectionItems}
+                      getKey={(item) => item.id}
+                      renderSlide={(item) =>
+                        item.kind === "bundle" ? (
+                          <CourseBundleCard bundle={item.bundle} />
+                        ) : (
+                          renderCatalogCard("courses", item.item)
+                        )
+                      }
+                    />
+                  </motion.div>
+                );
+              }
+
               return (
                 <motion.div
                   key={key}

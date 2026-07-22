@@ -6,6 +6,7 @@ import {
   isCatalogSectionKey,
 } from "@/src/features/products/data/categoryMeta";
 import { getCatalogList } from "@/src/features/products/api/getCatalogList";
+import { getCourseBundles } from "@/src/features/products/api/getCourseBundles";
 
 import PageHeader from "@/src/components/PageHeader";
 import CategoryProductsSection from "@/src/features/products/components/CategoryProductsSection";
@@ -33,7 +34,10 @@ export default async function ProductCategoryPage({
   const category = slug as CatalogSectionKey;
   const page = Math.max(1, Number(pageParam) || 1);
   const search = q?.trim() ?? "";
-  const catalog = await getCatalogList(category, page, search);
+  const [catalog, courseBundles] = await Promise.all([
+    getCatalogList(category, page, search),
+    category === "courses" ? getCourseBundles() : Promise.resolve(null),
+  ]);
 
   const { label } = CATEGORY_META[category];
   const items = catalog?.items ?? [];
@@ -60,6 +64,7 @@ export default async function ProductCategoryPage({
         category={category}
         items={items}
         pagination={pagination}
+        courseBundles={courseBundles?.items ?? []}
         initialQuery={q}
       />
     </>

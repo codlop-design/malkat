@@ -5,7 +5,6 @@ import {
 
 export const DISCOVER_ITEM_CATEGORIES: CatalogSectionKey[] = [
   "books",
-  "activities",
   "courses",
   "services",
   "guides",

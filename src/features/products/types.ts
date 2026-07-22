@@ -12,7 +12,7 @@ export const VISIBLE_BY_CATEGORY: Record<
   ProductCategoryId,
   CatalogSectionKey[]
 > = {
-  all: ["books", "activities", "courses", "services", "guides"],
+  all: ["books", "courses", "services", "guides"],
   books: ["books"],
   activities: ["activities"],
   courses: ["courses"],

@@ -7,10 +7,12 @@ import { Search } from "lucide-react";
 import Pagination from "@/src/components/Pagination";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
+import CourseBundleCard from "@/src/features/products/components/course-bundles/CourseBundleCard";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
 import type { CatalogListItem } from "@/src/features/products/data/catalogRegistry";
 import { renderCatalogCard } from "@/src/features/products/data/catalogRegistry";
 import type { CatalogSectionKey } from "@/src/features/products/types";
+import type { CourseBundle } from "@/src/features/products/types/courseBundle";
 import type { CatalogPagination } from "@/src/features/products/types/catalogApi";
 const SEARCH_DEBOUNCE_MS = 400;
 
@@ -18,6 +20,7 @@ type CategoryProductsSectionProps = {
   category: CatalogSectionKey;
   items: CatalogListItem[];
   pagination: CatalogPagination;
+  courseBundles?: CourseBundle[];
   initialQuery?: string;
 };
 
@@ -25,6 +28,7 @@ export default function CategoryProductsSection({
   category,
   items,
   pagination,
+  courseBundles = [],
   initialQuery = "",
 }: CategoryProductsSectionProps) {
   const router = useRouter();
@@ -109,6 +113,26 @@ export default function CategoryProductsSection({
             className="h-14 w-full rounded-2xl border border-[#E5E5E5] bg-white ps-12 pe-4 text-sm text-black outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-primary"
           />
         </div>
+
+        {category === "courses" && courseBundles.length > 0 ? (
+          <div className="mt-8" dir="rtl">
+            <div className="mb-4 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-primary">حزم البرامج</p>
+                <h2 className="mt-1 text-xl font-bold text-black">
+                  مسارات مختارة في تجربة واحدة
+                </h2>
+              </div>
+            </div>
+            <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {courseBundles.map((bundle) => (
+                <li key={bundle.slug} className="h-full">
+                  <CourseBundleCard bundle={bundle} compact />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         <ul
           className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
