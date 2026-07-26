@@ -346,10 +346,12 @@ function BundleCourseItem({
               <Calendar className="size-3.5" strokeWidth={1.6} />
               {course.duration}
             </span>
-            <span className="inline-flex items-center gap-1">
-              <BookOpen className="size-3.5" strokeWidth={1.6} />
-              {course.sessions}
-            </span>
+            {course.sessions ? (
+              <span className="inline-flex items-center gap-1">
+                <BookOpen className="size-3.5" strokeWidth={1.6} />
+                {course.sessions}
+              </span>
+            ) : null}
           </div>
         </div>
       </div>

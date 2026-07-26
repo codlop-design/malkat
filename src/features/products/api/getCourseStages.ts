@@ -15,11 +15,15 @@ export async function getCourseStages(
 ): Promise<CourseStage[] | null> {
   try {
     const fetchOptions = await getServerApiFetchOptions(CATALOG_REVALIDATE_SECONDS);
+    const endpoint = `${API_URL}/courses/${slug}/stages`;
 
-    const response = await fetch(
-      `${API_URL}/courses/${slug}/stages`,
-      fetchOptions,
-    );
+    const response = await fetch(endpoint, fetchOptions);
+
+    console.log("[CourseStages][server] response status", {
+      slug,
+      endpoint,
+      status: response.status,
+    });
 
     if (response.status === 401 || response.status === 419) {
       return null;
@@ -30,6 +34,12 @@ export async function getCourseStages(
     }
 
     const json = (await response.json()) as CourseStagesApiResponse;
+
+    console.log("[CourseStages][server] raw result", {
+      slug,
+      endpoint,
+      raw: json,
+    });
 
     if (json.success === false) {
       return [];

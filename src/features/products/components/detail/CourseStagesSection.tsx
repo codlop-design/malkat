@@ -15,6 +15,7 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseStagesClient } from "@/src/features/products/api/getCourseStagesClient";
 import CourseCertificateSection from "@/src/features/products/components/detail/CourseCertificateSection";
 import type { CourseStage } from "@/src/features/products/data/courseStages";
+import type { ProductChapter } from "@/src/features/products/data/productDetail";
 import {
   buildNextLessonHref,
   getLessonContentMode,
@@ -29,12 +30,14 @@ import {
 type CourseStagesSectionProps = {
   slug: string;
   initialStages: CourseStage[] | null;
+  fallbackCurriculum?: ProductChapter[];
   isPurchased?: boolean;
 };
 
 export default function CourseStagesSection({
   slug,
   initialStages,
+  fallbackCurriculum,
   isPurchased = false,
 }: CourseStagesSectionProps) {
   const searchParams = useSearchParams();
@@ -47,29 +50,39 @@ export default function CourseStagesSection({
 
   const { isAuthenticated, isAuthReady } = useAuth();
   const [stages, setStages] = useState<CourseStage[]>(initialStages ?? []);
-  const [requiresAuth, setRequiresAuth] = useState(initialStages === null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [manualOpenStages, setManualOpenStages] = useState<
     string[] | undefined
   >(undefined);
+  const visibleStages = useMemo(
+    () => stages.filter((stage) => stage.lessons.length > 0),
+    [stages],
+  );
+  const fallbackStages = useMemo(
+    () => buildFallbackStages(fallbackCurriculum ?? []),
+    [fallbackCurriculum],
+  );
+  const displayStages =
+    visibleStages.length > 0 ? visibleStages : fallbackStages;
+  const isFallbackOnly = visibleStages.length === 0 && fallbackStages.length > 0;
 
   const apiOpenStages = useMemo(
     () =>
-      stages
+      displayStages
         .filter((stage) => stage.isActive)
         .map((stage) => `stage-${stage.id}`),
-    [stages],
+    [displayStages],
   );
 
   const openLessonStage = useMemo(() => {
-    if (parsedOpenLessonId == null || stages.length === 0) return null;
+    if (parsedOpenLessonId == null || displayStages.length === 0) return null;
 
-    const stage = stages.find((item) =>
+    const stage = displayStages.find((item) =>
       item.lessons.some((lesson) => lesson.id === parsedOpenLessonId),
     );
 
     return stage ? `stage-${stage.id}` : null;
-  }, [parsedOpenLessonId, stages]);
+  }, [displayStages, parsedOpenLessonId]);
 
   const defaultOpenStages =
     manualOpenStages !== undefined ? manualOpenStages : apiOpenStages;
@@ -96,10 +109,9 @@ export default function CourseStagesSection({
       if (cancelled) return;
 
       if (nextStages === null) {
-        setRequiresAuth(true);
-        setStages([]);
-      } else if (nextStages.length > 0) {
-        setRequiresAuth(false);
+        setIsRefreshing(false);
+        return;
+      } else {
         setStages(nextStages);
         setManualOpenStages(undefined);
       }
@@ -112,13 +124,14 @@ export default function CourseStagesSection({
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, isAuthReady, slug]);
+  }, [isAuthReady, isAuthenticated, slug]);
 
   useEffect(() => {
-    if (parsedOpenLessonId == null || stages.length === 0) return;
+    if (parsedOpenLessonId == null || displayStages.length === 0) return;
+    if (!isAuthenticated) return;
     if (openedLessonFileRef.current === parsedOpenLessonId) return;
 
-    const lesson = stages
+    const lesson = displayStages
       .flatMap((stage) => stage.lessons)
       .find((item) => item.id === parsedOpenLessonId);
 
@@ -126,33 +139,18 @@ export default function CourseStagesSection({
 
     openedLessonFileRef.current = parsedOpenLessonId;
     window.open(lesson.fileUrl, "_blank", "noopener,noreferrer");
-  }, [parsedOpenLessonId, stages]);
+  }, [displayStages, isAuthenticated, parsedOpenLessonId]);
 
-  if (!isAuthReady) {
-    return (
-      <section className="mt-10">
-        <h2 className="mb-5 text-xl font-bold text-black">مراحل البرنامج</h2>
-        <p className="text-sm text-[#717171]">جاري تحميل مراحل البرنامج...</p>
-      </section>
-    );
-  }
-
-  if (requiresAuth) {
-    return (
-      <section className="mt-10 rounded-2xl border border-[#E8E8E8] bg-white p-6 md:p-8">
-        <h2 className="mb-3 text-xl font-bold text-black">مراحل البرنامج</h2>
-        <p className="text-sm leading-relaxed text-[#454545]">
-          سجّل الدخول لعرض مراحل البرنامج والدروس والاختبارات.
-        </p>
-        <Button asChild className="mt-4 h-11 px-6">
-          <Link href="/login">تسجيل الدخول</Link>
-        </Button>
-      </section>
-    );
-  }
-
-  if (stages.length === 0) {
+  if (!isAuthReady && displayStages.length === 0) {
     return null;
+  }
+
+  if (displayStages.length === 0) {
+    return null;
+  }
+
+  if (!isAuthenticated) {
+    return <DisabledCourseStages stages={displayStages} />;
   }
 
   return (
@@ -170,7 +168,7 @@ export default function CourseStagesSection({
         onValueChange={setManualOpenStages}
         className="flex flex-col gap-3"
       >
-        {stages.map((stage, stageIndex) => (
+        {displayStages.map((stage, stageIndex) => (
           <AccordionItem
             key={stage.id}
             value={`stage-${stage.id}`}
@@ -180,53 +178,47 @@ export default function CourseStagesSection({
               {stage.title}
             </AccordionTrigger>
             <AccordionContent allowDynamicHeight>
-              {stage.lessons.length === 0 ? (
-                <p className="pb-2 text-sm text-[#717171]">
-                  {isPurchased
-                    ? "لا توجد دروس في هذه المرحلة بعد."
-                    : "لم تقم بشراء البرنامج بعد. اطلب البرنامج للاطلاع على الدروس."}
-                </p>
-              ) : (
-                <ul className="flex flex-col gap-3 pb-2">
-                  {stage.lessons.map((lesson, lessonIndex) => {
-                    const isUnlocked = !lesson.isLocked;
-                    const startMode = getLessonStartMode(lesson);
-                    const nextLesson =
-                      stage.lessons[lessonIndex + 1] ??
-                      stages[stageIndex + 1]?.lessons[0];
-                    const returnTo = productDetailHref("courses", slug);
-                    const quizQuery = new URLSearchParams({
-                      stage: stage.title,
-                      returnTo,
-                    });
+              <ul className="flex flex-col gap-3 pb-2">
+                {stage.lessons.map((lesson, lessonIndex) => {
+                  const isUnlocked =
+                    isAuthenticated && !lesson.isLocked && !isFallbackOnly;
+                  const startMode = getLessonStartMode(lesson);
+                  const nextLesson =
+                    stage.lessons[lessonIndex + 1] ??
+                    displayStages[stageIndex + 1]?.lessons[0];
+                  const returnTo = productDetailHref("courses", slug);
+                  const quizQuery = new URLSearchParams({
+                    stage: stage.title,
+                    returnTo,
+                  });
 
-                    if (nextLesson) {
-                      quizQuery.set(
-                        "nextLessonTarget",
-                        buildNextLessonHref(slug, returnTo, nextLesson),
-                      );
-                    }
+                  if (nextLesson) {
+                    quizQuery.set(
+                      "nextLessonTarget",
+                      buildNextLessonHref(slug, returnTo, nextLesson),
+                    );
+                  }
 
-                    const lessonQuery = new URLSearchParams({
-                      stage: stage.title,
-                      returnTo,
-                    });
+                  const lessonQuery = new URLSearchParams({
+                    stage: stage.title,
+                    returnTo,
+                  });
 
-                    if (lesson.subtitle) {
-                      lessonQuery.set("subtitle", lesson.subtitle);
-                    }
+                  if (lesson.subtitle) {
+                    lessonQuery.set("subtitle", lesson.subtitle);
+                  }
 
-                    const descriptionHref = `${courseLessonDescriptionHref(slug, lesson.id)}?${lessonQuery.toString()}`;
-                    const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
-                    const reviewQuery = new URLSearchParams(quizQuery);
-                    reviewQuery.set("review", "1");
-                    const reviewQuizHref = `${courseLessonQuizHref(slug, lesson.id)}?${reviewQuery.toString()}`;
+                  const descriptionHref = `${courseLessonDescriptionHref(slug, lesson.id)}?${lessonQuery.toString()}`;
+                  const quizHref = `${courseLessonQuizHref(slug, lesson.id)}?${quizQuery.toString()}`;
+                  const reviewQuery = new URLSearchParams(quizQuery);
+                  reviewQuery.set("review", "1");
+                  const reviewQuizHref = `${courseLessonQuizHref(slug, lesson.id)}?${reviewQuery.toString()}`;
 
-                    return (
-                      <li
-                        key={lesson.id}
-                        className="rounded-xl border border-[#E8E8E8] bg-[#FAFAFA] px-4 py-4"
-                      >
+                  return (
+                    <li
+                      key={lesson.id}
+                      className="rounded-xl border border-[#E8E8E8] bg-[#FAFAFA] px-4 py-4"
+                    >
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                           <div className="flex min-w-0 flex-1 items-start gap-4">
                             <span
@@ -255,11 +247,11 @@ export default function CourseStagesSection({
                           </div>
 
                           <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
-                            {startMode === "text" ? (
+                            {isUnlocked && startMode === "text" ? (
                               <Button asChild className="h-10 min-w-30 px-4">
                                 <Link href={descriptionHref}>بدء التعلم</Link>
                               </Button>
-                            ) : startMode === "file" ? (
+                            ) : isUnlocked && startMode === "file" ? (
                               <Button asChild className="h-10 min-w-30 px-4">
                                 <a
                                   href={lesson.fileUrl!}
@@ -320,7 +312,6 @@ export default function CourseStagesSection({
                     );
                   })}
                 </ul>
-              )}
             </AccordionContent>
           </AccordionItem>
         ))}
@@ -333,4 +324,94 @@ export default function CourseStagesSection({
       />
     </section>
   );
+}
+
+function DisabledCourseStages({ stages }: { stages: CourseStage[] }) {
+  return (
+    <section className="mt-10">
+      <h2 className="mb-5 text-xl font-bold text-black">مراحل البرنامج</h2>
+      <div className="flex flex-col gap-3">
+        {stages.map((stage) => (
+          <div
+            key={stage.id}
+            className="rounded-xl border border-[#E8E8E8] bg-white px-4 opacity-75"
+          >
+            <div className="py-4 text-base font-medium text-[#717171]">
+              {stage.title}
+            </div>
+            <ul className="flex flex-col gap-3 pb-4">
+              {stage.lessons.map((lesson) => (
+                <li
+                  key={lesson.id}
+                  className="rounded-xl border border-[#E8E8E8] bg-[#FAFAFA] px-4 py-4"
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 flex-1 items-start gap-4">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#E0F5F3] text-sm font-bold text-primary/50">
+                        {lesson.number}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-[#717171]">
+                          {lesson.title}
+                        </p>
+                        {lesson.subtitle ? (
+                          <p className="mt-1 text-xs text-[#717171]">
+                            {lesson.subtitle}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                      <Button
+                        type="button"
+                        disabled
+                        className="h-10 min-w-30 px-4"
+                      >
+                        بدء التعلم
+                      </Button>
+                      {lesson.hasQuiz ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled
+                          className="h-10 min-w-30 border-primary/30 px-4 text-primary/40"
+                        >
+                          الإختبار
+                        </Button>
+                      ) : null}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function buildFallbackStages(curriculum: ProductChapter[]): CourseStage[] {
+  return curriculum
+    .map((section, sectionIndex) => ({
+      id: -(section.number || sectionIndex + 1),
+      number: section.number || sectionIndex + 1,
+      title: section.title,
+      isActive: sectionIndex === 0,
+      lessons: (section.lessons ?? []).map((lesson, lessonIndex) => ({
+        id: -((sectionIndex + 1) * 1000 + lessonIndex + 1),
+        number: lessonIndex + 1,
+        title: lesson,
+        subtitle: section.meta ?? "",
+        type: "text",
+        description: null,
+        isLocked: true,
+        lockedMessage: null,
+        hasQuiz: false,
+        isPassed: false,
+        fileUrl: null,
+      })),
+    }))
+    .filter((section) => section.lessons.length > 0);
 }

@@ -19,7 +19,7 @@ export type CourseCardProps = CatalogItemBase & {
   instructorName: string;
   instructorAvatar: string;
   duration: string;
-  sessions: string;
+  sessions?: string;
   free?: boolean;
   online?: boolean;
   rating?: number;
@@ -40,7 +40,6 @@ export default function CourseCard({
   online = true,
   rating,
   ratingCount,
-  isFavourite = false,
   isBought = false,
   onFavouriteChange,
 }: CourseCardProps) {
@@ -100,7 +99,7 @@ export default function CourseCard({
         </p>
         <div className="mt-auto flex flex-wrap justify-end gap-3 pt-1 text-sm text-[#717171]">
           <span>{duration}</span>
-          <span>{sessions}</span>
+          {sessions ? <span>{sessions}</span> : null}
         </div>
       </div>
     </ProductCard>

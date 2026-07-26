@@ -35,12 +35,14 @@ export default function ProductDetailPageContent({
     reviewCount,
   } = useProductDetailLiveState(product, detail);
 
-  const hasLoadedCourseStages = (courseStages?.length ?? 0) > 0;
-  const hasFallbackCurriculum = (liveDetail.curriculum?.length ?? 0) > 0;
-  const showCourseStages =
-    category === "courses" &&
-    (hasLoadedCourseStages || (courseStages === null && hasFallbackCurriculum));
-  const hideCurriculum = showCourseStages && (courseStages?.length ?? 0) > 0;
+  const hasLoadedCourseStagesWithLessons =
+    courseStages?.some((stage) => stage.lessons.length > 0) ?? false;
+  const hasFallbackCourseStages =
+    liveDetail.curriculum?.some((section) => (section.lessons?.length ?? 0) > 0) ??
+    false;
+  const showCourseStages = category === "courses";
+  const hideCurriculum =
+    hasLoadedCourseStagesWithLessons || hasFallbackCourseStages;
 
   return (
     <div className="bg-[#FAFAFA] pb-16 pt-8 md:pt-10">
@@ -63,6 +65,7 @@ export default function ProductDetailPageContent({
             <CourseStagesSection
               slug={data.slug}
               initialStages={courseStages}
+              fallbackCurriculum={liveDetail.curriculum}
               isPurchased={liveDetail.isBought === true}
             />
           </Suspense>

@@ -18,6 +18,16 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
 
   const course = data as CourseCardProps;
   const meta = detail.courseMeta;
+  const metaItems = [
+    course.duration,
+    course.sessions,
+    meta?.hoursCount ? `${meta.hoursCount} ساعة` : null,
+    meta?.practiceProjects ? `${meta.practiceProjects} مشروع تطبيقي` : null,
+    detail.averageRating > 0 ? (
+      <RatingBadge key="rating" rating={detail.averageRating} />
+    ) : null,
+    meta?.studentsRegistered ? `${meta.studentsRegistered} طالب مسجل` : null,
+  ].filter(Boolean);
 
   return (
     <>
@@ -38,27 +48,12 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
         )}
       </div>
       <div className="mt-5 flex flex-wrap gap-4 border-y border-[#E8E8E8] py-4 text-xs text-[#454545] md:text-sm">
-        <span>{course.duration}</span>
-        <span>|</span>
-        <span>{course.sessions}</span>
-        {meta?.hoursCount ? (
-          <>
-            <span>|</span>
-            <span>{meta.hoursCount} ساعة</span>
-          </>
-        ) : null}
-        {detail.averageRating > 0 ? (
-          <>
-            <span>|</span>
-            <RatingBadge rating={detail.averageRating} />
-          </>
-        ) : null}
-        {meta?.studentsRegistered ? (
-          <>
-            <span>|</span>
-            <span>{meta.studentsRegistered} طالب مسجل</span>
-          </>
-        ) : null}
+        {metaItems.map((item, index) => (
+          <span key={typeof item === "string" ? item : "rating"}>
+            {index > 0 ? <span className="me-4">|</span> : null}
+            {item}
+          </span>
+        ))}
       </div>
       <div className="mt-6">
         <h3 className="text-base font-bold text-black">المدرب</h3>

@@ -8,13 +8,15 @@ import type { CourseStagesApiResponse } from "@/src/features/products/types/cour
 export async function getCourseStagesClient(
   slug: string,
 ): Promise<CourseStage[] | null> {
+  const endpoint = `/courses/${slug}/stages`;
   const { data, status } = await apiClient.get<CourseStagesApiResponse>(
-    `/courses/${slug}/stages`,
+    endpoint,
     { validateStatus: () => true },
   );
 
-  console.log("[CourseStages] load response", {
+  console.log("[CourseStages][client] raw result", {
     slug,
+    endpoint,
     status,
     raw: data,
   });
@@ -30,7 +32,11 @@ export async function getCourseStagesClient(
 
   const mapped = mapCourseStagesResponse(data ?? {});
 
-  console.log("[CourseStages] load mapped", mapped);
+  console.log("[CourseStages][client] mapped result", {
+    slug,
+    endpoint,
+    mapped,
+  });
 
   return mapped;
 }

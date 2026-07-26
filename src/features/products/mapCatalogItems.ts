@@ -19,6 +19,11 @@ function isFreePrice(price: string): boolean {
   return price === "مجاني" || price.includes("مجاني");
 }
 
+function formatLessonsCount(count: number): string | undefined {
+  if (count <= 0) return undefined;
+  return `${count} درس`;
+}
+
 export function mapBookItem(item: BookApiItem): BookCardProps {
   return {
     id: String(item.id),
@@ -35,11 +40,6 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
 }
 
 export function mapCourseItem(item: CourseApiItem): CourseCardProps {
-  const sessions =
-    item.lessons_count > 0
-      ? `${item.lessons_count} دروس`
-      : item.period;
-
   return {
     id: String(item.id),
     slug: item.slug,
@@ -49,7 +49,7 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     instructorName: item.contributor?.name ?? "",
     instructorAvatar: item.contributor?.image ?? "",
     duration: item.period,
-    sessions,
+    sessions: formatLessonsCount(item.lessons_count),
     free: isFreePrice(item.price),
     online: item.session_type.includes("أونلاين"),
     ...resolveCatalogSocialFields(item),
