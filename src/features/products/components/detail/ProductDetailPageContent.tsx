@@ -35,7 +35,11 @@ export default function ProductDetailPageContent({
     reviewCount,
   } = useProductDetailLiveState(product, detail);
 
-  const showCourseStages = category === "courses";
+  const hasLoadedCourseStages = (courseStages?.length ?? 0) > 0;
+  const hasFallbackCurriculum = (liveDetail.curriculum?.length ?? 0) > 0;
+  const showCourseStages =
+    category === "courses" &&
+    (hasLoadedCourseStages || (courseStages === null && hasFallbackCurriculum));
   const hideCurriculum = showCourseStages && (courseStages?.length ?? 0) > 0;
 
   return (
