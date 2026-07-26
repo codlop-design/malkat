@@ -69,15 +69,21 @@ export default function ProductDetailMainCard({
             detail={detail}
           />
 
-          {category !== "courses" && showAddToCart ? (
-            <div className="mt-6 hidden grid-cols-2 gap-3 lg:grid">
+          {category !== "courses" ? (
+            <div
+              className={`mt-6 hidden gap-3 lg:grid ${
+                showAddToCart ? "grid-cols-2" : "grid-cols-1"
+              }`}
+            >
               <ProductInterestButton className="h-12 rounded-xl" />
-              <AddToCartButton
-                payload={cartPayload}
-                label={CART_LABEL[category]}
-                variant="button"
-                className="h-12 rounded-xl"
-              />
+              {showAddToCart ? (
+                <AddToCartButton
+                  payload={cartPayload}
+                  label={CART_LABEL[category]}
+                  variant="button"
+                  className="h-12 rounded-xl"
+                />
+              ) : null}
             </div>
           ) : null}
 
@@ -108,15 +114,21 @@ export default function ProductDetailMainCard({
                 ))}
               </ul>
             ) : null}
-            {category === "courses" && showAddToCart ? (
-              <div className="mt-6 hidden grid-cols-2 gap-3 lg:grid">
+            {category === "courses" ? (
+              <div
+                className={`mt-6 hidden gap-3 lg:grid ${
+                  showAddToCart ? "grid-cols-2" : "grid-cols-1"
+                }`}
+              >
                 <ProductInterestButton className="h-12 rounded-xl" />
-                <AddToCartButton
-                  payload={cartPayload}
-                  label={CART_LABEL[category]}
-                  variant="button"
-                  className="h-12 rounded-xl"
-                />
+                {showAddToCart ? (
+                  <AddToCartButton
+                    payload={cartPayload}
+                    label={CART_LABEL[category]}
+                    variant="button"
+                    className="h-12 rounded-xl"
+                  />
+                ) : null}
               </div>
             ) : null}
           </div>

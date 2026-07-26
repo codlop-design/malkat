@@ -55,12 +55,16 @@ export default function ProductDetailMedia({
           className="size-10 rounded-full bg-white/90 text-[#454545] shadow-sm hover:bg-white"
         />
       </div>
-      {showAddToCart ? (
-        <div className="absolute inset-x-4 bottom-4 z-10 grid grid-cols-2 gap-2 lg:hidden">
-          <ProductInterestButton
-            label="تسجيل اهتمام"
-            className="h-11 rounded-xl bg-white/95 px-3 text-sm shadow-sm"
-          />
+      <div
+        className={`absolute inset-x-4 bottom-4 z-10 grid gap-2 lg:hidden ${
+          showAddToCart ? "grid-cols-2" : "grid-cols-1"
+        }`}
+      >
+        <ProductInterestButton
+          label="تسجيل اهتمام"
+          className="h-11 rounded-xl bg-white/95 px-3 text-sm shadow-sm"
+        />
+        {showAddToCart ? (
           <AddToCartButton
             payload={cartPayload}
             label={cartLabel}
@@ -68,8 +72,8 @@ export default function ProductDetailMedia({
             variant="button"
             className="h-11 rounded-xl px-3 text-sm shadow-sm"
           />
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 }
