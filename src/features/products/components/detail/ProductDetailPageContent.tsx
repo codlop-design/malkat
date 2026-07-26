@@ -31,6 +31,7 @@ export default function ProductDetailPageContent({
     liveDetail,
     setLiveDetail,
     cartPayload,
+    showAddToCart,
     rating,
     reviewCount,
   } = useProductDetailLiveState(product, detail);
@@ -51,6 +52,7 @@ export default function ProductDetailPageContent({
           product={product}
           detail={liveDetail}
           cartPayload={cartPayload}
+          showAddToCart={showAddToCart}
           rating={rating}
           reviewCount={reviewCount}
         />

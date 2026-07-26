@@ -17,6 +17,7 @@ type ProductDetailMainCardProps = {
   product: CatalogProduct;
   detail: ProductDetailMeta;
   cartPayload: AddToCartPayload;
+  showAddToCart: boolean;
   rating: number;
   reviewCount: number;
 };
@@ -25,12 +26,12 @@ export default function ProductDetailMainCard({
   product,
   detail,
   cartPayload,
+  showAddToCart,
   rating,
   reviewCount,
 }: ProductDetailMainCardProps) {
   const { category, data } = product;
   const imageFirst = category === "books" || category === "guides";
-  const showAddToCart = detail.isBought !== true;
 
   return (
     <div className="rounded-2xl border border-[#E8E8E8] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:p-8">

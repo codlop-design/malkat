@@ -36,14 +36,16 @@ export type ProductDetailView = {
 };
 
 function mapContributorDisplay(
-  contributor: {
+  contributor?: {
     name: string;
     image: string;
     job_title?: string;
     overview?: string;
     type_label?: string;
-  },
-): ProductContributorDisplay {
+  } | null,
+): ProductContributorDisplay | undefined {
+  if (!contributor?.name) return undefined;
+
   return {
     name: contributor.name,
     image: contributor.image,
@@ -65,11 +67,6 @@ function buildRatingMeta(
   | "reviews"
 > {
   return buildDetailRatingMeta(rate, legacyRating);
-}
-
-function languageLabel(code: string): string {
-  if (code === "ar") return "العربية";
-  return code;
 }
 
 function mapContentItems(items: unknown[]): ProductChapter[] | undefined {

@@ -133,7 +133,7 @@ export interface BookDetailsApi extends CatalogSocialFields {
   age_group: string;
   difficulty: string;
   price: string;
-  contributor: ProductContributor;
+  contributor: ProductContributor | null;
   page_count: number;
   language: string;
   file_type: string;

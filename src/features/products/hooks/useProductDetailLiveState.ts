@@ -40,7 +40,11 @@ export function useProductDetailLiveState(
   const { category, data } = product;
   const [liveDetail, setLiveDetail] = useState(detail);
   const { isAuthenticated, isAuthReady } = useAuth();
-  const { syncProductFavourite } = useFavourites();
+  const {
+    hasPurchase,
+    isProductBought,
+    syncProductFavourite,
+  } = useFavourites();
   const slug = data.slug;
   const lastSlugRef = useRef(slug);
 
@@ -80,11 +84,24 @@ export function useProductDetailLiveState(
       : "rating" in data
         ? (data.rating ?? 0)
         : 0;
+  const hasResolvedPurchase = hasPurchase(category, slug);
+  const resolvedIsBought = resolveDetailIsBought(
+    liveDetail.isBought,
+    hasResolvedPurchase ? isProductBought(category, slug) : undefined,
+  );
+  const canShowAddToCart =
+    isAuthReady &&
+    (!isAuthenticated || hasResolvedPurchase || liveDetail.isBought === true) &&
+    resolvedIsBought !== true;
 
   return {
-    liveDetail,
+    liveDetail: {
+      ...liveDetail,
+      isBought: resolvedIsBought,
+    },
     setLiveDetail,
     cartPayload: buildCartPayloadFromProduct(product),
+    showAddToCart: canShowAddToCart,
     rating,
     reviewCount: liveDetail.reviewCount,
   };
