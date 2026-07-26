@@ -37,21 +37,21 @@ export type ProductDetailView = {
 
 function mapContributorDisplay(
   contributor?: {
-    name: string;
-    image: string;
-    job_title?: string;
-    overview?: string;
-    type_label?: string;
+    name: string | null;
+    image: string | null;
+    job_title?: string | null;
+    overview?: string | null;
+    type_label?: string | null;
   } | null,
 ): ProductContributorDisplay | undefined {
   if (!contributor?.name) return undefined;
 
   return {
     name: contributor.name,
-    image: contributor.image,
-    jobTitle: contributor.job_title,
-    overview: contributor.overview,
-    typeLabel: contributor.type_label,
+    image: contributor.image ?? "",
+    jobTitle: contributor.job_title ?? undefined,
+    overview: contributor.overview ?? undefined,
+    typeLabel: contributor.type_label ?? undefined,
   };
 }
 
@@ -67,6 +67,14 @@ function buildRatingMeta(
   | "reviews"
 > {
   return buildDetailRatingMeta(rate, legacyRating);
+}
+
+function safeText(value: string | null | undefined): string {
+  return value ?? "";
+}
+
+function safeList(value: unknown[] | null | undefined): unknown[] {
+  return Array.isArray(value) ? value : [];
 }
 
 function mapContentItems(items: unknown[]): ProductChapter[] | undefined {
@@ -146,62 +154,67 @@ function mapCourseDetail(
   slug: string,
   raw: CourseDetailsApi,
 ): ProductDetailView {
+  const contributor = mapContributorDisplay(raw.contributor);
+
   const product: CatalogProduct = {
     category: "courses",
     data: mapCourseItem({
       id: 0,
       slug,
-      title: raw.title,
-      overview: raw.overview,
-      image: raw.image,
-      session_type: raw.session_type,
-      price: raw.price,
-      period: raw.period,
-      lessons_count: raw.lessons_count,
-      contributor: {
-        name: raw.contributor.name,
-        image: raw.contributor.image,
-      },
+      title: safeText(raw.title),
+      overview: safeText(raw.overview),
+      image: safeText(raw.image),
+      session_type: safeText(raw.session_type),
+      price: safeText(raw.price),
+      period: safeText(raw.period),
+      lessons_count: raw.lessons_count ?? 0,
+      contributor: contributor
+        ? {
+            name: contributor.name,
+            image: contributor.image,
+          }
+        : null,
       is_favourite: raw.is_favourite,
       is_rated: raw.is_rated,
       rate: raw.rate,
     }),
   };
 
-  const learningPoints = parseWhatLearn(raw.what_learn);
+  const learningPoints = parseWhatLearn(safeText(raw.what_learn));
 
-  const faqAccordions = (raw.faqs ?? [])
+  const faqAccordions = safeList(raw.faqs)
     .map((faq) => ({
-      title: faq.title ?? faq.question ?? "",
-      content: faq.content ?? faq.answer ?? "",
+      title: (faq as { title?: string; question?: string }).title ??
+        (faq as { title?: string; question?: string }).question ??
+        "",
+      content: (faq as { content?: string; answer?: string }).content ??
+        (faq as { content?: string; answer?: string }).answer ??
+        "",
     }))
     .filter((faq) => faq.title && faq.content);
 
   const detail: ProductDetailMeta = {
-    longDescription: raw.overview,
-    contributor: {
-      name: raw.contributor.name,
-      image: raw.contributor.image,
-    },
+    longDescription: safeText(raw.overview),
+    contributor,
     accordions:
       faqAccordions.length > 0
         ? faqAccordions
         : [
             {
               title: "متطلبات الدورة",
-              content: raw.overview,
+              content: safeText(raw.overview),
             },
           ],
-    curriculum: mapContentItems(raw.content ?? []),
+    curriculum: mapContentItems(safeList(raw.content)),
     learningPoints,
-    courseFeatures: mapFeatures(raw.features ?? []),
+    courseFeatures: mapFeatures(safeList(raw.features)),
     courseMeta: {
-      hoursCount: raw.hours_count,
-      lessonsCount: raw.lessons_count,
+      hoursCount: raw.hours_count ?? 0,
+      lessonsCount: raw.lessons_count ?? 0,
       studentsRegistered: raw.students_registered,
-      practiceProjects: raw.practice_projects,
-      instructorBio: raw.contributor.overview ?? "",
-      jobTitle: raw.contributor.job_title ?? "",
+      practiceProjects: raw.practice_projects ?? 0,
+      instructorBio: contributor?.overview ?? "",
+      jobTitle: contributor?.jobTitle ?? "",
     },
     ...resolveCoursePurchaseFields(raw),
     ...buildRatingMeta(raw.rate, raw.rating),

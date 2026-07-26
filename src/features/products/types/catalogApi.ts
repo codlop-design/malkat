@@ -1,9 +1,9 @@
 export interface ProductContributor {
-  name: string;
-  image: string;
-  job_title?: string;
-  overview?: string;
-  type_label?: string;
+  name: string | null;
+  image: string | null;
+  job_title?: string | null;
+  overview?: string | null;
+  type_label?: string | null;
 }
 
 export interface CourseContributor extends ProductContributor {
@@ -70,7 +70,7 @@ export interface CourseApiItem extends CatalogSocialFields {
   price: string;
   period: string;
   lessons_count: number;
-  contributor: ProductContributor;
+  contributor: ProductContributor | null;
 }
 
 export interface ServiceApiItem extends CatalogSocialFields {
@@ -147,27 +147,27 @@ export interface CoursePurchaseFields {
 }
 
 export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFields {
-  title: string;
-  overview: string;
-  image: string;
-  session_type: string;
-  price: string;
-  period: string;
-  lessons_count: number;
-  hours_count: number;
+  title: string | null;
+  overview: string | null;
+  image: string | null;
+  session_type: string | null;
+  price: string | null;
+  period: string | null;
+  lessons_count: number | null;
+  hours_count: number | null;
   rating?: number | null;
   students_registered: number | null;
-  practice_projects: number;
-  contributor: CourseContributor;
-  what_learn: string;
-  content?: unknown[];
-  features?: unknown[];
+  practice_projects: number | null;
+  contributor: CourseContributor | null;
+  what_learn: string | null;
+  content?: unknown[] | null;
+  features?: unknown[] | null;
   faqs?: Array<{
     title?: string;
     question?: string;
     content?: string;
     answer?: string;
-  }>;
+  }> | null;
 }
 
 export interface ServiceDetailsApi extends CatalogSocialFields {

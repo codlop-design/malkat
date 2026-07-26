@@ -18,6 +18,7 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
 
   const course = data as CourseCardProps;
   const meta = detail.courseMeta;
+  const hasInstructor = Boolean(course.instructorName?.trim());
   const metaItems = [
     course.duration,
     course.sessions,
@@ -55,11 +56,14 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
           </span>
         ))}
       </div>
+      {hasInstructor ? (
       <div className="mt-6">
         <h3 className="text-base font-bold text-black">المدرب</h3>
         <div className="mt-3 flex items-start gap-3">
           <Avatar className="size-12">
-            <AvatarImage src={course.instructorAvatar} alt="" />
+            {course.instructorAvatar ? (
+              <AvatarImage src={course.instructorAvatar} alt="" />
+            ) : null}
             <AvatarFallback>م</AvatarFallback>
           </Avatar>
           <div>
@@ -75,6 +79,7 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
           </div>
         </div>
       </div>
+      ) : null}
     </>
   );
 }
