@@ -6,7 +6,7 @@ export type CourseBundleApiItem = {
   slug: string;
   title: string;
   subtitle: string;
-  age_group: string;
+  age_group: string | null;
   image: string;
   courses_count: number;
 };
@@ -16,7 +16,7 @@ export type CourseBundle = {
   slug: string;
   title: string;
   subtitle: string;
-  ageGroup: string;
+  ageGroup?: string;
   imageSrc: string;
   coursesCount: number;
 };

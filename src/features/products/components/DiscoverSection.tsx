@@ -18,6 +18,7 @@ export default async function DiscoverSection({
     <DiscoverSectionClient
       catalogItems={catalogItems}
       courseBundles={courseBundles?.items ?? []}
+      courseBundlesTotal={courseBundles?.pagination.total}
       initialCategory={initialCategory}
     />
   );

@@ -7,6 +7,7 @@ import {
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import ProductCategoryInfo from "@/src/features/products/components/detail/ProductCategoryInfo";
+import ProductInterestButton from "@/src/features/products/components/detail/ProductInterestButton";
 import ProductDetailMedia from "@/src/features/products/components/detail/ProductDetailMedia";
 import StarRating from "@/src/features/products/components/detail/StarRating";
 import { CART_LABEL } from "@/src/features/products/data/productDetailLabels";
@@ -69,12 +70,15 @@ export default function ProductDetailMainCard({
           />
 
           {category !== "courses" && showAddToCart ? (
-            <AddToCartButton
-              payload={cartPayload}
-              label={CART_LABEL[category]}
-              variant="button"
-              className="mt-6 hidden h-12 w-full lg:inline-flex"
-            />
+            <div className="mt-6 hidden grid-cols-2 gap-3 lg:grid">
+              <ProductInterestButton className="h-12 rounded-xl" />
+              <AddToCartButton
+                payload={cartPayload}
+                label={CART_LABEL[category]}
+                variant="button"
+                className="h-12 rounded-xl"
+              />
+            </div>
           ) : null}
 
           <ProductDetailAccordions accordions={detail.accordions} />
@@ -105,12 +109,15 @@ export default function ProductDetailMainCard({
               </ul>
             ) : null}
             {category === "courses" && showAddToCart ? (
-              <AddToCartButton
-                payload={cartPayload}
-                label={CART_LABEL[category]}
-                variant="button"
-                className="mt-6 hidden h-12 w-full lg:inline-flex"
-              />
+              <div className="mt-6 hidden grid-cols-2 gap-3 lg:grid">
+                <ProductInterestButton className="h-12 rounded-xl" />
+                <AddToCartButton
+                  payload={cartPayload}
+                  label={CART_LABEL[category]}
+                  variant="button"
+                  className="h-12 rounded-xl"
+                />
+              </div>
             ) : null}
           </div>
         ) : null}

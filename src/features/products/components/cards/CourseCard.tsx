@@ -1,6 +1,5 @@
-import { BookOpen, Calendar } from "lucide-react";
-import Image from "next/image";
 import CardMedia, {
+  CatalogCardContributorRow,
   CatalogCardMetaRow,
 } from "@/src/features/products/components/CardMedia";
 import ProductCard from "@/src/features/products/components/cards/ProductCard";
@@ -91,32 +90,18 @@ export default function CourseCard({
             </span>
           ) : null}
         </CatalogCardMetaRow>
-        <div className="flex items-center gap-2">
-          <div className="relative size-8 shrink-0 overflow-hidden rounded-full">
-            <Image
-              src={instructorAvatar}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="32px"
-            />
-          </div>
-          <span className="text-sm text-[#454545]">{instructorName}</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-3 text-xs text-[#717171]">
-          <span className="flex items-center gap-1">
-            <Calendar className="size-3.5" strokeWidth={1.5} aria-hidden />
-            {duration}
-          </span>
-          <span className="flex items-center gap-1">
-            <BookOpen className="size-3.5" strokeWidth={1.5} aria-hidden />
-            {sessions}
-          </span>
-        </div>
+        <CatalogCardContributorRow
+          name={instructorName}
+          image={instructorAvatar}
+        />
         <h3 className="text-base font-bold text-black">{title}</h3>
         <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
           {description}
         </p>
+        <div className="mt-auto flex flex-wrap justify-end gap-3 pt-1 text-sm text-[#717171]">
+          <span>{duration}</span>
+          <span>{sessions}</span>
+        </div>
       </div>
     </ProductCard>
   );

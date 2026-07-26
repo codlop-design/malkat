@@ -6,7 +6,6 @@ import {
   Calendar,
   GraduationCap,
   Loader2,
-  PlayCircle,
   Star,
   UsersRound,
   X,
@@ -47,6 +46,7 @@ export default function CourseBundleModal({
   const [courses, setCourses] = useState<CourseBundleCourse[]>([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const isLoading = open && !hasLoaded;
+  const hasAgeGroup = Boolean(bundle.ageGroup);
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -148,11 +148,19 @@ export default function CourseBundleModal({
                   <p className="mt-2 max-w-sm text-sm leading-7 text-white/82 lg:mt-3">
                     {bundle.subtitle}
                   </p>
-                  <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-6">
-                    <Metric
-                      icon={<UsersRound className="size-4" strokeWidth={1.8} />}
-                      label={bundle.ageGroup}
-                    />
+                  <div
+                    className={`mt-4 grid gap-3 lg:mt-6 ${
+                      hasAgeGroup ? "grid-cols-2" : "grid-cols-1"
+                    }`}
+                  >
+                    {hasAgeGroup ? (
+                      <Metric
+                        icon={
+                          <UsersRound className="size-4" strokeWidth={1.8} />
+                        }
+                        label={bundle.ageGroup ?? ""}
+                      />
+                    ) : null}
                     <Metric
                       icon={<BookOpen className="size-4" strokeWidth={1.8} />}
                       label={`${bundle.coursesCount} برنامج`}
@@ -256,30 +264,22 @@ function BundleCourseItem({
   });
 
   return (
-    <article className="flex min-h-[410px] w-[250px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] sm:w-[268px] lg:w-[280px]">
-      <div className="flex flex-col">
-        <div className="relative aspect-4/3 shrink-0 overflow-hidden">
-          <Link href={href} onClick={onNavigate} className="absolute inset-0">
-            <Image
-              src={course.imageSrc}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-500 hover:scale-105"
-              sizes="300px"
-            />
-          </Link>
-          <div className="absolute top-3 inset-e-3 flex flex-wrap gap-2">
-            {course.free ? (
-              <span className="rounded-full bg-[#E0F5F3] px-2.5 py-1 text-xs font-semibold text-primary">
-                مجانية
-              </span>
-            ) : null}
-            {course.online ? (
-              <span className="rounded-full bg-[#F5EDE4] px-2.5 py-1 text-xs text-[#454545]">
-                أونلاين
-              </span>
-            ) : null}
-          </div>
+    <article className="relative flex min-h-[410px] w-[250px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] sm:w-[268px] lg:w-[280px]">
+      <Link
+        href={href}
+        onClick={onNavigate}
+        className="absolute inset-0 z-0 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        aria-label={course.title}
+      />
+      <div className="relative z-1 flex h-full flex-col pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+        <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden">
+          <Image
+            src={course.imageSrc}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="300px"
+          />
           <FavouriteButton
             category="courses"
             slug={course.slug}
@@ -293,24 +293,32 @@ function BundleCourseItem({
               className="absolute bottom-3 inset-e-3 z-10 size-10"
             />
           ) : null}
-          {course.rating ? (
-            <span className="absolute bottom-3 inset-s-3 inline-flex items-center gap-1 rounded-full bg-[#FFF7D6] px-2.5 py-1 text-xs font-semibold text-[#5C4614]">
-              <Star className="size-3.5 fill-[#F5B800] text-[#F5B800]" />
-              {course.rating}
-            </span>
-          ) : null}
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col p-4 text-right sm:p-5">
-          <h4 className="line-clamp-1 text-[17px] font-bold text-black">
-            {course.title}
-          </h4>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#717171]">
-            {course.description}
-          </p>
+        <div className="flex min-w-0 flex-1 flex-col gap-3 p-4 text-right sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {course.free ? (
+                <span className="rounded-full bg-[#E0F5F3] px-2.5 py-0.5 text-xs font-medium text-primary">
+                  مجانية
+                </span>
+              ) : null}
+              {course.online ? (
+                <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
+                  أونلاين
+                </span>
+              ) : null}
+            </div>
+            {course.rating ? (
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-[#E8F4FC] px-2 py-1 text-sm font-medium text-[#1F1F1F]">
+                <Star className="size-4 fill-[#F5B800] text-[#F5B800]" />
+                {course.rating}
+              </span>
+            ) : null}
+          </div>
 
           {course.instructorName ? (
-            <div className="mt-5 flex items-center gap-2">
+            <div className="flex items-center gap-2">
               {course.instructorAvatar ? (
                 <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-[#F5F5F5]">
                   <Image
@@ -328,7 +336,12 @@ function BundleCourseItem({
             </div>
           ) : null}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-[#717171]">
+          <h4 className="text-base font-bold text-black">{course.title}</h4>
+          <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#454545]">
+            {course.description}
+          </p>
+
+          <div className="mt-auto flex flex-wrap justify-end gap-3 pt-1 text-sm text-[#717171]">
             <span className="inline-flex items-center gap-1">
               <Calendar className="size-3.5" strokeWidth={1.6} />
               {course.duration}
@@ -337,17 +350,6 @@ function BundleCourseItem({
               <BookOpen className="size-3.5" strokeWidth={1.6} />
               {course.sessions}
             </span>
-          </div>
-
-          <div className="mt-4">
-            <Link
-              href={href}
-              onClick={onNavigate}
-              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-[#006B62]"
-            >
-              <PlayCircle className="size-4" strokeWidth={1.8} />
-              تفاصيل البرنامج
-            </Link>
           </div>
         </div>
       </div>

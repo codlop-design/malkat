@@ -58,12 +58,14 @@ const SECTION_META: Record<
 type DiscoverSectionClientProps = {
   catalogItems: CatalogListsBySection;
   courseBundles?: CourseBundle[];
+  courseBundlesTotal?: number;
   initialCategory?: string | null;
 };
 
 export default function DiscoverSectionClient({
   catalogItems,
   courseBundles = [],
+  courseBundlesTotal,
   initialCategory = null,
 }: DiscoverSectionClientProps) {
   const category = parseProductCategory(initialCategory);
@@ -84,12 +86,12 @@ export default function DiscoverSectionClient({
         {
           books: catalogItems.books.total,
           activities: catalogItems.activities.total,
-          courses: catalogItems.courses.total,
+          courses: courseBundlesTotal ?? courseBundles.length,
           services: catalogItems.services.total,
           guides: catalogItems.guides.total,
         },
       ),
-    [catalogItems],
+    [catalogItems, courseBundles.length, courseBundlesTotal],
   );
 
   const catalogSections = useMemo(

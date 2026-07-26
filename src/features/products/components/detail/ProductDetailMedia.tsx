@@ -6,6 +6,7 @@ import ShareButton from "@/src/components/ShareButton";
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
+import ProductInterestButton from "@/src/features/products/components/detail/ProductInterestButton";
 import {
   productDetailHref,
   type CatalogSectionKey,
@@ -55,12 +56,19 @@ export default function ProductDetailMedia({
         />
       </div>
       {showAddToCart ? (
-        <AddToCartButton
-          payload={cartPayload}
-          label={cartLabel}
-          iconSize={22}
-          className="absolute bottom-4 inset-e-4 z-10 size-11 lg:hidden"
-        />
+        <div className="absolute inset-x-4 bottom-4 z-10 grid grid-cols-2 gap-2 lg:hidden">
+          <ProductInterestButton
+            label="تسجيل اهتمام"
+            className="h-11 rounded-xl bg-white/95 px-3 text-sm shadow-sm"
+          />
+          <AddToCartButton
+            payload={cartPayload}
+            label={cartLabel}
+            iconSize={18}
+            variant="button"
+            className="h-11 rounded-xl px-3 text-sm shadow-sm"
+          />
+        </div>
       ) : null}
     </div>
   );
