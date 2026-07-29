@@ -3,7 +3,7 @@ import Link from "next/link";
 export const navLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "من نحن", href: "/about" },
-  { label: "المنتجات", href: "/products" },
+  { label: "المنتجات", href: "/bundle-products" },
   { label: "الخدمات", href: "/services" },
   { label: "الفعاليات", href: "/news" },
   { label: "تواصل معنا", href: "/contact" },

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-const IMAGE_ORIGIN = process.env.NEXT_PUBLIC_IMAGE_ORIGIN ?? "";
+const IMAGE_ORIGIN =
+  process.env.NEXT_PUBLIC_IMAGE_ORIGIN ?? "malkat-dashboard.codlop.sa";
 
 const nextConfig: NextConfig = {
   images: {

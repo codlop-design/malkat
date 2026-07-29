@@ -1,0 +1,303 @@
+https://malkat-dashboard.codlop.sa/api/bundle-products
+
+{
+"success": true,
+"message": "Bundle products retrieved successfully",
+"data": [
+{
+"id": "1",
+"slug": "mnhg-mlkat-altaalymy",
+"title": "منهج ملكات التعليمي",
+"subtitle": "كتاب شامل لبناء القيم والأخلاق لدى الطفل",
+"age_group": "10-15 years",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/books-bundle.png",
+"product_type": "book"
+},
+{
+"id": "2",
+"slug": "brnamg-almlkat-alkymy",
+"title": "برنامج الملكات القيمية",
+"subtitle": "دليل إجرائي متكامل لتعزيز القيم",
+"age_group": "16-20 years",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/evidance-bundle.png",
+"product_type": "evidence"
+},
+{
+"id": "3",
+"slug": "brnamg-mlkat-alaaam",
+"title": "برنامج ملكات العام",
+"subtitle": "برنامج تدريبي شامل للمربين والمعلمين",
+"age_group": "18+",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/course-bundle.png",
+"product_type": "course"
+}
+],
+"pagination": {
+"current_page": 1,
+"last_page": 1,
+"per_page": 5,
+"total": 3,
+"from": 1,
+"to": 3
+},
+"timestamp": "2026-07-29T15:39:27.488Z"
+}
+
+---------------------------------
+
+https://malkat-dashboard.codlop.sa/api/bundle-products/mnhg-mlkat-altaalymy/details
+
+{
+"success": true,
+"message": "Bundle product details retrieved successfully",
+"data": {
+"id": "1",
+"slug": "mnhg-mlkat-altaalymy",
+"title": "منهج ملكات التعليمي",
+"subtitle": "كتاب شامل لبناء القيم والأخلاق لدى الطفل",
+"age_group": "10-15 years",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/books-bundle.png",
+"product_type": "book",
+"products": [
+{
+"id": 1,
+"slug": "nt",
+"title": "-نت",
+"overview": "-",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/no-pictures.png",
+"age_group": null,
+"difficulty": null,
+"price": "Free",
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "book"
+},
+{
+"id": 2,
+"slug": "ktab-tgryby",
+"title": "كتاب تجريبي",
+"overview": "كتاب تجريبي",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/no-pictures.png",
+"age_group": "6-12 years",
+"difficulty": "Easy",
+"price": "Free",
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "book"
+},
+{
+"id": 3,
+"slug": "ktab-tgryby-1",
+"title": "كتاب تجريبي",
+"overview": "----",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/no-pictures.png",
+"age_group": "5-15 years",
+"difficulty": "Easy",
+"price": "Free",
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "book"
+}
+]
+},
+"timestamp": "2026-07-29T15:39:30.411Z"
+}
+
+
+-----------------------------------------------
+
+https://malkat-dashboard.codlop.sa/api/bundle-products/brnamg-almlkat-alkymy/details
+
+
+{
+"success": true,
+"message": "Bundle product details retrieved successfully",
+"data": {
+"id": "2",
+"slug": "brnamg-almlkat-alkymy",
+"title": "برنامج الملكات القيمية",
+"subtitle": "دليل إجرائي متكامل لتعزيز القيم",
+"age_group": "16-20 years",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/evidance-bundle.png",
+"product_type": "evidence",
+"products": [
+{
+"id": 4,
+"slug": "aldlyl-alagrayy-1",
+"title": "الدليل الإجرائي 1",
+"overview": "حزمة من الأدلة التنظيمية والتنفيذية التي توضح آليات تطبيق البرامج والمنهج، وتتضمن خطوات التنفيذ، والأدوار والمسؤوليات، والنماذج، وأدوات المتابعة والتقويم، بما يضمن جودة التطبيق وتوحيد الإجراءات.",
+"age_group": "مخصصة للمعلمين والمشرفين والمدربين والجهات المنفذة.",
+"evidence_count": "3 أدلة إجرائية.",
+"domain": "الإدارة التعليمية والتربوية",
+"execution_time": "7 أيام.",
+"education_type": "عن بُعد",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/storage/evidences/cover/3ab2cbbf-b069-4e0c-8209-e978da7fb4d4.webp",
+"price": "Free",
+"page_count": 3,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "evidence"
+},
+{
+"id": 5,
+"slug": "aldlyl-alagrayy-2",
+"title": "الدليل الإجرائي 2",
+"overview": "حزمة من الأدلة التنظيمية والتنفيذية التي توضح آليات تطبيق البرامج والمنهج، وتتضمن خطوات التنفيذ، والأدوار والمسؤوليات، والنماذج، وأدوات المتابعة والتقويم، بما يضمن جودة التطبيق وتوحيد الإجراءات.",
+"age_group": "مخصصة للمعلمين والمشرفين والمدربين والجهات المنفذة.",
+"evidence_count": "3 أدلة إجرائية.",
+"domain": "الإدارة التعليمية والتربوية",
+"execution_time": "7 أيام.",
+"education_type": "عن بُعد",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/storage/evidences/cover/2f9673b8-efce-40a9-ba7f-bb8b74bfc003.webp",
+"price": "Free",
+"page_count": 3,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "evidence"
+},
+{
+"id": 6,
+"slug": "aldlyl-alagrayy-3",
+"title": "الدليل الإجرائي 3",
+"overview": "حزمة من الأدلة التنظيمية والتنفيذية التي توضح آليات تطبيق البرامج والمنهج، وتتضمن خطوات التنفيذ، والأدوار والمسؤوليات، والنماذج، وأدوات المتابعة والتقويم، بما يضمن جودة التطبيق وتوحيد الإجراءات.",
+"age_group": "مخصصة للمعلمين والمشرفين والمدربين والجهات المنفذة.",
+"evidence_count": "3 أدلة إجرائية.",
+"domain": "الإدارة التعليمية والتربوية",
+"execution_time": "7 أيام.",
+"education_type": "عن بُعد",
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/storage/evidences/cover/fb4d24ea-2251-4b8d-a34e-0145421d6848.webp",
+"price": "Free",
+"page_count": 3,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "evidence"
+}
+]
+},
+"timestamp": "2026-07-29T15:39:34.239Z"
+}
+
+
+-------------------------------------------------------
+https://malkat-dashboard.codlop.sa/api/bundle-products/brnamg-mlkat-alaaam/details
+
+{
+"success": true,
+"message": "Bundle product details retrieved successfully",
+"data": {
+"id": "3",
+"slug": "brnamg-mlkat-alaaam",
+"title": "برنامج ملكات العام",
+"subtitle": "برنامج تدريبي شامل للمربين والمعلمين",
+"age_group": "18+",
+"image": "https://malkat-dashboard.codlop.sa/assets/dashboard/defaults/bundles/course-bundle.png",
+"product_type": "course",
+"products": [
+{
+"id": 10,
+"slug": "alkfayat-alaymany-1",
+"title": "الكفايات الايمانية 1",
+"overview": "برنامج تربوي متخصص يُعنى بغرس الإيمان وتعزيز العلاقة بالله تعالى من خلال تنمية الملكات الإيمانية بصورة عملية، بما يسهم في ترسيخ ًول الايمان، وتعميق المراقبة، وتعزيز اليقين، وتحويل القيم الإيمانية إلى سلوك يومي مستدام.",
+"age_group": "الأطفال والناشئة ( من 4 سنوات إلى 12 سنة)",
+"stages_count": "3 مراحل",
+"domain": null,
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/storage/courses/cover/6a123827-dca0-4e0c-9b23-caae3e56b4a8.webp",
+"session_type": "حضوري أو عن بُعد",
+"price": "Free",
+"period": "14 يوم",
+"show_on_homepage": false,
+"lessons_count": 0,
+"practice_projects": 0,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "course"
+},
+{
+"id": 11,
+"slug": "alkfayat-alaymany-2",
+"title": "الكفايات الايمانية 2",
+"overview": "برنامج تاسيس كفايبرنامج تربوي متخصص يُعنى بغرس الإيمان وتعزيز العلاقة بالله تعالى من خلال تنمية الملكات الإيمانية بصورة عملية، بما يسهم في ترسيخ ًول الايمان، وتعميق المراقبة، وتعزيز اليقين، وتحويل القيم الإيمانية إلى سلوك يومي مستدام.ات الاطفال",
+"age_group": null,
+"stages_count": null,
+"domain": null,
+"is_bought": false,
+"image": "https://malkat-dashboard.codlop.sa/storage/courses/cover/155b71bc-ac3f-4278-8e79-1d77b7fc00c6.webp",
+"session_type": "حضوري",
+"price": "Free",
+"period": "14 يوم",
+"show_on_homepage": false,
+"lessons_count": 0,
+"practice_projects": 5,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "course"
+},
+{
+"id": 12,
+"slug": "alkfayat-alaymany-3",
+"title": "الكفايات الايمانية 3",
+"overview": "برنامج تربوي متخصص يُعنى بغرس الإيمان وتعزيز العلاقة بالله تعالى من خلال تنمية الملكات الإيمانية بصورة عملية، بما يسهم في ترسيخ ًول الايمان، وتعميق المراقبة، وتعزيز اليقين، وتحويل القيم الإيمانية إلى سلوك يومي مستدام.",
+"age_group": null,
+"stages_count": null,
+"domain": null,
+"is_bought": true,
+"image": "https://malkat-dashboard.codlop.sa/storage/courses/cover/7eda0f42-4bc6-4c6a-88fe-c225131a4e62.webp",
+"session_type": "حضوري",
+"price": "Free",
+"period": "14 يوم",
+"show_on_homepage": false,
+"lessons_count": 0,
+"practice_projects": 5,
+"rate": {
+"avg_rate": 0,
+"count": 0
+},
+"is_favourite": false,
+"is_rated": false,
+"product_type": "course"
+}
+]
+},
+"timestamp": "2026-07-29T15:39:37.433Z"
+}
+
+

@@ -31,6 +31,7 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
     title: item.title,
     description: item.overview,
     author: item.contributor?.name ?? "",
+    authorAvatar: item.contributor?.image ?? "",
     imageSrc: item.image,
     free: isFreePrice(item.price),
     ageRange: item.age_group ?? undefined,
