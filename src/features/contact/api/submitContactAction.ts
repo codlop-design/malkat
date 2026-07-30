@@ -6,8 +6,7 @@ import {
 } from "@/src/features/contact/schemas/contactSchema";
 import { postFormToApi } from "@/src/lib/postFormToApi";
 
-// const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type ContactActionResult = {
   success: boolean;
@@ -35,8 +34,19 @@ export async function submitContactAction(
   formData.append("organization_type_id", parsed.data.organization_type_id);
   formData.append("message", parsed.data.message);
 
-  return postFormToApi(`${API_URL}/contact-us`, { method: "POST", body: formData }, {
-    successMessage: "تم إرسال رسالتك بنجاح",
-    fallbackErrorMessage: "تعذر إرسال الرسالة، حاول مرة أخرى",
-  });
+  return postFormToApi(
+    `${API_URL}/contact-us`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-Language": "ar",
+      },
+      body: formData,
+    },
+    {
+      successMessage: "تم إرسال رسالتك بنجاح",
+      fallbackErrorMessage: "تعذر إرسال الرسالة، حاول مرة أخرى",
+    },
+  );
 }
