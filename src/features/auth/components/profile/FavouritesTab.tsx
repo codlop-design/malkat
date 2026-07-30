@@ -23,7 +23,6 @@ const FAVOURITE_CATEGORIES: ReadonlyArray<{
   { id: "books", label: "كتب" },
   { id: "courses", label: "برامج" },
   { id: "services", label: "خدمات" },
-  { id: "activities", label: "أنشطة وتدريبات" },
   { id: "guides", label: "أدلة" },
 ];
 
@@ -43,7 +42,6 @@ function parseFavCategory(
     case "books":
     case "courses":
     case "services":
-    case "activities":
     case "guides":
       return value;
     default:
@@ -169,4 +167,3 @@ const FavouritesTab = forwardRef<FavouritesTabHandle, FavouritesTabProps>(
 FavouritesTab.displayName = "FavouritesTab";
 
 export default FavouritesTab;
-
