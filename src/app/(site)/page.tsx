@@ -17,7 +17,10 @@ export default async function Home() {
 
   return (
     <>
-      <HeroSection content={homeContent?.hero_section} />
+      <HeroSection
+        content={homeContent?.hero_section}
+        homepageCourse={homeContent?.homepage_course}
+      />
       <AboutSection content={homeContent?.about_us} />
       <PlatformServices content={homeContent?.discover} />
       <VideoSection src={homeContent?.introductory_video} />

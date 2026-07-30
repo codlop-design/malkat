@@ -29,11 +29,16 @@ export interface HomePartnersSection {
   items: HomePartnerItem[];
 }
 
+export interface HomeHomepageCourse {
+  slug: string;
+}
+
 export interface HomeContentApiData {
   hero_setion: HomeContentMediaSection;
   about_us: HomeContentMediaSection;
   discover: HomeDiscoverSection;
   introductory_video: string | null;
+  homepage_course?: HomeHomepageCourse | null;
   partners: HomePartnersSection;
 }
 
@@ -42,5 +47,6 @@ export interface HomeContentData {
   about_us: HomeContentMediaSection;
   discover: HomeDiscoverSection;
   introductory_video: string | null;
+  homepage_course?: HomeHomepageCourse | null;
   partners: HomePartnersSection;
 }

@@ -4,16 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/src/lib/motion";
-import type { HomeContentMediaSection } from "../types";
+import { productDetailHref } from "@/src/features/products/types";
+import type { HomeContentMediaSection, HomeHomepageCourse } from "../types";
 
 type HeroSectionProps = {
   content?: HomeContentMediaSection | null;
+  homepageCourse?: HomeHomepageCourse | null;
 };
 
-export default function HeroSection({ content }: HeroSectionProps) {
+export default function HeroSection({
+  content,
+  homepageCourse,
+}: HeroSectionProps) {
   if (!content) {
     return null;
   }
+
+  const homepageCourseSlug = homepageCourse?.slug?.trim();
+  const trialHref = homepageCourseSlug
+    ? productDetailHref("courses", homepageCourseSlug)
+    : "/products";
 
   return (
     <section className="bg-[#FFF8F0] py-12">
@@ -44,7 +54,7 @@ export default function HeroSection({ content }: HeroSectionProps) {
               className="flex items-center justify-center flex-col md:flex-row md:gap-5 gap-3"
             >
               <Link
-                href="/products"
+                href="/bundle-products"
                 className="bg-primary text-white py-3 px-6 rounded-full text-[18px] font-medium w-full md:w-auto"
               >
                 استكشف المحتوى
@@ -55,6 +65,15 @@ export default function HeroSection({ content }: HeroSectionProps) {
                 className="bg-transparent border border-black text-black text-[18px] font-medium py-3 w-full md:w-auto px-6 rounded-full"
               >
                 تسجيل اهتمامك
+              </Link>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="flex justify-center">
+              <Link
+                href={trialHref}
+                className="bg-[#0FB19E] text-white py-3 px-8 rounded-full text-[18px] font-medium transition-colors hover:bg-[#0A9A8A]"
+              >
+                قم بالتجربة
               </Link>
             </motion.div>
           </motion.div>
