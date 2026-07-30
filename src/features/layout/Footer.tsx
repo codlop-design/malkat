@@ -12,7 +12,14 @@ export default function Footer() {
         <p>جميع الحقوق محفوظة لدى {siteTitle}.</p>
         <p>
           صنع بكل حب <span className="text-red-600">❤</span> لدي شركة{" "}
-          <span className="font-semibold text-red-600">Codlop</span>
+          <a
+            href="https://codlop.sa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-red-600 transition-opacity hover:opacity-80"
+          >
+            Codlop
+          </a>
         </p>
       </div>
     </footer>
