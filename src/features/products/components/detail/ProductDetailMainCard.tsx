@@ -144,6 +144,8 @@ function ProductDetailAccordions({
 }: {
   accordions: ProductDetailMeta["accordions"];
 }) {
+  if (accordions.length === 0) return null;
+
   return (
     <div className="mt-6">
       <Accordion
@@ -157,7 +159,10 @@ function ProductDetailAccordions({
               {item.title}
             </AccordionTrigger>
             <AccordionContent className="text-[#454545]">
-              <p dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div
+                className="text-sm leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: item.content }}
+              />
             </AccordionContent>
           </AccordionItem>
         ))}
