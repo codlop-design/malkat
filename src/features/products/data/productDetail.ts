@@ -24,6 +24,7 @@ export type ProductBookMeta = {
   pageCount: number;
   fileType: string;
   language: string;
+  price?: string;
 };
 
 export type ProductCourseMeta = {
