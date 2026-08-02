@@ -82,7 +82,9 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
     {
       label: "المشاريع التطبيقية",
       value:
-        meta?.practiceProjects !== null && meta?.practiceProjects !== undefined
+        meta?.practiceProjects !== null &&
+        meta?.practiceProjects !== undefined &&
+        meta.practiceProjects > 0
           ? `${meta.practiceProjects} مشروع تطبيقي`
           : null,
     },
