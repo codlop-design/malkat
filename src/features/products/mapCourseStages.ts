@@ -119,7 +119,13 @@ export function mapCourseQuizSnapshotResponse(
 
   const selections: Record<number, number> = {};
   for (const item of snapshot) {
-    selections[item.question_id] = item.user_answer_id;
+    const selectedAnswerId =
+      item.user_answer_id ??
+      item.answers.find((answer) => answer.is_selected)?.id;
+
+    if (selectedAnswerId != null) {
+      selections[item.question_id] = selectedAnswerId;
+    }
   }
 
   const correctAnswers = snapshot.filter((item) => item.is_correct).length;

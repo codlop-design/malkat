@@ -65,6 +65,7 @@ export interface CourseQuizSnapshotAnswerApi {
   answer_text: string;
   image?: string | null;
   is_correct: boolean;
+  is_selected?: boolean;
 }
 
 export interface CourseQuizSnapshotItemApi {
@@ -72,8 +73,8 @@ export interface CourseQuizSnapshotItemApi {
   question_text: string;
   image?: string | null;
   question_image?: string | null;
-  user_answer_id: number;
-  correct_answer_id: number;
+  user_answer_id?: number | null;
+  correct_answer_id?: number | null;
   is_correct: boolean;
   answers: CourseQuizSnapshotAnswerApi[];
 }
