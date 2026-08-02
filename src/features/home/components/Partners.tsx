@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { HomePartnersSection } from "../types";
+import type { HomePartnerItem, HomePartnersSection } from "../types";
 
 import { fadeUp, motionViewport, staggerContainer } from "@/src/lib/motion";
 
@@ -13,6 +13,47 @@ import "swiper/css";
 type PartnersProps = {
   content?: HomePartnersSection | null;
 };
+
+type PartnerLogoProps = {
+  partner: HomePartnerItem;
+  index: number;
+};
+
+function PartnerLogo({ partner, index }: PartnerLogoProps) {
+  const title = partner.title?.trim() || `الشريك ${index + 1}`;
+  const logo = (
+    <div className="flex flex-col items-center gap-3 text-center">
+      <div className="flex size-[100px] items-center justify-center rounded-full bg-white p-4 md:size-[140px]">
+        <Image
+          src={partner.image}
+          width={80}
+          height={80}
+          alt={title}
+          className="h-auto max-h-16 w-full object-contain md:max-h-20"
+        />
+      </div>
+      <span className="line-clamp-2 min-h-10 text-sm font-medium leading-5 text-[#454545]">
+        {title}
+      </span>
+    </div>
+  );
+
+  if (!partner.url) {
+    return <div className="mx-auto w-[140px] md:w-[160px]">{logo}</div>;
+  }
+
+  return (
+    <a
+      href={partner.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mx-auto block w-[140px] rounded-2xl outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/30 md:w-[160px]"
+      aria-label={title}
+    >
+      {logo}
+    </a>
+  );
+}
 
 export default function Partners({ content }: PartnersProps) {
   if (!content) {
@@ -81,18 +122,10 @@ export default function Partners({ content }: PartnersProps) {
             >
               {content.items.map((partner, index) => (
                 <SwiperSlide
-                  key={`${partner.image}-${index}`}
+                  key={partner.id ?? `${partner.image}-${index}`}
                   className="h-auto!"
                 >
-                  <div className="mx-auto flex size-[100px] items-center justify-center rounded-full bg-white p-4 md:size-[140px]">
-                    <Image
-                      src={partner.image}
-                      width={80}
-                      height={80}
-                      alt={`Partner ${index + 1}`}
-                      className="h-auto max-h-16 w-full object-contain md:max-h-20"
-                    />
-                  </div>
+                  <PartnerLogo partner={partner} index={index} />
                 </SwiperSlide>
               ))}
             </Swiper>

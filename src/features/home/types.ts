@@ -24,6 +24,9 @@ export interface HomeDiscoverSection {
 }
 
 export interface HomePartnerItem {
+  id?: number;
+  title?: string | null;
+  url?: string | null;
   image: string;
 }
 
