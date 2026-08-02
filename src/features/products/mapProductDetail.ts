@@ -73,8 +73,45 @@ function safeText(value: string | null | undefined): string {
   return value ?? "";
 }
 
+function cleanOptionalText(value: string | null | undefined): string | undefined {
+  const text = value?.trim();
+  if (!text || text.toLowerCase() === "null") return undefined;
+  return text;
+}
+
 function safeList(value: unknown[] | null | undefined): unknown[] {
   return Array.isArray(value) ? value : [];
+}
+
+function normalizeLanguage(value: string | null | undefined): string {
+  const text = safeText(value);
+  const normalized = text.trim().toLowerCase();
+
+  if (normalized === "arabic" || normalized === "ar") {
+    return "العربية";
+  }
+
+  if (normalized === "english" || normalized === "en") {
+    return "الإنجليزية";
+  }
+
+  return text;
+}
+
+function normalizeFileType(value: string | null | undefined): string {
+  const text = safeText(value);
+  const parts = text
+    .split("-")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return parts.length > 0 ? Array.from(new Set(parts)).join(" - ") : text;
+}
+
+function normalizePrice(value: string | null | undefined): string | undefined {
+  const text = cleanOptionalText(value);
+  if (!text) return undefined;
+  return text.toLowerCase() === "free" ? "مجاني" : text;
 }
 
 function mapContentItems(items: unknown[]): ProductChapter[] | undefined {
@@ -111,6 +148,13 @@ function mapFeatures(items: unknown[]): string[] | undefined {
 }
 
 function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
+  const description = cleanOptionalText(raw.description);
+  const goals = cleanOptionalText(raw.goals);
+  const accordions = [
+    description ? { title: "الوصف التفصيلي", content: description } : null,
+    goals ? { title: "أهداف الكتاب", content: goals } : null,
+  ].filter((item): item is ProductAccordionItem => item != null);
+
   const product: CatalogProduct = {
     category: "books",
     data: mapBookItem({
@@ -130,17 +174,15 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
   };
 
   const detail: ProductDetailMeta = {
-    longDescription: raw.description || raw.overview,
+    longDescription: safeText(raw.overview),
     contributor: mapContributorDisplay(raw.contributor),
-    accordions: [
-      { title: "الوصف التفصيلي", content: raw.description || raw.overview },
-      { title: "أهداف الكتاب", content: raw.goals },
-    ],
+    accordions,
     chapters: mapContentItems(raw.contents),
     bookMeta: {
       pageCount: raw.page_count,
-      fileType: raw.file_type,
-      language: raw.language,
+      fileType: normalizeFileType(raw.file_type),
+      language: normalizeLanguage(raw.language),
+      price: normalizePrice(raw.price),
     },
     ...buildRatingMeta(raw.rate),
     ...resolveDetailSocialFields(raw),

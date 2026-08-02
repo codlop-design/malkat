@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Languages } from "lucide-react";
+import { BookOpen, FileText, Languages, ReceiptText } from "lucide-react";
 
 import type { BookCardProps } from "@/src/features/products/components/cards/BookCard";
 import type { CatalogProduct } from "@/src/features/products/data/catalogAccess";
@@ -46,7 +46,12 @@ export default function BookInfo({ data, detail }: BookInfoProps) {
           {meta.fileType ? (
             <MetaItem icon={BookOpen} label="نوع الملف" value={meta.fileType} />
           ) : null}
-          <MetaItem icon={Languages} label="اللغة" value={meta.language} />
+          {meta.language ? (
+            <MetaItem icon={Languages} label="اللغة" value={meta.language} />
+          ) : null}
+          {meta.price ? (
+            <MetaItem icon={ReceiptText} label="السعر" value={meta.price} />
+          ) : null}
         </div>
       ) : null}
       <InstructorRow
