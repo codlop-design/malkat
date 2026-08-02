@@ -37,6 +37,10 @@ function mapLesson(lesson: CourseStageLessonApi, index: number): CourseLesson {
   };
 }
 
+function quizText(value: string | null | undefined, fallback = ""): string {
+  return value?.trim() || fallback;
+}
+
 export function mapCourseStagesResponse(
   payload: CourseStagesApiResponse,
 ): CourseStage[] {
@@ -54,13 +58,14 @@ export function mapCourseQuizResponse(
 ): CourseQuiz {
   const questions = payload.questions.map((question, index) => ({
     id: question.id,
-    text: question.question || `السؤال ${index + 1}`,
+    text: quizText(question.question, `السؤال ${index + 1}`),
     image: question.image ?? null,
     answers: question.answers.map((answer) => ({
       id: answer.id,
-      text: answer.answer,
+      text: quizText(answer.answer),
       image: answer.image ?? null,
       isCorrect: answer.is_correct ?? false,
+      isSelected: false,
     })),
   }));
 
@@ -107,13 +112,14 @@ export function mapCourseQuizSnapshotResponse(
   const snapshot = payload.snapshot ?? [];
   const questions = snapshot.map((item, index) => ({
     id: item.question_id,
-    text: item.question_text || `السؤال ${index + 1}`,
+    text: quizText(item.question_text, `السؤال ${index + 1}`),
     image: item.image ?? item.question_image ?? null,
     answers: item.answers.map((answer) => ({
       id: answer.id,
-      text: answer.answer_text,
+      text: quizText(answer.answer_text),
       image: answer.image ?? null,
       isCorrect: answer.is_correct,
+      isSelected: answer.is_selected === true,
     })),
   }));
 

@@ -62,8 +62,8 @@ const answerStateClasses: Record<ReturnType<typeof getAnswerState>, string> = {
   wrong: "border-[#E34949] bg-[#FDEDED] ring-1 ring-[#E34949]/20",
 };
 
-function shouldShowQuizText(text: string): boolean {
-  const trimmed = text.trim();
+function shouldShowQuizText(text: string | null | undefined): boolean {
+  const trimmed = text?.trim() ?? "";
   return trimmed.length > 0 && trimmed !== "-";
 }
 
@@ -367,7 +367,8 @@ export default function CourseQuizContent({
                       <div className="mt-5 flex flex-col gap-3">
                         {question.answers.map((answer) => {
                           const isSelected =
-                            selections[question.id] === answer.id;
+                            selections[question.id] === answer.id ||
+                            (isReviewMode && answer.isSelected === true);
                           const state = getAnswerState(
                             isSubmitted,
                             isSelected,

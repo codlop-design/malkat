@@ -34,14 +34,14 @@ export interface CourseStagesApiResponse {
 
 export interface CourseQuizAnswerApi {
   id: number;
-  answer: string;
+  answer: string | null;
   is_correct?: boolean;
   image?: string | null;
 }
 
 export interface CourseQuizQuestionApi {
   id: number;
-  question: string;
+  question: string | null;
   image?: string | null;
   answers: CourseQuizAnswerApi[];
 }
@@ -62,7 +62,7 @@ export interface CourseQuizApiResponse {
 
 export interface CourseQuizSnapshotAnswerApi {
   id: number;
-  answer_text: string;
+  answer_text: string | null;
   image?: string | null;
   is_correct: boolean;
   is_selected?: boolean;
@@ -70,7 +70,7 @@ export interface CourseQuizSnapshotAnswerApi {
 
 export interface CourseQuizSnapshotItemApi {
   question_id: number;
-  question_text: string;
+  question_text: string | null;
   image?: string | null;
   question_image?: string | null;
   user_answer_id?: number | null;

@@ -25,6 +25,7 @@ export type CourseQuizAnswer = {
   text: string;
   image: string | null;
   isCorrect: boolean;
+  isSelected?: boolean;
 };
 
 export type CourseQuizQuestion = {
