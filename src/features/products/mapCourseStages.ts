@@ -13,7 +13,6 @@ import type {
   CourseQuizApiResponse,
   CourseQuizSnapshotPayload,
   CourseQuizSubmitApiResponse,
-  CourseStageApi,
   CourseStageLessonApi,
   CourseStagesApiResponse,
 } from "@/src/features/products/types/courseStagesApi";
@@ -109,11 +108,11 @@ export function mapCourseQuizSnapshotResponse(
   const questions = snapshot.map((item, index) => ({
     id: item.question_id,
     text: item.question_text || `السؤال ${index + 1}`,
-    image: null,
+    image: item.image ?? item.question_image ?? null,
     answers: item.answers.map((answer) => ({
       id: answer.id,
       text: answer.answer_text,
-      image: null,
+      image: answer.image ?? null,
       isCorrect: answer.is_correct,
     })),
   }));

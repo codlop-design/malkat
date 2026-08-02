@@ -63,12 +63,15 @@ export interface CourseQuizApiResponse {
 export interface CourseQuizSnapshotAnswerApi {
   id: number;
   answer_text: string;
+  image?: string | null;
   is_correct: boolean;
 }
 
 export interface CourseQuizSnapshotItemApi {
   question_id: number;
   question_text: string;
+  image?: string | null;
+  question_image?: string | null;
   user_answer_id: number;
   correct_answer_id: number;
   is_correct: boolean;
