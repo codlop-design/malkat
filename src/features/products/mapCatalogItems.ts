@@ -87,7 +87,9 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     instructorName: item.contributor?.name ?? "",
     instructorAvatar: item.contributor?.image ?? "",
     duration: item.period,
-    sessions: formatStagesCount(item.stages_count) ?? formatLessonsCount(item.lessons_count),
+    sessions:
+      formatStagesCount(item.stages_count) ??
+      formatLessonsCount(item.lessons_count),
     free: isFreePrice(item.price),
     online: isOnlineSession(item.session_type),
     sessionType,
