@@ -22,6 +22,9 @@ export type CourseCardProps = CatalogItemBase & {
   sessions?: string;
   free?: boolean;
   online?: boolean;
+  sessionType?: string;
+  ageRange?: string;
+  domain?: string;
   rating?: number;
 };
 
@@ -38,6 +41,8 @@ export default function CourseCard({
   sessions,
   free = true,
   online = true,
+  sessionType,
+  ageRange,
   rating,
   ratingCount,
   isBought = false,
@@ -59,6 +64,7 @@ export default function CourseCard({
           isOnline: online,
           duration,
           sessions,
+          ageRange,
           instructorName,
           instructorAvatar,
         })
@@ -83,7 +89,11 @@ export default function CourseCard({
               مجانية
             </span>
           ) : null}
-          {online ? (
+          {sessionType ? (
+            <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
+              {sessionType}
+            </span>
+          ) : online ? (
             <span className="rounded-full bg-[#F5EDE4] px-2.5 py-0.5 text-xs text-[#454545]">
               أونلاين
             </span>

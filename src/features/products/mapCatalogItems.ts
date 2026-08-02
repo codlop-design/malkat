@@ -15,13 +15,48 @@ import type {
 } from "@/src/features/products/types/catalogApi";
 import { resolveCatalogSocialFields } from "@/src/features/products/utils/catalogSocial";
 
-function isFreePrice(price: string): boolean {
-  return price === "مجاني" || price.includes("مجاني");
+function cleanOptionalText(value: string | null | undefined): string | undefined {
+  const text = value?.trim();
+  if (!text || text.toLowerCase() === "null") return undefined;
+  return text;
+}
+
+function cleanText(value: string | null | undefined, fallback = ""): string {
+  return cleanOptionalText(value) ?? fallback;
+}
+
+function isFreePrice(price: string | null | undefined): boolean {
+  const text = cleanText(price).toLowerCase();
+  return text === "free" || text === "مجاني" || text.includes("مجاني");
 }
 
 function formatLessonsCount(count: number): string | undefined {
   if (count <= 0) return undefined;
   return `${count} درس`;
+}
+
+function formatStagesCount(
+  count: number | string | null | undefined,
+): string | undefined {
+  const text = cleanOptionalText(String(count ?? ""));
+  if (!text) return undefined;
+
+  const numeric = Number(text);
+  if (!Number.isNaN(numeric)) {
+    return numeric > 0 ? `${numeric} مرحلة` : undefined;
+  }
+
+  return text;
+}
+
+function isOnlineSession(sessionType: string | null | undefined): boolean {
+  const text = cleanText(sessionType).toLowerCase();
+  return (
+    text.includes("online") ||
+    text.includes("أونلاين") ||
+    text.includes("عن بعد") ||
+    text.includes("عن بُعد")
+  );
 }
 
 export function mapBookItem(item: BookApiItem): BookCardProps {
@@ -41,6 +76,8 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
 }
 
 export function mapCourseItem(item: CourseApiItem): CourseCardProps {
+  const sessionType = cleanOptionalText(item.session_type);
+
   return {
     id: String(item.id),
     slug: item.slug,
@@ -50,9 +87,12 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     instructorName: item.contributor?.name ?? "",
     instructorAvatar: item.contributor?.image ?? "",
     duration: item.period,
-    sessions: formatLessonsCount(item.lessons_count),
+    sessions: formatStagesCount(item.stages_count) ?? formatLessonsCount(item.lessons_count),
     free: isFreePrice(item.price),
-    online: item.session_type.includes("أونلاين"),
+    online: isOnlineSession(item.session_type),
+    sessionType,
+    ageRange: cleanOptionalText(item.age_group),
+    domain: cleanOptionalText(item.domain),
     ...resolveCatalogSocialFields(item),
   };
 }

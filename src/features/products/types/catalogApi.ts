@@ -66,9 +66,12 @@ export interface CourseApiItem extends CatalogSocialFields {
   title: string;
   overview: string;
   image: string;
-  session_type: string;
+  session_type: string | null;
   price: string;
   period: string;
+  age_group?: string | null;
+  domain?: string | null;
+  stages_count?: number | string | null;
   lessons_count: number;
   contributor: ProductContributor | null;
 }
@@ -147,14 +150,20 @@ export interface CoursePurchaseFields {
 }
 
 export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFields {
+  id?: number | null;
+  slug?: string | null;
   title: string | null;
   overview: string | null;
+  age_group?: string | null;
+  stages_count?: number | null;
+  domain?: string | null;
   image: string | null;
   session_type: string | null;
   price: string | null;
   period: string | null;
   lessons_count: number | null;
   hours_count: number | null;
+  show_on_homepage?: boolean | null;
   rating?: number | null;
   students_registered: number | null;
   practice_projects: number | null;

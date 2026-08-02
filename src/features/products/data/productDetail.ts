@@ -27,6 +27,12 @@ export type ProductBookMeta = {
 };
 
 export type ProductCourseMeta = {
+  ageGroup?: string;
+  domain?: string;
+  sessionType?: string;
+  price?: string;
+  period?: string;
+  stagesCount?: number | null;
   hoursCount: number;
   lessonsCount: number;
   studentsRegistered: number | null;
