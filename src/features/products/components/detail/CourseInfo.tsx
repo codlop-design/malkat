@@ -23,6 +23,30 @@ function hasDisplayValue(value: ReactNode): boolean {
   return value !== null && value !== undefined && value !== "";
 }
 
+function formatPrice(price: string | null | undefined, isFree?: boolean): string | null {
+  const text = price?.trim();
+  if (!text && isFree) return "مجانية";
+  if (!text) return null;
+
+  return text.toLowerCase() === "free" ? "مجانية" : text;
+}
+
+function formatStageCount(
+  count: number | string | null | undefined,
+): string | null {
+  if (count === null || count === undefined) return null;
+  if (typeof count === "string") {
+    const text = count.trim();
+    if (!text) return null;
+    if (Number.isNaN(Number(text))) return text;
+    count = Number(text);
+  }
+
+  if (count === 1) return "مرحلة واحدة";
+  if (count === 2) return "مرحلتان";
+  return `${count} مراحل`;
+}
+
 export default function CourseInfo({ data, detail }: CourseInfoProps) {
   if (!("instructorName" in data)) return null;
 
@@ -30,7 +54,7 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
   const meta = detail.courseMeta;
   const hasInstructor = Boolean(course.instructorName?.trim());
   const sessionType = meta?.sessionType ?? course.sessionType;
-  const price = meta?.price ?? (course.free ? "مجانية" : null);
+  const price = formatPrice(meta?.price, course.free);
   const detailItems: CourseDetailItem[] = [
     { label: "الفئة العمرية", value: meta?.ageGroup ?? course.ageRange },
     { label: "المجال", value: meta?.domain ?? course.domain },
@@ -39,10 +63,7 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
     { label: "المدة", value: meta?.period ?? course.duration },
     {
       label: "عدد المراحل",
-      value:
-        meta?.stagesCount !== null && meta?.stagesCount !== undefined
-          ? `${meta.stagesCount} مرحلة`
-          : null,
+      value: formatStageCount(meta?.stagesCount),
     },
     {
       label: "عدد الدروس",
@@ -76,7 +97,7 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
     {
       label: "التقييم",
       value: detail.averageRating > 0 ? (
-      <RatingBadge key="rating" rating={detail.averageRating} />
+        <RatingBadge key="rating" rating={detail.averageRating} />
       ) : null,
     },
   ].filter((item) => hasDisplayValue(item.value));
@@ -99,10 +120,10 @@ export default function CourseInfo({ data, detail }: CourseInfoProps) {
         {detailItems.map((item) => (
           <div
             key={item.label}
-            className="rounded-xl bg-[#FAFAFA] px-4 py-3 text-sm"
+            className="flex min-h-[84px] flex-col justify-center rounded-2xl bg-[#FAFAFA] px-5 py-4 text-right text-sm"
           >
             <p className="text-xs text-[#717171]">{item.label}</p>
-            <div className="mt-1 font-medium text-[#454545]">{item.value}</div>
+            <div className="mt-1 font-medium text-black">{item.value}</div>
           </div>
         ))}
       </div>

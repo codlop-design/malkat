@@ -155,7 +155,7 @@ export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFie
   title: string | null;
   overview: string | null;
   age_group?: string | null;
-  stages_count?: number | null;
+  stages_count?: number | string | null;
   domain?: string | null;
   image: string | null;
   session_type: string | null;

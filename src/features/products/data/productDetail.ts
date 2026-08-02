@@ -32,7 +32,7 @@ export type ProductCourseMeta = {
   sessionType?: string;
   price?: string;
   period?: string;
-  stagesCount?: number | null;
+  stagesCount?: number | string | null;
   hoursCount: number;
   lessonsCount: number;
   studentsRegistered: number | null;
