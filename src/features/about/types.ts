@@ -35,7 +35,7 @@ export interface ImpactItem {
   icon: string | null;
   count: number;
   title: string;
-  content: string;
+  content: string | null;
 }
 
 export interface ImpactBlock {

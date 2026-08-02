@@ -4,26 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/src/lib/motion";
-import { productDetailHref } from "@/src/features/products/types";
-import type { HomeContentMediaSection, HomeHomepageCourse } from "../types";
+import type { HomeContentMediaSection } from "../types";
 
 type HeroSectionProps = {
   content?: HomeContentMediaSection | null;
-  homepageCourse?: HomeHomepageCourse | null;
 };
 
-export default function HeroSection({
-  content,
-  homepageCourse,
-}: HeroSectionProps) {
+export default function HeroSection({ content }: HeroSectionProps) {
   if (!content) {
     return null;
   }
-
-  const homepageCourseSlug = homepageCourse?.slug?.trim();
-  const trialHref = homepageCourseSlug
-    ? productDetailHref("courses", homepageCourseSlug)
-    : "/products";
 
   return (
     <section className="bg-[#FFF8F0] py-12">
@@ -68,14 +58,6 @@ export default function HeroSection({
               </Link>
             </motion.div>
 
-            <motion.div variants={fadeUp} className="flex justify-center">
-              <Link
-                href={trialHref}
-                className="bg-[#0FB19E] text-white py-3 px-8 rounded-full text-[18px] font-medium transition-colors hover:bg-[#0A9A8A]"
-              >
-                قم بالتجربة
-              </Link>
-            </motion.div>
           </motion.div>
 
           <motion.div

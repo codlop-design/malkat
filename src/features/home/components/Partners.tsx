@@ -20,6 +20,7 @@ export default function Partners({ content }: PartnersProps) {
   }
 
   const hasPartnerLogos = content.items.length > 0;
+  const shouldLoop = content.items.length > 8;
 
   return (
     <section className="py-16">
@@ -61,7 +62,8 @@ export default function Partners({ content }: PartnersProps) {
           >
             <Swiper
               modules={[Autoplay]}
-              loop
+              loop={shouldLoop}
+              centerInsufficientSlides={!shouldLoop}
               speed={600}
               spaceBetween={16}
               slidesPerView={3.5}

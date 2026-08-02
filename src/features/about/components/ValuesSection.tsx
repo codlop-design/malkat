@@ -10,21 +10,26 @@ import {
   motionViewport,
   staggerContainer,
 } from "@/src/lib/motion";
+import { cn } from "@/src/lib/utils";
 import type { AboutValuesBlock } from "@/src/features/about/types";
 
 import "swiper/css";
 
 type ValuesSectionProps = {
   valuesBlock?: AboutValuesBlock | null;
+  className?: string;
 };
 
-export default function ValuesSection({ valuesBlock }: ValuesSectionProps) {
+export default function ValuesSection({
+  valuesBlock,
+  className,
+}: ValuesSectionProps) {
   if (!valuesBlock?.items?.length) {
     return null;
   }
 
   return (
-    <section className="bg-[#FAFAFA] py-14 md:py-8 lg:py-14">
+    <section className={cn("bg-[#FAFAFA] py-14 md:py-8 lg:py-14", className)}>
       <div className="container">
         <motion.header
           className="mx-auto mb-12 max-w-3xl text-center md:mb-16"

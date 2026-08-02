@@ -8,7 +8,7 @@ export default function VideoSection({ src }: VideoSectionProps) {
   }
 
   return (
-    <section className="py-12">
+    <section className="pt-12 pb-0">
       <video
         src={src}
         autoPlay
