@@ -2,6 +2,10 @@ import type {
   AboutValuesBlock,
   ImpactBlock,
 } from "@/src/features/about/types";
+import type {
+  ProductBundleDetails,
+  ProductBundleDetailsApiItem,
+} from "@/src/features/products/types/bundleProduct";
 
 export interface HomeContentMediaSection {
   title: string;
@@ -74,6 +78,11 @@ export interface HomeContentApiData {
   discover: HomeDiscoverSection;
   introductory_video: string | null;
   homepage_course?: HomeHomepageCourse | null;
+  homepage_bundle_product?:
+    | ProductBundleDetailsApiItem
+    | ProductBundleDetailsApiItem[]
+    | null;
+  homepage_bundle_products?: ProductBundleDetailsApiItem[] | null;
   partners: HomePartnersSection;
   values?: AboutValuesBlock[];
   impacts?: ImpactBlock[];
@@ -85,6 +94,7 @@ export interface HomeContentData {
   discover: HomeDiscoverSection;
   introductory_video: string | null;
   homepage_course?: HomeHomepageCourse | null;
+  homepage_bundle_products?: ProductBundleDetails[];
   partners: HomePartnersSection;
   values?: AboutValuesBlock[];
   impacts?: ImpactBlock[];
