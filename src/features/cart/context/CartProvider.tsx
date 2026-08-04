@@ -6,7 +6,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -20,7 +19,6 @@ import {
   readCartFromSession,
   writeCartToSession,
 } from "@/src/features/cart/lib/cartStorage";
-import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import type {
   AddToCartPayload,
   CartItemCategory,
@@ -57,31 +55,18 @@ function groupCartItems(items: StoredCartItem[]): CartItemCategory[] {
   }));
 }
 
-function CartAuthSync() {
-  const { isAuthenticated, isAuthReady } = useAuth();
-  const { clearCart } = useCart();
-  const wasAuthenticatedRef = useRef(false);
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<StoredCartItem[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    if (!isAuthReady) return;
+    const timer = window.setTimeout(() => {
+      setItems(readCartFromSession());
+      setIsHydrated(true);
+    }, 0);
 
-    if (isAuthenticated) {
-      wasAuthenticatedRef.current = true;
-      return;
-    }
-
-    if (wasAuthenticatedRef.current) {
-      clearCart();
-      wasAuthenticatedRef.current = false;
-    }
-  }, [isAuthenticated, isAuthReady, clearCart]);
-
-  return null;
-}
-
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<StoredCartItem[]>(() => readCartFromSession());
-  const [isHydrated] = useState(true);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -169,7 +154,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider value={value}>
-      <CartAuthSync />
       {children}
     </CartContext.Provider>
   );

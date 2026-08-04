@@ -8,7 +8,9 @@ export function readCartFromSession(): StoredCartItem[] {
   }
 
   try {
-    const raw = sessionStorage.getItem(CART_STORAGE_KEY);
+    const raw =
+      localStorage.getItem(CART_STORAGE_KEY) ??
+      sessionStorage.getItem(CART_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as StoredCartItem[];
     return Array.isArray(parsed) ? parsed : [];
@@ -22,7 +24,8 @@ export function writeCartToSession(items: StoredCartItem[]) {
     return;
   }
 
-  sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  sessionStorage.removeItem(CART_STORAGE_KEY);
 }
 
 export function buildCartItemId(category: string, slug: string) {
