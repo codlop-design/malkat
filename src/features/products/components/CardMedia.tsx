@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 import {
   Avatar,
@@ -10,8 +11,10 @@ import {
 } from "@/src/components/ui/avatar";
 
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { useProductIsBought } from "@/src/features/products/hooks/useProductIsBought";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 
@@ -38,7 +41,15 @@ export default function CardMedia({
   cartPayload,
   isBought = false,
 }: CardMediaProps) {
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought(category, slug, isBought);
+  const isResolvingPurchase =
+    favouriteSyncMode === "product" &&
+    Boolean(category && slug) &&
+    isAuthenticated &&
+    isAuthReady &&
+    (!isReady || !hasPurchase(category as CatalogSectionKey, slug as string));
 
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
@@ -60,7 +71,17 @@ export default function CardMedia({
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}
-      {cartPayload && !purchased ? (
+      {cartPayload && isResolvingPurchase ? (
+        <button
+          type="button"
+          disabled
+          className="absolute bottom-3 inset-e-3 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-md"
+          aria-label="جاري التحقق من حالة المنتج"
+          aria-busy="true"
+        >
+          <Loader2 className="size-5 animate-spin" strokeWidth={1.8} />
+        </button>
+      ) : cartPayload && !purchased ? (
         <AddToCartButton
           payload={cartPayload}
           label={cartLabel}

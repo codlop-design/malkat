@@ -198,7 +198,19 @@ export function FavouritesProvider({ children }: FavouritesProviderProps) {
         beginSync();
         try {
           const social = await getProductSocialClient(category, slug);
-          if (social === null) return;
+          if (social === null) {
+            setCache((current) => {
+              const next = new Map(current);
+              next.set(key, false);
+              return next;
+            });
+            setPurchaseCache((current) => {
+              const next = new Map(current);
+              next.set(key, false);
+              return next;
+            });
+            return;
+          }
 
           setCache((current) => {
             const next = new Map(current);

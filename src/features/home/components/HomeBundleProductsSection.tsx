@@ -138,9 +138,15 @@ function Metric({
 function BundleProductItem({ product }: { product: ProductBundleProduct }) {
   return (
     <div className="flex h-[455px] w-[250px] shrink-0 snap-start sm:w-[268px] lg:w-[280px] [&>article]:w-full">
-      {product.category === "books" ? <BookCard {...product} /> : null}
-      {product.category === "guides" ? <GuideCard {...product} /> : null}
-      {product.category === "courses" ? <CourseCard {...product} /> : null}
+      {product.category === "books" ? (
+        <BookCard {...product} favouriteSyncMode="product" />
+      ) : null}
+      {product.category === "guides" ? (
+        <GuideCard {...product} favouriteSyncMode="product" />
+      ) : null}
+      {product.category === "courses" ? (
+        <CourseCard {...product} favouriteSyncMode="product" />
+      ) : null}
     </div>
   );
 }

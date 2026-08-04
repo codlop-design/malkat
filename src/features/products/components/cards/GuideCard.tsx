@@ -21,6 +21,7 @@ export type GuideCardProps = CatalogItemBase & {
   contributorName?: string;
   contributorAvatar?: string;
   rating?: number;
+  favouriteSyncMode?: "none" | "product";
 };
 
 export default function GuideCard({
@@ -39,6 +40,7 @@ export default function GuideCard({
   isFavourite = false,
   isBought = false,
   onFavouriteChange,
+  favouriteSyncMode = "none",
 }: GuideCardProps) {
   const href =
     category != null
@@ -65,6 +67,7 @@ export default function GuideCard({
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}
+        favouriteSyncMode={favouriteSyncMode}
         cartPayload={cartPayload}
         isBought={isBought}
       />

@@ -23,6 +23,7 @@ export type BookCardProps = CatalogItemBase & {
   level?: string;
   rating?: number;
   views?: string;
+  favouriteSyncMode?: "none" | "product";
 };
 
 export default function BookCard(props: BookCardProps) {
@@ -43,6 +44,7 @@ export default function BookCard(props: BookCardProps) {
     isFavourite = false,
     isBought = false,
     onFavouriteChange,
+    favouriteSyncMode = "none",
   } = props;
 
   const href =
@@ -71,6 +73,7 @@ export default function BookCard(props: BookCardProps) {
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}
+        favouriteSyncMode={favouriteSyncMode}
         cartPayload={cartPayload}
         isBought={isBought}
       />

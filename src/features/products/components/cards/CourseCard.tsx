@@ -26,6 +26,7 @@ export type CourseCardProps = CatalogItemBase & {
   ageRange?: string;
   domain?: string;
   rating?: number;
+  favouriteSyncMode?: "none" | "product";
 };
 
 export default function CourseCard({
@@ -47,6 +48,7 @@ export default function CourseCard({
   ratingCount,
   isBought = false,
   onFavouriteChange,
+  favouriteSyncMode = "none",
 }: CourseCardProps) {
   const href =
     category != null
@@ -79,6 +81,7 @@ export default function CourseCard({
         category={category}
         slug={slug}
         onFavouriteChange={onFavouriteChange}
+        favouriteSyncMode={favouriteSyncMode}
         cartPayload={cartPayload}
         isBought={isBought}
       />
