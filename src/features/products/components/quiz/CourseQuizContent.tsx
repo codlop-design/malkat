@@ -198,7 +198,7 @@ export default function CourseQuizContent({
   const breadcrumbs = useMemo(
     () => [
       { label: "الرئيسية", href: "/" },
-      { label: "المنتجات", href: "/products" },
+      { label: "المنتجات", href: "/bundle-products" },
       {
         label: CATEGORY_META.courses.label,
         href: categoryListingHref("courses"),

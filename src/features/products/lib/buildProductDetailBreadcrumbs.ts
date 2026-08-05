@@ -20,7 +20,7 @@ export function buildCatalogProductDetailBreadcrumbs(
 
   return [
     { label: "الرئيسية", href: "/" },
-    { label: "المنتجات", href: "/products" },
+    { label: "المنتجات", href: "/bundle-products" },
     { label: categoryLabel, href: categoryListingHref(category) },
     { label: detailLabel },
   ];

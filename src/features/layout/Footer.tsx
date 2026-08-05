@@ -18,7 +18,7 @@ type FooterColumn = {
 const quickLinks: FooterLink[] = [
   { label: "الرئيسية", href: "/" },
   { label: "من نحن", href: "/about" },
-  { label: "المنتجات", href: "/products" },
+  { label: "المنتجات", href: "/bundle-products" },
   { label: "الفعاليات", href: "/news" },
   { label: "تواصل معنا", href: "/contact" },
 ];

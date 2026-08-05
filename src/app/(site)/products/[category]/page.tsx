@@ -56,7 +56,7 @@ export default async function ProductCategoryPage({
         title={label}
         breadcrumbs={[
           { label: "الرئيسية", href: "/" },
-          { label: "المنتجات", href: "/products" },
+          { label: "المنتجات", href: "/bundle-products" },
           { label },
         ]}
       />
