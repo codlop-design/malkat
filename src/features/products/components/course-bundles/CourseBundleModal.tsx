@@ -15,6 +15,7 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
@@ -25,6 +26,7 @@ import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseBundleCoursesClient } from "@/src/features/products/api/getCourseBundleCoursesClient";
+import { getProductSocialClient } from "@/src/features/products/api/getProductSocialClient";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
 import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { useProductIsBought } from "@/src/features/products/hooks/useProductIsBought";
@@ -47,6 +49,12 @@ export default function CourseBundleModal({
 }: CourseBundleModalProps) {
   const [courses, setCourses] = useState<CourseBundleCourse[]>([]);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [syncingPurchaseSlugs, setSyncingPurchaseSlugs] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const lastPurchaseSyncKeyRef = useRef("");
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { setProductBought } = useFavourites();
   const isLoading = open && !hasLoaded;
   const hasAgeGroup = Boolean(bundle.ageGroup);
   const mounted = useSyncExternalStore(
@@ -96,6 +104,73 @@ export default function CourseBundleModal({
       active = false;
     };
   }, [bundle.slug, hasLoaded, open]);
+
+  useEffect(() => {
+    if (!open) {
+      lastPurchaseSyncKeyRef.current = "";
+      return;
+    }
+
+    if (!hasLoaded || !isAuthReady || !isAuthenticated || courses.length === 0) {
+      return;
+    }
+
+    const syncKey = `${bundle.slug}:${courses.map((course) => course.slug).join("|")}`;
+    if (lastPurchaseSyncKeyRef.current === syncKey) return;
+    lastPurchaseSyncKeyRef.current = syncKey;
+
+    let active = true;
+    const slugs = courses.map((course) => course.slug);
+
+    queueMicrotask(() => {
+      if (active) {
+        setSyncingPurchaseSlugs(new Set(slugs));
+      }
+    });
+
+    Promise.all(
+      slugs.map(async (slug) => {
+        const social = await getProductSocialClient("courses", slug);
+        if (social) {
+          setProductBought("courses", slug, social.isBought);
+        }
+        return { slug, isBought: social?.isBought };
+      }),
+    )
+      .then((results) => {
+        if (!active) return;
+
+        const purchases = new Map(
+          results
+            .filter((result) => result.isBought != null)
+            .map((result) => [result.slug, result.isBought === true]),
+        );
+
+        setCourses((current) =>
+          current.map((course) =>
+            purchases.has(course.slug)
+              ? { ...course, isBought: purchases.get(course.slug) }
+              : course,
+          ),
+        );
+      })
+      .finally(() => {
+        if (!active) return;
+        setSyncingPurchaseSlugs(new Set());
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [
+    bundle.slug,
+    courses,
+    hasLoaded,
+    isAuthReady,
+    isAuthenticated,
+    open,
+    setProductBought,
+  ]);
 
   if (!mounted) return null;
 
@@ -208,6 +283,9 @@ export default function CourseBundleModal({
                             key={course.slug}
                             course={course}
                             onNavigate={handleClose}
+                            isSyncingPurchase={syncingPurchaseSlugs.has(
+                              course.slug,
+                            )}
                           />
                         ))}
                       </div>
@@ -246,15 +324,18 @@ function Metric({
 function BundleCourseItem({
   course,
   onNavigate,
+  isSyncingPurchase,
 }: {
   course: CourseBundleCourse;
   onNavigate: () => void;
+  isSyncingPurchase: boolean;
 }) {
   const href = productDetailHref("courses", course.slug);
   const { isAuthenticated, isAuthReady } = useAuth();
   const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought("courses", course.slug, course.isBought);
   const isResolvingPurchase =
+    isSyncingPurchase ||
     isAuthenticated &&
     isAuthReady &&
     (!isReady || !hasPurchase("courses", course.slug));
