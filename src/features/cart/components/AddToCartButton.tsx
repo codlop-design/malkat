@@ -11,6 +11,7 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { placeFreeOrder } from "@/src/features/cart/api/placeFreeOrderClient";
 import { useCart } from "@/src/features/cart/context/CartProvider";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { cn } from "@/src/lib/utils";
 
 type AddToCartButtonProps = {
@@ -33,6 +34,7 @@ export default function AddToCartButton({
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
   const { addItem } = useCart();
+  const { setProductBought } = useFavourites();
   const [isPending, setIsPending] = useState(false);
   const isFree = payload.isFree === true;
   const buttonLabel = isFree ? "اشترك" : label;
@@ -54,6 +56,10 @@ export default function AddToCartButton({
       setIsPending(false);
 
       if (!result.success) {
+        if (isAlreadyBoughtMessage(result.message)) {
+          setProductBought(payload.category, payload.slug, true);
+          router.refresh();
+        }
         toast.error(result.message);
         return;
       }
@@ -119,4 +125,8 @@ export default function AddToCartButton({
       {icon}
     </button>
   );
+}
+
+function isAlreadyBoughtMessage(message: string): boolean {
+  return message.includes("اشتريت") || message.includes("مسبق");
 }
