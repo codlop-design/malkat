@@ -7,6 +7,7 @@ import type {
   ProductBundleProduct,
   ProductBundleType,
 } from "@/src/features/products/types/bundleProduct";
+import { parseApiBoolean } from "@/src/features/products/utils/catalogSocial";
 
 const DEFAULT_CONTRIBUTOR_NAME = "ملكات";
 const DEFAULT_CONTRIBUTOR_IMAGE =
@@ -28,12 +29,12 @@ function isFreePrice(price: string | number | null | undefined): boolean {
 }
 
 function resolveDirectJoin(
-  directJoin: boolean | null | undefined,
-  legacyIsFree: boolean | null | undefined,
+  directJoin: boolean | number | string | null | undefined,
+  legacyIsFree: boolean | number | string | null | undefined,
   price: string | number | null | undefined,
 ): boolean {
-  if (directJoin != null) return directJoin === true;
-  if (legacyIsFree != null) return legacyIsFree === true;
+  if (directJoin != null) return parseApiBoolean(directJoin);
+  if (legacyIsFree != null) return parseApiBoolean(legacyIsFree);
   return isFreePrice(price);
 }
 
@@ -47,9 +48,9 @@ function ratingFields(item: ProductBundleApiProduct) {
   const ratingCount = Number(item.rate?.count ?? 0);
 
   return {
-    isFavourite: Boolean(item.is_favourite),
-    isRated: Boolean(item.is_rated),
-    isBought: Boolean(item.is_bought),
+    isFavourite: parseApiBoolean(item.is_favourite),
+    isRated: parseApiBoolean(item.is_rated),
+    isBought: parseApiBoolean(item.is_bought),
     rating: rating > 0 ? rating : undefined,
     ratingCount: ratingCount > 0 ? ratingCount : undefined,
   };

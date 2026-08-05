@@ -13,7 +13,10 @@ import type {
   EvidenceApiItem,
   ServiceApiItem,
 } from "@/src/features/products/types/catalogApi";
-import { resolveCatalogSocialFields } from "@/src/features/products/utils/catalogSocial";
+import {
+  parseApiBoolean,
+  resolveCatalogSocialFields,
+} from "@/src/features/products/utils/catalogSocial";
 
 function cleanOptionalText(value: string | null | undefined): string | undefined {
   const text = value?.trim();
@@ -31,12 +34,12 @@ function isFreePrice(price: string | number | null | undefined): boolean {
 }
 
 function resolveDirectJoin(
-  directJoin: boolean | null | undefined,
-  legacyIsFree: boolean | null | undefined,
+  directJoin: boolean | number | string | null | undefined,
+  legacyIsFree: boolean | number | string | null | undefined,
   price: string | number | null | undefined,
 ): boolean {
-  if (directJoin != null) return directJoin === true;
-  if (legacyIsFree != null) return legacyIsFree === true;
+  if (directJoin != null) return parseApiBoolean(directJoin);
+  if (legacyIsFree != null) return parseApiBoolean(legacyIsFree);
   return isFreePrice(price);
 }
 

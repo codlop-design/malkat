@@ -7,6 +7,7 @@ import type {
 } from "@/src/features/products/data/productDetail";
 import {
   buildDetailRatingMeta,
+  parseApiBoolean,
   resolveCoursePurchaseFields,
   resolveDetailSocialFields,
   resolvePurchaseFields,
@@ -80,10 +81,11 @@ function cleanOptionalText(value: string | null | undefined): string | undefined
 }
 
 function resolveDirectJoin(
-  directJoin?: boolean | null,
-  legacyIsFree?: boolean | null,
+  directJoin?: boolean | number | string | null,
+  legacyIsFree?: boolean | number | string | null,
 ): boolean {
-  return directJoin ?? legacyIsFree ?? false;
+  if (directJoin != null) return parseApiBoolean(directJoin);
+  return parseApiBoolean(legacyIsFree);
 }
 
 function safeList(value: unknown[] | null | undefined): unknown[] {

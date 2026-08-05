@@ -53,8 +53,8 @@ export interface HomeHomepageCourse {
   image: string;
   session_type: string | null;
   price: string | null;
-  direct_join?: boolean | null;
-  is_free?: boolean | null;
+  direct_join?: boolean | number | string | null;
+  is_free?: boolean | number | string | null;
   period: string | null;
   show_on_homepage: boolean;
   lessons_count: number | null;

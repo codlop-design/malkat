@@ -1,6 +1,7 @@
 import { CATALOG_API_ENDPOINTS } from "@/src/features/products/api/catalogEndpoints";
 import type { CatalogSectionKey } from "@/src/features/products/types";
 import type { ProductDetailsApiPayload } from "@/src/features/products/types/catalogApi";
+import { parseApiBoolean } from "@/src/features/products/utils/catalogSocial";
 import { apiClient } from "@/src/lib/apiClient";
 
 type ProductDetailsApiResponse = {
@@ -17,7 +18,7 @@ export type ProductSocialClientState = {
 function readDetailSocialFields(
   category: CatalogSectionKey,
   payload: ProductDetailsApiPayload,
-): { is_favourite?: boolean; is_bought?: boolean } | null {
+): { is_favourite?: unknown; is_bought?: unknown } | null {
   switch (category) {
     case "books":
       return "book_details" in payload ? payload.book_details : null;
@@ -55,8 +56,8 @@ export async function getProductSocialClient(
   }
 
   return {
-    isFavourite: fields.is_favourite ?? false,
-    isBought: fields.is_bought === true,
+    isFavourite: parseApiBoolean(fields.is_favourite),
+    isBought: parseApiBoolean(fields.is_bought),
   };
 }
 

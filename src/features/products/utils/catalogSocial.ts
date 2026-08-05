@@ -9,6 +9,18 @@ import type { ProductReview } from "@/src/features/products/data/productDetail";
 
 type RateSource = CatalogSocialFields & { rate_average?: number | null };
 
+export function parseApiBoolean(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (["1", "true", "yes"].includes(normalized)) return true;
+    if (["0", "false", "no", ""].includes(normalized)) return false;
+  }
+
+  return false;
+}
+
 function toPositiveNumber(value: unknown): number {
   const parsed = typeof value === "number" ? value : Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
@@ -46,9 +58,9 @@ export function resolveCatalogSocialFields(
   "isFavourite" | "isRated" | "isBought" | "rating" | "ratingCount"
 > {
   return {
-    isFavourite: item.is_favourite ?? false,
-    isRated: item.is_rated ?? false,
-    isBought: item.is_bought === true,
+    isFavourite: parseApiBoolean(item.is_favourite),
+    isRated: parseApiBoolean(item.is_rated),
+    isBought: parseApiBoolean(item.is_bought),
     ...resolveCatalogRating(item),
   };
 }
@@ -142,14 +154,14 @@ export function buildDetailRatingMeta(
 
 export function resolveDetailSocialFields(item: CatalogSocialFields) {
   return {
-    isFavourite: item.is_favourite ?? false,
-    isRated: item.is_rated ?? false,
+    isFavourite: parseApiBoolean(item.is_favourite),
+    isRated: parseApiBoolean(item.is_rated),
   };
 }
 
-export function resolvePurchaseFields(item: { is_bought?: boolean }) {
+export function resolvePurchaseFields(item: { is_bought?: unknown }) {
   return {
-    isBought: item.is_bought === true,
+    isBought: parseApiBoolean(item.is_bought),
   };
 }
 

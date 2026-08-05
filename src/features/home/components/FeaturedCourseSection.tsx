@@ -16,6 +16,7 @@ import { Button } from "@/src/components/ui/button";
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
 import { productDetailHref } from "@/src/features/products/types";
+import { parseApiBoolean } from "@/src/features/products/utils/catalogSocial";
 import {
   fadeUp,
   motionViewport,
@@ -33,12 +34,12 @@ function isFreePrice(price?: string | null) {
 }
 
 function resolveDirectJoin(
-  directJoin?: boolean | null,
-  legacyIsFree?: boolean | null,
+  directJoin?: boolean | number | string | null,
+  legacyIsFree?: boolean | number | string | null,
   price?: string | null,
 ) {
-  if (directJoin != null) return directJoin === true;
-  if (legacyIsFree != null) return legacyIsFree === true;
+  if (directJoin != null) return parseApiBoolean(directJoin);
+  if (legacyIsFree != null) return parseApiBoolean(legacyIsFree);
   return isFreePrice(price);
 }
 

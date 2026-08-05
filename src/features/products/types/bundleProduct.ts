@@ -24,8 +24,8 @@ export type ProductBundleApiProduct = {
   age_group?: string | null;
   difficulty?: string | null;
   price?: string | number | null;
-  direct_join?: boolean | null;
-  is_free?: boolean | null;
+  direct_join?: boolean | number | string | null;
+  is_free?: boolean | number | string | null;
   page_count?: number | null;
   evidence_count?: string | null;
   execution_time?: string | null;
@@ -38,9 +38,9 @@ export type ProductBundleApiProduct = {
     name?: string | null;
     image?: string | null;
   } | null;
-  is_bought?: boolean;
-  is_favourite?: boolean;
-  is_rated?: boolean;
+  is_bought?: boolean | number | string | null;
+  is_favourite?: boolean | number | string | null;
+  is_rated?: boolean | number | string | null;
   rate?: {
     avg_rate?: number | null;
     count?: number | null;

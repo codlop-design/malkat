@@ -52,6 +52,9 @@ export default function CourseBundleModal({
   const [syncingPurchaseSlugs, setSyncingPurchaseSlugs] = useState<Set<string>>(
     () => new Set(),
   );
+  const [verifiedPurchaseSlugs, setVerifiedPurchaseSlugs] = useState<
+    Set<string>
+  >(() => new Set());
   const lastPurchaseSyncKeyRef = useRef("");
   const { isAuthenticated, isAuthReady } = useAuth();
   const { setProductBought } = useFavourites();
@@ -145,6 +148,11 @@ export default function CourseBundleModal({
             .filter((result) => result.isBought != null)
             .map((result) => [result.slug, result.isBought === true]),
         );
+        const verifiedSlugs = new Set(
+          results
+            .filter((result) => result.isBought != null)
+            .map((result) => result.slug),
+        );
 
         setCourses((current) =>
           current.map((course) =>
@@ -153,6 +161,13 @@ export default function CourseBundleModal({
               : course,
           ),
         );
+        setVerifiedPurchaseSlugs((current) => {
+          const next = new Set(current);
+          for (const slug of verifiedSlugs) {
+            next.add(slug);
+          }
+          return next;
+        });
       })
       .finally(() => {
         if (!active) return;
@@ -286,6 +301,9 @@ export default function CourseBundleModal({
                             isSyncingPurchase={syncingPurchaseSlugs.has(
                               course.slug,
                             )}
+                            hasVerifiedPurchase={verifiedPurchaseSlugs.has(
+                              course.slug,
+                            )}
                           />
                         ))}
                       </div>
@@ -325,20 +343,25 @@ function BundleCourseItem({
   course,
   onNavigate,
   isSyncingPurchase,
+  hasVerifiedPurchase,
 }: {
   course: CourseBundleCourse;
   onNavigate: () => void;
   isSyncingPurchase: boolean;
+  hasVerifiedPurchase: boolean;
 }) {
   const href = productDetailHref("courses", course.slug);
   const { isAuthenticated, isAuthReady } = useAuth();
   const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought("courses", course.slug, course.isBought);
+  const mustVerifyPurchase = isAuthenticated && isAuthReady && course.free;
   const isResolvingPurchase =
     isSyncingPurchase ||
-    isAuthenticated &&
-    isAuthReady &&
-    (!isReady || !hasPurchase("courses", course.slug));
+    (isAuthenticated &&
+      isAuthReady &&
+      (!isReady || !hasPurchase("courses", course.slug)));
+  const shouldHideUnverifiedDirectJoin =
+    mustVerifyPurchase && !hasVerifiedPurchase && !isResolvingPurchase;
   const cartPayload = buildCartPayload("courses", {
     slug: course.slug,
     title: course.title,
@@ -375,7 +398,7 @@ function BundleCourseItem({
             syncMode="product"
             className="absolute top-3 inset-s-3 z-10 size-9"
           />
-          {isResolvingPurchase ? (
+          {purchased ? null : isResolvingPurchase ? (
             <button
               type="button"
               disabled
@@ -385,7 +408,7 @@ function BundleCourseItem({
             >
               <Loader2 className="size-5 animate-spin" strokeWidth={1.8} />
             </button>
-          ) : !purchased ? (
+          ) : !shouldHideUnverifiedDirectJoin ? (
             <AddToCartButton
               payload={cartPayload}
               label="طلب المنتج"
