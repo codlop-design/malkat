@@ -70,6 +70,7 @@ export default function ProductDetailMedia({
             label={cartLabel}
             iconSize={18}
             variant="button"
+            reloadPageOnSuccess
             className="h-11 rounded-xl px-3 text-sm shadow-sm"
           />
         ) : null}

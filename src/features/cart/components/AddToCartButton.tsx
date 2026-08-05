@@ -19,6 +19,7 @@ type AddToCartButtonProps = {
   iconSize?: number;
   label?: string;
   variant?: "icon" | "button";
+  reloadPageOnSuccess?: boolean;
 };
 
 export default function AddToCartButton({
@@ -27,6 +28,7 @@ export default function AddToCartButton({
   iconSize = 20,
   label = "طلب المنتج",
   variant = "icon",
+  reloadPageOnSuccess = false,
 }: AddToCartButtonProps) {
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
@@ -57,6 +59,13 @@ export default function AddToCartButton({
       }
 
       toast.success(result.message);
+      if (reloadPageOnSuccess) {
+        window.setTimeout(() => {
+          window.location.reload();
+        }, 600);
+        return;
+      }
+
       router.refresh();
       return;
     }

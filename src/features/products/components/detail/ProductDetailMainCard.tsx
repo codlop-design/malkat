@@ -82,6 +82,7 @@ export default function ProductDetailMainCard({
                   payload={cartPayload}
                   label={CART_LABEL[category]}
                   variant="button"
+                  reloadPageOnSuccess
                   className="h-12 rounded-xl"
                 />
               ) : null}
@@ -127,6 +128,7 @@ export default function ProductDetailMainCard({
                     payload={cartPayload}
                     label={CART_LABEL[category]}
                     variant="button"
+                    reloadPageOnSuccess
                     className="h-12 rounded-xl"
                   />
                 ) : null}
