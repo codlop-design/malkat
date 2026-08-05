@@ -24,6 +24,7 @@ export type ProductBundleApiProduct = {
   age_group?: string | null;
   difficulty?: string | null;
   price?: string | number | null;
+  is_free?: boolean | null;
   page_count?: number | null;
   evidence_count?: string | null;
   execution_time?: string | null;

@@ -32,6 +32,11 @@ function isFreePrice(price?: string | null) {
   return !normalized || normalized === "free" || normalized === "مجاني";
 }
 
+function resolveIsFree(isFree?: boolean | null, price?: string | null) {
+  if (isFree != null) return isFree === true;
+  return isFreePrice(price);
+}
+
 function isOnlineSession(sessionType?: string | null) {
   const normalized = sessionType?.trim().toLowerCase();
   return Boolean(
@@ -58,7 +63,7 @@ export default function FeaturedCourseSection({
 
   const href = productDetailHref("courses", course.slug);
   const description = compactText(course.domain) ?? compactText(course.overview) ?? "";
-  const priceIsFree = isFreePrice(course.price);
+  const priceIsFree = resolveIsFree(course.is_free, course.price);
   const sessionIsOnline = isOnlineSession(course.session_type);
   const lessonsLabel =
     course.lessons_count != null ? `${course.lessons_count} دروس` : undefined;

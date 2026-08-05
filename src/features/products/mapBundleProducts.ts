@@ -27,6 +27,14 @@ function isFreePrice(price: string | number | null | undefined): boolean {
   return text === "free" || text === "مجاني" || text.includes("مجاني");
 }
 
+function resolveIsFree(
+  isFree: boolean | null | undefined,
+  price: string | number | null | undefined,
+): boolean {
+  if (isFree != null) return isFree === true;
+  return isFreePrice(price);
+}
+
 function formatLessonsCount(count: number | null | undefined): string | undefined {
   if (!count || count <= 0) return undefined;
   return `${count} درس`;
@@ -85,7 +93,7 @@ export function mapProductBundleProduct(
   bundleType: ProductBundleType,
 ): ProductBundleProduct {
   const description = cleanText(item.overview, "-");
-  const priceIsFree = isFreePrice(item.price);
+  const priceIsFree = resolveIsFree(item.is_free, item.price);
 
   if (bundleType === "book") {
     return {

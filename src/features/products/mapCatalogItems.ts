@@ -25,9 +25,17 @@ function cleanText(value: string | null | undefined, fallback = ""): string {
   return cleanOptionalText(value) ?? fallback;
 }
 
-function isFreePrice(price: string | null | undefined): boolean {
-  const text = cleanText(price).toLowerCase();
+function isFreePrice(price: string | number | null | undefined): boolean {
+  const text = cleanText(String(price ?? "")).toLowerCase();
   return text === "free" || text === "مجاني" || text.includes("مجاني");
+}
+
+function resolveIsFree(
+  isFree: boolean | null | undefined,
+  price: string | number | null | undefined,
+): boolean {
+  if (isFree != null) return isFree === true;
+  return isFreePrice(price);
 }
 
 function formatLessonsCount(count: number): string | undefined {
@@ -68,7 +76,7 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
     author: item.contributor?.name ?? "",
     authorAvatar: item.contributor?.image ?? "",
     imageSrc: item.image,
-    free: isFreePrice(item.price),
+    free: resolveIsFree(item.is_free, item.price),
     ageRange: item.age_group ?? undefined,
     level: item.difficulty ?? undefined,
     ...resolveCatalogSocialFields(item),
@@ -90,7 +98,7 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     sessions:
       formatStagesCount(item.stages_count) ??
       formatLessonsCount(item.lessons_count),
-    free: isFreePrice(item.price),
+    free: resolveIsFree(item.is_free, item.price),
     online: isOnlineSession(item.session_type),
     sessionType,
     ageRange: cleanOptionalText(item.age_group),
@@ -101,7 +109,7 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
 
 export function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
   const tags = [
-    item.is_free ? "مجانية" : `${item.price} ر.س`,
+    resolveIsFree(item.is_free, item.price) ? "مجانية" : `${item.price} ر.س`,
     item.session_type,
   ];
 
@@ -139,7 +147,7 @@ export function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
     description: item.overview,
     imageSrc: item.image,
     pages: `${item.page_count} صفحة`,
-    tags: [isFreePrice(item.price) ? "مجاني" : item.price],
+    tags: [resolveIsFree(item.is_free, item.price) ? "مجاني" : item.price],
     contributorName: item.contributor?.name ?? "",
     contributorAvatar: item.contributor?.image ?? "",
     ...resolveCatalogSocialFields(item),

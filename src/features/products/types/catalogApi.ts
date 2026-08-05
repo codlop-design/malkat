@@ -57,6 +57,7 @@ export interface BookApiItem extends CatalogSocialFields {
   age_group: string | null;
   difficulty: string | null;
   price: string;
+  is_free?: boolean | null;
   contributor: ProductContributor | null;
 }
 
@@ -68,6 +69,7 @@ export interface CourseApiItem extends CatalogSocialFields {
   image: string;
   session_type: string | null;
   price: string;
+  is_free?: boolean | null;
   period: string;
   age_group?: string | null;
   domain?: string | null;
@@ -107,6 +109,7 @@ export interface EvidenceApiItem extends CatalogSocialFields {
   overview: string;
   image: string;
   price: string;
+  is_free?: boolean | null;
   page_count: number;
   contributor: ProductContributor;
 }
@@ -136,6 +139,7 @@ export interface BookDetailsApi extends CatalogSocialFields {
   age_group: string;
   difficulty: string;
   price: string;
+  is_free?: boolean | null;
   contributor: ProductContributor | null;
   page_count: number;
   language: string;
@@ -160,6 +164,7 @@ export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFie
   image: string | null;
   session_type: string | null;
   price: string | null;
+  is_free?: boolean | null;
   period: string | null;
   lessons_count: number | null;
   hours_count: number | null;

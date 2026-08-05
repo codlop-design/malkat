@@ -166,6 +166,7 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
       age_group: raw.age_group,
       difficulty: raw.difficulty,
       price: raw.price,
+      is_free: raw.is_free,
       contributor: raw.contributor,
       is_favourite: raw.is_favourite,
       is_rated: raw.is_rated,
@@ -211,6 +212,7 @@ function mapCourseDetail(
       domain: raw.domain ?? null,
       session_type: safeText(raw.session_type),
       price: safeText(raw.price),
+      is_free: raw.is_free,
       period: safeText(raw.period),
       lessons_count: raw.lessons_count ?? 0,
       contributor: contributor
