@@ -23,13 +23,6 @@ const quickLinks: FooterLink[] = [
   { label: "تواصل معنا", href: "/contact" },
 ];
 
-const educationalLinks: FooterLink[] = [
-  { label: "الكتب", href: "/products/books" },
-  { label: "البرامج", href: "/products/courses" },
-  { label: "الخدمات", href: "/products/services" },
-  { label: "الأدلة إجرائية", href: "/products/guides" },
-];
-
 const supportLinks: FooterLink[] = [
   { label: "سجل اهتمامك", href: "/register-your-interest" },
   { label: "اطلب خدمة", href: "/request-service" },
@@ -41,7 +34,6 @@ const supportLinks: FooterLink[] = [
 
 const columns: FooterColumn[] = [
   { title: "روابط سريعة", links: quickLinks },
-  { title: "المحتوى التعليمي", links: educationalLinks },
   { title: "الدعم", links: supportLinks },
 ];
 
