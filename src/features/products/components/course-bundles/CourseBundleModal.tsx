@@ -23,8 +23,10 @@ import { createPortal } from "react-dom";
 
 import AddToCartButton from "@/src/features/cart/components/AddToCartButton";
 import { buildCartPayload } from "@/src/features/cart/lib/buildCartPayload";
+import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { getCourseBundleCoursesClient } from "@/src/features/products/api/getCourseBundleCoursesClient";
 import FavouriteButton from "@/src/features/products/components/FavouriteButton";
+import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { useProductIsBought } from "@/src/features/products/hooks/useProductIsBought";
 import type {
   CourseBundle,
@@ -249,7 +251,13 @@ function BundleCourseItem({
   onNavigate: () => void;
 }) {
   const href = productDetailHref("courses", course.slug);
+  const { isAuthenticated, isAuthReady } = useAuth();
+  const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought("courses", course.slug, course.isBought);
+  const isResolvingPurchase =
+    isAuthenticated &&
+    isAuthReady &&
+    (!isReady || !hasPurchase("courses", course.slug));
   const cartPayload = buildCartPayload("courses", {
     slug: course.slug,
     title: course.title,
@@ -286,7 +294,17 @@ function BundleCourseItem({
             syncMode="product"
             className="absolute top-3 inset-s-3 z-10 size-9"
           />
-          {!purchased ? (
+          {isResolvingPurchase ? (
+            <button
+              type="button"
+              disabled
+              className="absolute bottom-3 inset-e-3 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-md"
+              aria-label="جاري التحقق من حالة المنتج"
+              aria-busy="true"
+            >
+              <Loader2 className="size-5 animate-spin" strokeWidth={1.8} />
+            </button>
+          ) : !purchased ? (
             <AddToCartButton
               payload={cartPayload}
               label="طلب المنتج"

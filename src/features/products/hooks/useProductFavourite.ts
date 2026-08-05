@@ -21,12 +21,13 @@ export function useProductFavourite(
     isReady,
     isFavourite,
     hasFavourite,
+    hasPurchase,
     syncProductFavourite,
   } = useFavourites();
 
   useEffect(() => {
     if (!isAuthReady || !isAuthenticated || syncMode !== "product") return;
-    if (hasFavourite(category, slug)) return;
+    if (hasFavourite(category, slug) && hasPurchase(category, slug)) return;
 
     void syncProductFavourite(category, slug);
   }, [
@@ -36,6 +37,7 @@ export function useProductFavourite(
     isAuthenticated,
     syncMode,
     hasFavourite,
+    hasPurchase,
     syncProductFavourite,
   ]);
 
