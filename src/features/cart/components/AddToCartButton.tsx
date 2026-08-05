@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2, UserRoundPlus } from "lucide-react";
+import { BadgePlus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -70,7 +70,7 @@ export default function AddToCartButton({
   const icon = isPending ? (
     <Loader2 className="animate-spin" width={iconSize} height={iconSize} />
   ) : isFree ? (
-    <UserRoundPlus width={iconSize} height={iconSize} strokeWidth={2} />
+    <BadgePlus width={iconSize} height={iconSize} strokeWidth={2.15} />
   ) : (
     <Image src="/basket-add.svg" alt="" width={iconSize} height={iconSize} />
   );
@@ -82,7 +82,10 @@ export default function AddToCartButton({
         disabled={isPending}
         onClick={handleClick}
         className={cn(
-          "gap-2 bg-primary text-white hover:bg-primary/90",
+          "gap-2",
+          isFree
+            ? "bg-[#F7C948] text-[#123C38] shadow-[0_10px_24px_rgba(247,201,72,0.28)] hover:bg-[#F4BE2A]"
+            : "bg-primary text-white hover:bg-primary/90",
           className,
         )}
       >
@@ -98,7 +101,10 @@ export default function AddToCartButton({
       disabled={isPending}
       onClick={handleClick}
       className={cn(
-        "flex items-center justify-center rounded-full bg-primary text-white shadow-md transition-opacity hover:opacity-90",
+        "flex items-center justify-center rounded-full shadow-md transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-75",
+        isFree
+          ? "bg-[#F7C948] text-[#123C38] ring-2 ring-white/90 shadow-[0_10px_24px_rgba(247,201,72,0.36)] hover:bg-[#F4BE2A]"
+          : "bg-primary text-white hover:opacity-90",
         className,
       )}
       aria-label={buttonLabel}
