@@ -39,13 +39,13 @@ export default function ProductBundleModal({
   open,
   onClose,
 }: ProductBundleModalProps) {
-  const [products, setProducts] = useState<ProductBundleProduct[]>(
-    bundle.products,
-  );
-  const [hasLoaded, setHasLoaded] = useState(bundle.products.length > 0);
-  const meta = PRODUCT_BUNDLE_META[bundle.productType];
+  const [products, setProducts] = useState<ProductBundleProduct[]>([]);
+  const [bundleDetails, setBundleDetails] =
+    useState<ProductBundleDetails>(bundle);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const meta = PRODUCT_BUNDLE_META[bundleDetails.productType];
   const isLoading = open && !hasLoaded;
-  const hasAgeGroup = Boolean(bundle.ageGroup);
+  const hasAgeGroup = Boolean(bundleDetails.ageGroup);
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -73,13 +73,21 @@ export default function ProductBundleModal({
   }, [open, handleClose]);
 
   useEffect(() => {
-    if (!open || hasLoaded) return;
+    if (!open) return;
 
     let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+      setProducts([]);
+      setBundleDetails(bundle);
+      setHasLoaded(false);
+    });
 
     getBundleProductDetailsClient(bundle.slug)
       .then((detail) => {
         if (!active) return;
+        setBundleDetails(detail ?? bundle);
         setProducts(detail?.products ?? []);
         setHasLoaded(true);
       })
@@ -92,7 +100,7 @@ export default function ProductBundleModal({
     return () => {
       active = false;
     };
-  }, [bundle.slug, hasLoaded, open]);
+  }, [bundle, open]);
 
   if (!mounted) return null;
 
@@ -115,7 +123,7 @@ export default function ProductBundleModal({
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-labelledby={`product-bundle-${bundle.id}`}
+              aria-labelledby={`product-bundle-${bundleDetails.id}`}
               initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -126,12 +134,12 @@ export default function ProductBundleModal({
             >
               <aside className="relative min-h-0 overflow-hidden bg-[#0E3F3A] text-white">
                 <Image
-                  src={bundle.imageSrc}
+                  src={bundleDetails.imageSrc}
                   alt=""
                   fill
                   className="object-cover object-top"
                   sizes="480px"
-                  unoptimized={bundle.imageSrc.startsWith("http")}
+                  unoptimized={bundleDetails.imageSrc.startsWith("http")}
                 />
                 <div
                   className={`absolute inset-0 bg-linear-to-t ${meta.overlayClassName}`}
@@ -144,13 +152,13 @@ export default function ProductBundleModal({
                     {meta.sideChip}
                   </span>
                   <h2
-                    id={`product-bundle-${bundle.id}`}
+                    id={`product-bundle-${bundleDetails.id}`}
                     className="max-w-sm text-2xl font-black leading-tight sm:text-3xl lg:text-4xl"
                   >
-                    {bundle.title}
+                    {bundleDetails.title}
                   </h2>
                   <p className="mt-2 max-w-sm text-sm leading-7 text-white/82 lg:mt-3">
-                    {bundle.subtitle}
+                    {bundleDetails.subtitle}
                   </p>
                   <div
                     className={`mt-4 grid gap-3 lg:mt-6 ${
@@ -162,7 +170,7 @@ export default function ProductBundleModal({
                         icon={
                           <UsersRound className="size-4" strokeWidth={1.8} />
                         }
-                        label={bundle.ageGroup ?? ""}
+                        label={bundleDetails.ageGroup ?? ""}
                         className={meta.ageClassName}
                       />
                     ) : null}
@@ -182,7 +190,7 @@ export default function ProductBundleModal({
                       {meta.header}
                     </p>
                     <h3 className="mt-1 text-lg font-bold text-black">
-                      {bundle.title}
+                      {bundleDetails.title}
                     </h3>
                   </div>
                   <button
@@ -253,9 +261,15 @@ function Metric({
 function BundleProductItem({ product }: { product: ProductBundleProduct }) {
   return (
     <div className="flex h-[455px] w-[250px] shrink-0 snap-start sm:w-[268px] lg:w-[280px] [&>article]:w-full">
-      {product.category === "books" ? <BookCard {...product} /> : null}
-      {product.category === "guides" ? <GuideCard {...product} /> : null}
-      {product.category === "courses" ? <CourseCard {...product} /> : null}
+      {product.category === "books" ? (
+        <BookCard {...product} favouriteSyncMode="product" />
+      ) : null}
+      {product.category === "guides" ? (
+        <GuideCard {...product} favouriteSyncMode="product" />
+      ) : null}
+      {product.category === "courses" ? (
+        <CourseCard {...product} favouriteSyncMode="product" />
+      ) : null}
     </div>
   );
 }
