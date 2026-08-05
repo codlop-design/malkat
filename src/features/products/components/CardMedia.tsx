@@ -44,7 +44,6 @@ export default function CardMedia({
   const { isAuthenticated, isAuthReady } = useAuth();
   const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought(category, slug, isBought);
-  const isDirectJoin = cartPayload?.isFree === true;
   const isResolvingPurchase =
     favouriteSyncMode === "product" &&
     Boolean(category && slug) &&
@@ -72,7 +71,7 @@ export default function CardMedia({
           className="absolute top-3 inset-s-3 z-10 size-9"
         />
       ) : null}
-      {cartPayload && !isDirectJoin && isResolvingPurchase ? (
+      {cartPayload && isResolvingPurchase ? (
         <button
           type="button"
           disabled
@@ -82,7 +81,7 @@ export default function CardMedia({
         >
           <Loader2 className="size-5 animate-spin" strokeWidth={1.8} />
         </button>
-      ) : cartPayload && (isDirectJoin || !purchased) ? (
+      ) : cartPayload && !purchased ? (
         <AddToCartButton
           payload={cartPayload}
           label={cartLabel}

@@ -286,7 +286,7 @@ function BundleCourseItem({
             syncMode="product"
             className="absolute top-3 inset-s-3 z-10 size-9"
           />
-          {cartPayload.isFree || !purchased ? (
+          {!purchased ? (
             <AddToCartButton
               payload={cartPayload}
               label="طلب المنتج"

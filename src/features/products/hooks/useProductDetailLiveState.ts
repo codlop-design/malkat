@@ -90,12 +90,10 @@ export function useProductDetailLiveState(
     hasResolvedPurchase ? isProductBought(category, slug) : undefined,
   );
   const cartPayload = buildCartPayloadFromProduct(product);
-  const isDirectJoin = cartPayload.isFree === true;
   const canShowAddToCart =
     isAuthReady &&
-    (isDirectJoin ||
-      ((!isAuthenticated || hasResolvedPurchase || liveDetail.isBought === true) &&
-        resolvedIsBought !== true));
+    (!isAuthenticated || hasResolvedPurchase || liveDetail.isBought === true) &&
+    resolvedIsBought !== true;
 
   return {
     liveDetail: {
