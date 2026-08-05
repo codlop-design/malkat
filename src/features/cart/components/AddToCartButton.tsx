@@ -11,7 +11,6 @@ import { useAuth } from "@/src/features/auth/context/AuthProvider";
 import { placeFreeOrder } from "@/src/features/cart/api/placeFreeOrderClient";
 import { useCart } from "@/src/features/cart/context/CartProvider";
 import type { AddToCartPayload } from "@/src/features/cart/types/cart-types";
-import { useFavourites } from "@/src/features/products/context/FavouritesProvider";
 import { cn } from "@/src/lib/utils";
 
 type AddToCartButtonProps = {
@@ -32,7 +31,6 @@ export default function AddToCartButton({
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
   const { addItem } = useCart();
-  const { setProductBought } = useFavourites();
   const [isPending, setIsPending] = useState(false);
   const isFree = payload.isFree === true;
   const buttonLabel = isFree ? "اشترك" : label;
@@ -58,8 +56,8 @@ export default function AddToCartButton({
         return;
       }
 
-      setProductBought(payload.category, payload.slug, true);
       toast.success(result.message);
+      router.refresh();
       return;
     }
 
@@ -103,7 +101,7 @@ export default function AddToCartButton({
       className={cn(
         "flex items-center justify-center rounded-full shadow-md transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-75",
         isFree
-          ? "bg-[#F7C948] text-[#123C38] ring-2 ring-white/90 shadow-[0_10px_24px_rgba(247,201,72,0.36)] hover:bg-[#F4BE2A]"
+          ? "bg-[#F7C948] text-[#123C38] shadow-[0_10px_24px_rgba(247,201,72,0.36)] hover:bg-[#F4BE2A]"
           : "bg-primary text-white hover:opacity-90",
         className,
       )}

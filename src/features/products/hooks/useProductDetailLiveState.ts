@@ -89,10 +89,13 @@ export function useProductDetailLiveState(
     liveDetail.isBought,
     hasResolvedPurchase ? isProductBought(category, slug) : undefined,
   );
+  const cartPayload = buildCartPayloadFromProduct(product);
+  const isDirectJoin = cartPayload.isFree === true;
   const canShowAddToCart =
     isAuthReady &&
-    (!isAuthenticated || hasResolvedPurchase || liveDetail.isBought === true) &&
-    resolvedIsBought !== true;
+    (isDirectJoin ||
+      ((!isAuthenticated || hasResolvedPurchase || liveDetail.isBought === true) &&
+        resolvedIsBought !== true));
 
   return {
     liveDetail: {
@@ -100,7 +103,7 @@ export function useProductDetailLiveState(
       isBought: resolvedIsBought,
     },
     setLiveDetail,
-    cartPayload: buildCartPayloadFromProduct(product),
+    cartPayload,
     showAddToCart: canShowAddToCart,
     rating,
     reviewCount: liveDetail.reviewCount,
