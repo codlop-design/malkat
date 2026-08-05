@@ -27,11 +27,13 @@ function isFreePrice(price: string | number | null | undefined): boolean {
   return text === "free" || text === "مجاني" || text.includes("مجاني");
 }
 
-function resolveIsFree(
-  isFree: boolean | null | undefined,
+function resolveDirectJoin(
+  directJoin: boolean | null | undefined,
+  legacyIsFree: boolean | null | undefined,
   price: string | number | null | undefined,
 ): boolean {
-  if (isFree != null) return isFree === true;
+  if (directJoin != null) return directJoin === true;
+  if (legacyIsFree != null) return legacyIsFree === true;
   return isFreePrice(price);
 }
 
@@ -93,7 +95,11 @@ export function mapProductBundleProduct(
   bundleType: ProductBundleType,
 ): ProductBundleProduct {
   const description = cleanText(item.overview, "-");
-  const priceIsFree = resolveIsFree(item.is_free, item.price);
+  const priceIsFree = resolveDirectJoin(
+    item.direct_join,
+    item.is_free,
+    item.price,
+  );
 
   if (bundleType === "book") {
     return {

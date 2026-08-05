@@ -57,6 +57,7 @@ export interface BookApiItem extends CatalogSocialFields {
   age_group: string | null;
   difficulty: string | null;
   price: string;
+  direct_join?: boolean | null;
   is_free?: boolean | null;
   contributor: ProductContributor | null;
 }
@@ -69,6 +70,7 @@ export interface CourseApiItem extends CatalogSocialFields {
   image: string;
   session_type: string | null;
   price: string;
+  direct_join?: boolean | null;
   is_free?: boolean | null;
   period: string;
   age_group?: string | null;
@@ -86,7 +88,8 @@ export interface ServiceApiItem extends CatalogSocialFields {
   overview: string;
   session_type: string;
   price: number;
-  is_free: boolean;
+  direct_join?: boolean | null;
+  is_free?: boolean | null;
   rate_average?: number;
 }
 
@@ -109,6 +112,7 @@ export interface EvidenceApiItem extends CatalogSocialFields {
   overview: string;
   image: string;
   price: string;
+  direct_join?: boolean | null;
   is_free?: boolean | null;
   page_count: number;
   contributor: ProductContributor;
@@ -139,6 +143,7 @@ export interface BookDetailsApi extends CatalogSocialFields {
   age_group: string;
   difficulty: string;
   price: string;
+  direct_join?: boolean | null;
   is_free?: boolean | null;
   contributor: ProductContributor | null;
   page_count: number;
@@ -164,6 +169,7 @@ export interface CourseDetailsApi extends CatalogSocialFields, CoursePurchaseFie
   image: string | null;
   session_type: string | null;
   price: string | null;
+  direct_join?: boolean | null;
   is_free?: boolean | null;
   period: string | null;
   lessons_count: number | null;
@@ -193,7 +199,8 @@ export interface ServiceDetailsApi extends CatalogSocialFields {
   age_group: string;
   difficulty: string;
   price: number;
-  is_free: boolean;
+  direct_join?: boolean | null;
+  is_free?: boolean | null;
   session_duration: string;
   session_type: string;
   target: string;
@@ -211,7 +218,8 @@ export interface ActivityDetailsApi extends CatalogSocialFields {
   age_group: string;
   participant_type: string;
   price: number;
-  is_free: boolean;
+  direct_join?: boolean | null;
+  is_free?: boolean | null;
   session_duration: string;
   session_type: string;
   target: string;
@@ -231,7 +239,8 @@ export interface EvidenceDetailsApi extends CatalogSocialFields {
   target: string;
   price: number;
   price_label: string;
-  is_free: boolean;
+  direct_join?: boolean | null;
+  is_free?: boolean | null;
   description: string;
   rate_average?: number;
   contributor: GuideContributor;

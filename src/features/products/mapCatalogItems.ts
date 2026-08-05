@@ -30,11 +30,13 @@ function isFreePrice(price: string | number | null | undefined): boolean {
   return text === "free" || text === "مجاني" || text.includes("مجاني");
 }
 
-function resolveIsFree(
-  isFree: boolean | null | undefined,
+function resolveDirectJoin(
+  directJoin: boolean | null | undefined,
+  legacyIsFree: boolean | null | undefined,
   price: string | number | null | undefined,
 ): boolean {
-  if (isFree != null) return isFree === true;
+  if (directJoin != null) return directJoin === true;
+  if (legacyIsFree != null) return legacyIsFree === true;
   return isFreePrice(price);
 }
 
@@ -76,7 +78,7 @@ export function mapBookItem(item: BookApiItem): BookCardProps {
     author: item.contributor?.name ?? "",
     authorAvatar: item.contributor?.image ?? "",
     imageSrc: item.image,
-    free: resolveIsFree(item.is_free, item.price),
+    free: resolveDirectJoin(item.direct_join, item.is_free, item.price),
     ageRange: item.age_group ?? undefined,
     level: item.difficulty ?? undefined,
     ...resolveCatalogSocialFields(item),
@@ -98,7 +100,7 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
     sessions:
       formatStagesCount(item.stages_count) ??
       formatLessonsCount(item.lessons_count),
-    free: resolveIsFree(item.is_free, item.price),
+    free: resolveDirectJoin(item.direct_join, item.is_free, item.price),
     online: isOnlineSession(item.session_type),
     sessionType,
     ageRange: cleanOptionalText(item.age_group),
@@ -109,7 +111,9 @@ export function mapCourseItem(item: CourseApiItem): CourseCardProps {
 
 export function mapServiceItem(item: ServiceApiItem): ServiceCardProps {
   const tags = [
-    resolveIsFree(item.is_free, item.price) ? "مجانية" : `${item.price} ر.س`,
+    resolveDirectJoin(item.direct_join, item.is_free, item.price)
+      ? "مجانية"
+      : `${item.price} ر.س`,
     item.session_type,
   ];
 
@@ -147,7 +151,11 @@ export function mapEvidenceItem(item: EvidenceApiItem): GuideCardProps {
     description: item.overview,
     imageSrc: item.image,
     pages: `${item.page_count} صفحة`,
-    tags: [resolveIsFree(item.is_free, item.price) ? "مجاني" : item.price],
+    tags: [
+      resolveDirectJoin(item.direct_join, item.is_free, item.price)
+        ? "مجاني"
+        : item.price,
+    ],
     contributorName: item.contributor?.name ?? "",
     contributorAvatar: item.contributor?.image ?? "",
     ...resolveCatalogSocialFields(item),

@@ -79,6 +79,13 @@ function cleanOptionalText(value: string | null | undefined): string | undefined
   return text;
 }
 
+function resolveDirectJoin(
+  directJoin?: boolean | null,
+  legacyIsFree?: boolean | null,
+): boolean {
+  return directJoin ?? legacyIsFree ?? false;
+}
+
 function safeList(value: unknown[] | null | undefined): unknown[] {
   return Array.isArray(value) ? value : [];
 }
@@ -166,6 +173,7 @@ function mapBookDetail(slug: string, raw: BookDetailsApi): ProductDetailView {
       age_group: raw.age_group,
       difficulty: raw.difficulty,
       price: raw.price,
+      direct_join: raw.direct_join,
       is_free: raw.is_free,
       contributor: raw.contributor,
       is_favourite: raw.is_favourite,
@@ -212,6 +220,7 @@ function mapCourseDetail(
       domain: raw.domain ?? null,
       session_type: safeText(raw.session_type),
       price: safeText(raw.price),
+      direct_join: raw.direct_join,
       is_free: raw.is_free,
       period: safeText(raw.period),
       lessons_count: raw.lessons_count ?? 0,
@@ -286,6 +295,7 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
     overview: raw.overview,
     session_type: raw.session_type,
     price: raw.price,
+    direct_join: raw.direct_join,
     is_free: raw.is_free,
     rate_average: raw.rate_average,
     is_favourite: raw.is_favourite,
@@ -316,7 +326,7 @@ function mapServiceDetail(raw: ServiceDetailsApi): ProductDetailView {
       duration: raw.session_duration,
       sessionType: raw.session_type,
       target: raw.target,
-      isFree: raw.is_free,
+      isFree: resolveDirectJoin(raw.direct_join, raw.is_free),
     },
     ...buildRatingMeta(raw.rate, raw.rate_average),
     ...resolveDetailSocialFields(raw),
@@ -357,7 +367,7 @@ function mapActivityDetail(raw: ActivityDetailsApi): ProductDetailView {
       duration: raw.session_duration,
       sessionType: raw.session_type,
       target: raw.target,
-      isFree: raw.is_free,
+      isFree: resolveDirectJoin(raw.direct_join, raw.is_free),
     },
     ...buildRatingMeta(raw.rate, raw.rate_average),
     ...resolveDetailSocialFields(raw),
@@ -385,7 +395,8 @@ function buildGuideAccordions(raw: EvidenceDetailsApi): ProductAccordionItem[] {
 }
 
 function mapEvidenceDetail(raw: EvidenceDetailsApi): ProductDetailView {
-  const priceLabel = raw.is_free ? "مجاني" : raw.price_label;
+  const directJoin = resolveDirectJoin(raw.direct_join, raw.is_free);
+  const priceLabel = directJoin ? "مجاني" : raw.price_label;
 
   const product: CatalogProduct = {
     category: "guides",
