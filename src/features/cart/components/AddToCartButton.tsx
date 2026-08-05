@@ -21,6 +21,7 @@ type AddToCartButtonProps = {
   label?: string;
   variant?: "icon" | "button";
   reloadPageOnSuccess?: boolean;
+  forceLoading?: boolean;
 };
 
 export default function AddToCartButton({
@@ -30,6 +31,7 @@ export default function AddToCartButton({
   label = "طلب المنتج",
   variant = "icon",
   reloadPageOnSuccess = false,
+  forceLoading = false,
 }: AddToCartButtonProps) {
   const router = useRouter();
   const { isAuthenticated, isAuthReady } = useAuth();
@@ -80,7 +82,8 @@ export default function AddToCartButton({
     toast.success("تم طلب المنتج");
   }
 
-  const icon = isPending ? (
+  const isLoading = isPending || forceLoading;
+  const icon = isLoading ? (
     <Loader2 className="animate-spin" width={iconSize} height={iconSize} />
   ) : isFree ? (
     <BadgePlus width={iconSize} height={iconSize} strokeWidth={2.15} />
@@ -92,7 +95,7 @@ export default function AddToCartButton({
     return (
       <Button
         type="button"
-        disabled={isPending}
+        disabled={isLoading}
         onClick={handleClick}
         className={cn(
           "gap-2",
@@ -111,7 +114,7 @@ export default function AddToCartButton({
   return (
     <button
       type="button"
-      disabled={isPending}
+      disabled={isLoading}
       onClick={handleClick}
       className={cn(
         "flex items-center justify-center rounded-full shadow-md transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-75",
