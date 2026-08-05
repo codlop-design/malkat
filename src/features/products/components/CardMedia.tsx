@@ -45,12 +45,14 @@ export default function CardMedia({
   const { isReady, hasPurchase } = useFavourites();
   const purchased = useProductIsBought(category, slug, isBought);
   const isDirectJoin = cartPayload?.isFree === true;
+  const hasProductIdentity = Boolean(category && slug);
   const isResolvingPurchase =
     favouriteSyncMode === "product" &&
-    Boolean(category && slug) &&
-    isAuthenticated &&
-    isAuthReady &&
-    (!isReady || !hasPurchase(category as CatalogSectionKey, slug as string));
+    hasProductIdentity &&
+    ((isDirectJoin && !isAuthReady) ||
+      (isAuthenticated &&
+        isAuthReady &&
+        (!isReady || !hasPurchase(category as CatalogSectionKey, slug as string))));
 
   return (
     <div className="relative aspect-4/3 w-full shrink-0">
