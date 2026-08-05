@@ -11,10 +11,7 @@ import { getCourseLessonDescriptionClient } from "@/src/features/products/api/ge
 import CourseLessonTextContent from "@/src/features/products/components/detail/CourseLessonTextContent";
 import type { CourseLessonDescription } from "@/src/features/products/data/courseStages";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
-import {
-  categoryListingHref,
-  productDetailHref,
-} from "@/src/features/products/types";
+import { productDetailHref } from "@/src/features/products/types";
 
 type CourseLessonDescriptionContentProps = {
   slug: string;
@@ -69,10 +66,6 @@ export default function CourseLessonDescriptionContent({
     () => [
       { label: "الرئيسية", href: "/" },
       { label: "المنتجات", href: "/bundle-products" },
-      {
-        label: CATEGORY_META.courses.label,
-        href: categoryListingHref("courses"),
-      },
       { label: courseTitle, href: returnTo },
       { label: stageTitle },
     ],

@@ -21,10 +21,7 @@ import type {
   CourseQuizSubmitResult,
 } from "@/src/features/products/data/courseStages";
 import { CATEGORY_META } from "@/src/features/products/data/categoryMeta";
-import {
-  categoryListingHref,
-  productDetailHref,
-} from "@/src/features/products/types";
+import { productDetailHref } from "@/src/features/products/types";
 import { isExternalLessonHref } from "@/src/features/products/lib/courseLessonStart";
 
 type CourseQuizContentProps = {
@@ -199,10 +196,6 @@ export default function CourseQuizContent({
     () => [
       { label: "الرئيسية", href: "/" },
       { label: "المنتجات", href: "/bundle-products" },
-      {
-        label: CATEGORY_META.courses.label,
-        href: categoryListingHref("courses"),
-      },
       { label: courseTitle, href: returnTo },
       { label: isReviewMode ? "مراجعة الاختبار" : stageTitle },
     ],
