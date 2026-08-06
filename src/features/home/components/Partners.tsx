@@ -16,11 +16,12 @@ type PartnersProps = {
 
 type PartnerLogoProps = {
   partner: HomePartnerItem;
-  index: number;
 };
 
-function PartnerLogo({ partner, index }: PartnerLogoProps) {
-  const title = partner.title?.trim() || `الشريك ${index + 1}`;
+function PartnerLogo({ partner }: PartnerLogoProps) {
+  const title = partner.title?.trim();
+  const imageAlt = title || "";
+  const linkLabel = title || "زيارة موقع الشريك";
   const logo = (
     <div className="flex flex-col items-center gap-3 text-center">
       <div className="flex size-[100px] items-center justify-center rounded-full bg-white p-4 md:size-[140px]">
@@ -28,13 +29,15 @@ function PartnerLogo({ partner, index }: PartnerLogoProps) {
           src={partner.image}
           width={80}
           height={80}
-          alt={title}
+          alt={imageAlt}
           className="h-auto max-h-16 w-full object-contain md:max-h-20"
         />
       </div>
-      <span className="line-clamp-2 min-h-10 text-sm font-medium leading-5 text-[#454545]">
-        {title}
-      </span>
+      {title ? (
+        <span className="line-clamp-2 min-h-10 text-sm font-medium leading-5 text-[#454545]">
+          {title}
+        </span>
+      ) : null}
     </div>
   );
 
@@ -48,7 +51,7 @@ function PartnerLogo({ partner, index }: PartnerLogoProps) {
       target="_blank"
       rel="noopener noreferrer"
       className="mx-auto block w-[140px] rounded-2xl outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/30 md:w-[160px]"
-      aria-label={title}
+      aria-label={linkLabel}
     >
       {logo}
     </a>
@@ -125,7 +128,7 @@ export default function Partners({ content }: PartnersProps) {
                   key={partner.id ?? `${partner.image}-${index}`}
                   className="h-auto!"
                 >
-                  <PartnerLogo partner={partner} index={index} />
+                  <PartnerLogo partner={partner} />
                 </SwiperSlide>
               ))}
             </Swiper>
